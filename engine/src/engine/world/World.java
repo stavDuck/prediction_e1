@@ -9,8 +9,8 @@ import java.util.List;
 
 public class World {
     private Environment environment;
-    List<Entity> entities;
-    List<Rules> rules;
-    Termination termination;
+    private List<Entity> entities;
+    private List<Rules> rules;
+    private Termination termination;
 
 }

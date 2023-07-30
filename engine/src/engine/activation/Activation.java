@@ -1,6 +1,6 @@
 package engine.activation;
 
 public class Activation {
-    int tick;
-    double probability;
+    private int tick;
+    private double probability;
 }

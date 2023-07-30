@@ -6,7 +6,7 @@ public abstract class Action {
     private String typeName;
     //maybe should be object
 
-    private Entity entityName;
+    private String entityName;
 
 
 }

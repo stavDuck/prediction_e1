@@ -1,7 +1,7 @@
 package engine.termination;
 
 public class Termination {
-    boolean isStop;
-    int bySec;
-    int byTick;
+    private boolean isStop;
+    private int bySec;
+    private int byTick;
 }
