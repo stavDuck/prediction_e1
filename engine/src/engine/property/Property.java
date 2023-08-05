@@ -1,27 +1,25 @@
 package engine.property;
 
+import engine.property.type.Type;
 import engine.range.Range;
 
 public class Property {
-    private String name;
-    private  String type;
-    private Object val;
-    private Range range;
+
+    private static final String DECIMAL = "decimal";
+    private static final String FLOAT = "float";
+    private static final String BOOLEAN = "boolean";
+    private static final String STRING = "string";
+
+    protected String name;
+    protected Type type;
+    protected Range range;
 
 
     // constractor for random = false with default value
-    public Property(String name, String type, Range range, String initVal) {
+    public Property(String name, String strType, Range range) {
         this.name = name;
-        this.type = type;
+        setType(strType);
         this.range = range;
-        //this.val = createInstance(getclassName)((convert to type)initVal)
-    }
-    // constractor for random = true, need to random a value in the range
-    public Property(String name, String type, Range range) {
-        this.name = name;
-        this.type = type;
-        this.range = range;
-        // NEED TO RANDOM and set into val data member!!!
     }
 
     public String getName() {
@@ -36,8 +34,26 @@ public class Property {
         return type;
     }
 
-    public void setType(Object type) {
+    public void setType(Type type) {
         this.type = type;
+    }
+
+    public void setType(String type) {
+        switch (type) {
+            case DECIMAL:
+                this.type = Type.DECIMAL;
+                break;
+            case FLOAT:
+                this.type = Type.FLOAT;
+                break;
+            case BOOLEAN:
+                this.type = Type.BOOLEAN;
+                break;
+            case STRING:
+                this.type = Type.STRING;
+                break;
+
+        }
     }
 
     public Range getRange() {
@@ -48,11 +64,4 @@ public class Property {
         this.range = range;
     }
 
-    public RandomInitialize getRandom() {
-        return random;
-    }
-
-    public void setRandom(RandomInitialize random) {
-        this.random = random;
-    }
 }

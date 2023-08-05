@@ -5,7 +5,12 @@ import engine.expression.Expression;
 import engine.property.Property;
 
 public class Decrease extends Action {
-    private Property property;
-    private Expression byExpression;
+    private float by;
 
+    public Decrease(String entityName, String actionType, float by) {
+        super(entityName, actionType);
+        this.by = by;
+    }
+
+    //function execute
 }

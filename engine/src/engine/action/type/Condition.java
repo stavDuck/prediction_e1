@@ -1,4 +1,4 @@
 package engine.action.type;
 
-public class Condition {
+public class Condition extends ActionExecute{
 }

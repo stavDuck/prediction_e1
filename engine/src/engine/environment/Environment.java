@@ -1,14 +1,28 @@
 package engine.environment;
 
-import engine.property.Property;
+import engine.property.PropertyInstance;
+import engine.range.Range;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Environment {
-    private List<Property> envPropLst = new ArrayList<>();
+    private Map<String, PropertyInstance> propertyInstancesMap;
 
-    // function to change data in list
-    // function to add new data in list
-    // function to delete ??
+    public Environment() {
+        propertyInstancesMap = new HashMap<>();
+    }
+
+    public void addEnvProperty(String name, String strType, Range range, String value) {
+        propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
+    }
+
+    public void setEnvProperty(String name, String value) {
+        propertyInstancesMap.get(name).setVal(value);
+    }
+
+    public PropertyInstance getEnvProperty(String name) {
+        return propertyInstancesMap.get(name);
+    }
+
 }
