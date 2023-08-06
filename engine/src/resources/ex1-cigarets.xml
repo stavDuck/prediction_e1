@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PRD-world xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="predictions-v1.xsd">
 	<PRD-evironment>
+		<PRD-env-property type="boolean">
+			<PRD-name>stam</PRD-name>
+		</PRD-env-property>
 		<PRD-env-property type="decimal">
 			<PRD-name>cigarets-critical</PRD-name>
 			<PRD-range from="10" to="100"/>
