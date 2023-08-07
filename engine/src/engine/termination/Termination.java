@@ -13,4 +13,16 @@ public class Termination {
     public Termination() {
         this(0,0);
     }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public int getBySec() {
+        return bySec;
+    }
+
+    public int getByTick() {
+        return byTick;
+    }
 }

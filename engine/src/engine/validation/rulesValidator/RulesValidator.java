@@ -1,4 +1,4 @@
 package engine.validation.rulesValidator;
 
-public class rulesValidator {
+public class RulesValidator {
 }

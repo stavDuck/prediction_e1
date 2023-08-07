@@ -1,4 +1,4 @@
 package engine.validation;
 
-public class worldValidator {
+public class WorldValidator {
 }

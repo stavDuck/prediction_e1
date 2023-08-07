@@ -1,15 +1,30 @@
 package engine.property;
 
+import engine.property.type.Type;
 import engine.range.Range;
 
 public class PropertyInstance extends Property {
     private Object val;
 
-    public PropertyInstance(String name, String strType, Range range, String value) {
-        super(name, strType, range);
-        setVal(value);
+    // doing create new instance for new entity
+    public PropertyInstance(String name, Type type, Range range, Object value) {
+        super(name, type, range);
+        this.val = value;
     }
 
+    // doing create new env property
+    public PropertyInstance(String name, String type, Range range, Object value) {
+        super(name, type, range);
+        this.val = value;
+    }
+
+    public Object getVal() {
+        return val;
+    }
+
+    public void setVal(Object value) {
+        this.val = value;
+    }
     public void setVal(String value) {
        try {
            switch (type) {

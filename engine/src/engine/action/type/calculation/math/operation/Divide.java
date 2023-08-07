@@ -1,8 +1,10 @@
 package engine.action.type.calculation.math.operation;
 
-import engine.expression.Expression;
+import engine.action.type.calculation.Calculation;
+import engine.property.Property;
 
-public class Divide {
-    private Expression numerator;
-    private Expression denominator;
+public class Divide extends Calculation {
+    private Property resultProp;
+    private String numerator;
+    private String denominator;
 }

@@ -19,9 +19,12 @@ public class CopyHandler {
     public static void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
         List<PRDEnvProperty> prdList = prdWorld.getPRDEvironment().getPRDEnvProperty();
         for(PRDEnvProperty property : prdList) {
+
+            // if range in null (when type is not decimal/ float) set range in our world as null
             world.getEnvironment().addEnvProperty(property.getPRDName(),
                     property.getType(),
-                    new Range((int)property.getPRDRange().getTo(), (int)property.getPRDRange().getFrom()),
+                    (property.getPRDRange() == null ? null :
+                    new Range((int)property.getPRDRange().getTo(), (int)property.getPRDRange().getFrom())),
                     null);
         }
     }

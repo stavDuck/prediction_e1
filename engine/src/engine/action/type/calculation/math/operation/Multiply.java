@@ -1,8 +1,10 @@
 package engine.action.type.calculation.math.operation;
 
-import engine.expression.Expression;
+import engine.action.type.calculation.Calculation;
+import engine.property.Property;
 
-public class Multiply {
-    private Expression arg1;
-    private Expression arg2;
+public class Multiply extends Calculation {
+    private Property resultProp;
+    private String arg1;
+    private String arg2;
 }

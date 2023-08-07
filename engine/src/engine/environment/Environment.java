@@ -13,16 +13,18 @@ public class Environment {
         propertyInstancesMap = new HashMap<>();
     }
 
-    public void addEnvProperty(String name, String strType, Range range, String value) {
-        propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
-    }
+   // getters
+   public PropertyInstance getEnvProperty(String name) {
+       return propertyInstancesMap.get(name);
+   }
 
+   // setters
     public void setEnvProperty(String name, String value) {
         propertyInstancesMap.get(name).setVal(value);
     }
 
-    public PropertyInstance getEnvProperty(String name) {
-        return propertyInstancesMap.get(name);
-    }
 
+    public void addEnvProperty(String name, String strType, Range range, String value) {
+        propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
+    }
 }

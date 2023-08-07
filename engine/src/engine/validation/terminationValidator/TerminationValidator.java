@@ -1,4 +1,4 @@
 package engine.validation.terminationValidator;
 
-public class terminationValidator {
+public class TerminationValidator {
 }

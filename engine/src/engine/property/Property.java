@@ -3,7 +3,7 @@ package engine.property;
 import engine.property.type.Type;
 import engine.range.Range;
 
-public class Property {
+public abstract class Property {
 
     private static final String DECIMAL = "decimal";
     private static final String FLOAT = "float";
@@ -22,6 +22,12 @@ public class Property {
         this.range = range;
     }
 
+    public Property(String name, Type type, Range range) {
+        this.name = name;
+        this.type = type;
+        this.range = range;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,7 +36,7 @@ public class Property {
         this.name = name;
     }
 
-    public Object getType() {
+    public Type getType() {
         return type;
     }
 

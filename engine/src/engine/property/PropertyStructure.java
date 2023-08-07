@@ -12,10 +12,16 @@ public class PropertyStructure extends Property{
         this.defaultValue = defaultValue;
     }
 
-    public boolean isRandom() {
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+    public boolean getIsRandom() {
         return isRandom;
     }
 
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
     public void setRandom(boolean random) {
         isRandom = random;
     }
