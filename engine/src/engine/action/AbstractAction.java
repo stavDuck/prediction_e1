@@ -10,8 +10,8 @@ public abstract class AbstractAction implements Action {
     private static final String SET = "set";
     private static final String KILL = "kill";
 
-    private String entityName;
-    private ActionType actionType;
+    protected String entityName;
+    protected ActionType actionType;
 
     //private ActionExecute actionExecute;
 

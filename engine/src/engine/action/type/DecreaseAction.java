@@ -17,9 +17,15 @@ public class DecreaseAction extends AbstractAction {
     }
 
     @Override
-    public void invoke(Context context) {
-        Object value =  FunctionHelper.getValueToInvoke(byExpression, context, property);
-        decreasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
+    public void invoke(Context context) throws RuntimeException{
+        try {
+            Object value = FunctionHelper.getValueToInvoke(byExpression, context, property);
+            decreasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
+        }
+        catch (RuntimeException e){
+            throw new RuntimeException("Decrease action on Entity: " + entityName + " on property: " + property +  " failed \n"
+                    +  e.getMessage());
+        }
     }
 
     private void decreasePropertyValWithVal(PropertyInstance prop, Object increaseVal){
