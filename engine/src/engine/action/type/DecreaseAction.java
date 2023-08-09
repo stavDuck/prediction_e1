@@ -18,7 +18,7 @@ public class DecreaseAction extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
-        Object value =  FunctionHelper.getValueToInvoke(byExpression, context);
+        Object value =  FunctionHelper.getValueToInvoke(byExpression, context, property);
         decreasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
     }
 

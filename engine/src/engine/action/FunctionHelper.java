@@ -12,7 +12,7 @@ public class FunctionHelper {
     }
 
     // return String
-    public static Object getValueToInvoke(String expression, Context context){
+    public static Object getValueToInvoke(String expression, Context context, String propName){
         Object value;
         if(expression.contains("environment(")){
             value = FunctionHelper.environment(context,
@@ -28,9 +28,10 @@ public class FunctionHelper {
         }
         // assuming sutibale int/ float
         else{
-            value = expression;
+            Type typeProp = context.getPrimaryEntityInstance().getPropertyInstanceByName(propName).getType();
+            value = parserFromStringAccordingToType(expression, typeProp);
         }
-        return parserFromStringAccordingToType(value, context.getPrimaryEntityInstance().;
+        return value;
     }
 
     public static Object parserFromStringAccordingToType(String value, Type type){

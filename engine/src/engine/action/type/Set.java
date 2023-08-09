@@ -18,7 +18,7 @@ public class Set extends AbstractAction {
     @Override
     public void invoke(Context context) {
         // NEED TO TEST ?
-        Object value =  FunctionHelper.getValueToInvoke(newValue, context);
+        Object value =  FunctionHelper.getValueToInvoke(newValue, context, property);
        context.getPrimaryEntityInstance().getPropertyInstanceByName(property).setVal(value);
     }
 }
