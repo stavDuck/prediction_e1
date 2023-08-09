@@ -1,12 +1,42 @@
 package engine.validation.entitiesValidator;
 
-import generated.PRDWorld;
+import engine.validation.ValidationCommonFunctions;
+import generated.*;
 
-public class EntityValidator {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    /*public static boolean validateEntityData(PRDWorld prdWorld) {
+public class EntityValidator extends ValidationCommonFunctions {
+    //need to add exceptions
+    public static boolean validateEntityData(PRDEntity prdEntity) {
+        List<PRDProperty> prdList = prdEntity.getPRDProperties().getPRDProperty(); //property list of specific entity
+        Map<String, Integer> prdNameList = new HashMap<>(); // this map will be for validating all names are uniques
+        String trimmedName = prdEntity.getName().trim();
 
-    }*/
+        //check if entity name is invalid
+        if(!isNameValid(trimmedName)) {
+            return false;
+        }
+
+        // go over every property and check if valid
+        for(PRDProperty property : prdList) {
+
+            if(!isNameValid(trimmedName) ||
+                    !isPropertyTypeValid(property.getType()) ||
+                    !isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange()) ||
+                    ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())))
+                return false;
+
+            // add name to the map list
+            prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?
+                    1 : prdNameList.get(trimmedName + 1)));
+        }
+
+        // check if any name not unique
+        return isNameUnique(prdNameList);
+
+    }
 
     // test if prop name has no spaces
     // test if name is uniq

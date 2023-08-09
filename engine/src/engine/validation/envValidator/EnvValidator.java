@@ -18,7 +18,7 @@ public class EnvValidator extends ValidationCommonFunctions {
 
         // go over every property and check if valid
         for(PRDEnvProperty property : prdList) {
-
+            //need to check for trimmed name
             if(!isNameValid(property.getPRDName()) ||
                     !isPropertyTypeValid(property.getType()) ||
                     !isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange()) ||
