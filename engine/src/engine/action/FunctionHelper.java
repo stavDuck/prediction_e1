@@ -30,7 +30,8 @@ public class FunctionHelper {
         else{
             value = expression;
         }
-        return parserFromStringAccordingToType(value, context.getPrimaryEntityInstance().;
+        //return parserFromStringAccordingToType(value, context.getPrimaryEntityInstance().;
+        return null;  //delete
     }
 
     public static Object parserFromStringAccordingToType(String value, Type type){

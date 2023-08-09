@@ -8,6 +8,9 @@ import engine.property.Property;
 public class Calculation extends AbstractAction {
 
 
+    public Calculation(String entityName, String actionType) {
+        super(entityName, actionType);
+    }
 
     @Override
     public void invoke(Context context) {

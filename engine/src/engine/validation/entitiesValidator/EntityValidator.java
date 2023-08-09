@@ -10,6 +10,7 @@ import java.util.Map;
 public class EntityValidator extends ValidationCommonFunctions {
     //need to add exceptions
     public static boolean validateEntityData(PRDEntity prdEntity) {
+        String trimmedPropName;
         List<PRDProperty> prdList = prdEntity.getPRDProperties().getPRDProperty(); //property list of specific entity
         Map<String, Integer> prdNameList = new HashMap<>(); // this map will be for validating all names are uniques
         String trimmedName = prdEntity.getName().trim();
@@ -21,16 +22,16 @@ public class EntityValidator extends ValidationCommonFunctions {
 
         // go over every property and check if valid
         for(PRDProperty property : prdList) {
-
-            if(!isNameValid(trimmedName) ||
+            trimmedPropName = property.getPRDName().trim();
+            if(!isNameValid(trimmedPropName) ||
                     !isPropertyTypeValid(property.getType()) ||
                     !isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange()) ||
                     ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())))
                 return false;
 
             // add name to the map list
-            prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?
-                    1 : prdNameList.get(trimmedName + 1)));
+            prdNameList.put(trimmedPropName, (prdNameList.get(trimmedPropName) == null ?
+                    1 : prdNameList.get(trimmedPropName + 1)));
         }
 
         // check if any name not unique

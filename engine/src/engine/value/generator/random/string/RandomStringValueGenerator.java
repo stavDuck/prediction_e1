@@ -9,10 +9,11 @@ public class RandomStringValueGenerator extends AbstractRandomValueGenerator<Str
     private enum SpecialChars {QUESTION_MARK, EXCLAMATION_MARK, COMMA, UNDER_SCORE, HYPHEN, DOT, OPEN_BRACKET, CLOSE_BRACKET}
     @Override
     public String generateValue() {
-        int length = random.nextInt(50) + 1; //generate length 1-50
+      /*  int length = random.nextInt(50) + 1; //generate length 1-50
         String res = "";
         // for run lenght
-            res = res + randomChar();
+            res = res + randomChar();*/
+        return null;
     }
 
     private char randomChar(){

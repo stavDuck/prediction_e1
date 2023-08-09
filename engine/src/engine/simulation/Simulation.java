@@ -1,6 +1,7 @@
 package engine.simulation;
 
 import engine.simulation.copyhandler.CopyHandler;
+import engine.validation.WorldValidator;
 import engine.world.World;
 import generated.PRDWorld;
 
@@ -22,6 +23,8 @@ public class Simulation {
             //String absolutePath = new File(fileName).getAbsolutePath();
             InputStream inputStream = new FileInputStream(new File(fileName));
             PRDWorld prdWorld = deserializeFrom(inputStream);
+            WorldValidator.validateWorldData(prdWorld);
+
             world = new World();
             CopyHandler.copyData(prdWorld, world);
         }
