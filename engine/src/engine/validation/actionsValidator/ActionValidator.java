@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ActionValidator {
-    public static boolean validateActionData(PRDAction prdAction, PRDEntities entities, PRDEvironment prdEvironment) {
+    public boolean validateActionData(PRDAction prdAction, PRDEntities entities, PRDEvironment prdEvironment) {
         boolean res = false;
         PRDEntity actionEntity = null;
         List<PRDEntity> prdEntityList = entities.getPRDEntity();

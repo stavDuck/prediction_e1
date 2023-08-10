@@ -9,11 +9,13 @@ import generated.PRDRule;
 import java.util.List;
 
 public class ActionsValidator {
-    public static boolean validateActionsData(PRDRule prdRule, PRDEntities prdEntities, PRDEvironment prdEvironment) {
+    public boolean validateActionsData(PRDRule prdRule, PRDEntities prdEntities, PRDEvironment prdEvironment) {
         boolean res;
+        ActionValidator actionValidator = new ActionValidator();
+
         List<PRDAction> prdActionList = prdRule.getPRDActions().getPRDAction();
         for (PRDAction prdAction : prdActionList) {
-            res = ActionValidator.validateActionData(prdAction, prdEntities, prdEvironment);
+            res = actionValidator.validateActionData(prdAction, prdEntities, prdEvironment);
             if(!res) {
                 return false;
             }

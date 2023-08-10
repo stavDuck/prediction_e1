@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RulesValidator extends ValidationCommonFunctions {
-    public static boolean validateRulesData(PRDWorld prdWorld) {
+    public boolean validateRulesData(PRDWorld prdWorld) {
         boolean res;
+        ActionsValidator actionsValidator = new ActionsValidator();
+
         List<PRDRule> prdRuleList = prdWorld.getPRDRules().getPRDRule();
         Map<String, Integer> prdNameList = new HashMap<>(); // this map will be for validating all names are uniques
 
@@ -23,7 +25,7 @@ public class RulesValidator extends ValidationCommonFunctions {
                 return false;
             }
 
-            res = ActionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
+            res = actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
             if (!res)
                 return false;
             prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?

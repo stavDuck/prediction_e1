@@ -14,6 +14,7 @@ public class CopyHandler {
         copyEntityStructure(prdWorld, world);
         //copy rules
         copyTermination(prdWorld, world);
+
     }
 
     public static void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
@@ -44,9 +45,7 @@ public class CopyHandler {
                         property.getPRDValue().isRandomInitialize(),
                         property.getPRDValue().getInit());
             }
-
         }
-
     }
 
 

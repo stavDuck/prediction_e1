@@ -2,6 +2,7 @@ package engine.simulation;
 
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
+import engine.validation.exceptions.XmlValidationException;
 import engine.world.World;
 import generated.PRDWorld;
 
@@ -18,18 +19,29 @@ public class Simulation {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
 
-    public Simulation(String fileName) {
+    public Simulation(String fileName) throws RuntimeException{
         try {
             //String absolutePath = new File(fileName).getAbsolutePath();
             InputStream inputStream = new FileInputStream(new File(fileName));
+
+            // creating PRDWorld
             PRDWorld prdWorld = deserializeFrom(inputStream);
+            // validating PRDworld XML
             WorldValidator.validateWorldData(prdWorld);
 
+            // copy the information from PRDWorld to World
             world = new World();
             CopyHandler.copyData(prdWorld, world);
         }
-        catch (JAXBException | FileNotFoundException e) {
-            System.out.println("File " + fileName + " was not found");
+        catch (FileNotFoundException e) {
+            throw new RuntimeException("File " + fileName + " was not found");
+        }
+        catch (JAXBException e){
+            throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");
+        }
+        // exceptions from validate world
+        catch (XmlValidationException e){
+            throw new RuntimeException("xml validation failed with the error: " + e);
         }
     }
     private static PRDWorld deserializeFrom(InputStream in) throws JAXBException {
