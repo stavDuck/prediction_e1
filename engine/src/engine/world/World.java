@@ -1,14 +1,12 @@
 package engine.world;
 
-import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
-import engine.rule.Rules;
+import engine.rule.Rule;
 import engine.termination.Termination;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class World {
@@ -19,12 +17,13 @@ public class World {
     //private Map<String, List<EntityInstance>> entityInstances; //key = smoker, value = list of all smoker instances
     private Map<String, EntityStructure> entityStructures; //key = smoker, value = structure
     private Termination termination;
-    private Map<String, Rules> rules; //key = rule name, value = rule
+    private Map<String, Rule> rules; //key = rule name, value = rule
 
     public World() {
         this.environment = new Environment();
         this.instanceManager = new EntityInstanceManager();
         this.entityStructures = new HashMap<>();
+        this.rules = new HashMap<>();
         this.termination = new Termination();
     }
 
@@ -39,7 +38,7 @@ public class World {
     public Map<String, EntityStructure> getEntityStructures() {
         return entityStructures;
     }
-    public Map<String, Rules> getRules() {
+    public Map<String, Rule> getRules() {
         return rules;
     }
     public Termination getTermination() {
@@ -59,7 +58,7 @@ public class World {
     public void setEntityStructures(Map<String, EntityStructure> entityStructures) {
         this.entityStructures = entityStructures;
     }
-    public void setRules(Map<String, Rules> rules) {
+    public void setRules(Map<String, Rule> rules) {
         this.rules = rules;
     }
     public void setTermination(Termination termination) {
@@ -71,8 +70,10 @@ public class World {
     public void addEntityStructure(String entityName, EntityStructure entityStructure) {
         this.entityStructures.put(entityName, entityStructure);
     }
-
     public void addEntityInstance(String entityName){
         instanceManager.create(entityStructures.get(entityName));
+    }
+    public void addRule(String ruleName, Rule newRule){
+        rules.put(ruleName, newRule);
     }
 }

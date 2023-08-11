@@ -1,6 +1,7 @@
 package engine.action;
 
 import engine.execution.context.Context;
+import engine.property.type.Type;
 
 public abstract class AbstractAction implements Action {
     private static final String INCREASE = "increase";
@@ -18,6 +19,10 @@ public abstract class AbstractAction implements Action {
     public AbstractAction(String entityName, String actionType) {
         this.entityName = entityName;
         setActionType(actionType);
+    }
+    public AbstractAction(String entityName, ActionType actionType) {
+        this.entityName = entityName;
+        this.actionType = actionType;
     }
 
     // getters

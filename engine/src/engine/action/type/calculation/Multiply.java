@@ -1,17 +1,18 @@
-package engine.action.type.calculation.math.operation;
+package engine.action.type.calculation;
 
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
 import engine.execution.context.Context;
+import engine.property.Property;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
 
-public class Divide extends AbstractAction {
+public class Multiply extends AbstractAction {
     private String resultProp;
     private String arg1;
     private String arg2;
 
-    public Divide(String entityName, String actionType) {
+    public Multiply(String entityName, String actionType) {
         super(entityName, actionType);
     }
 
@@ -21,10 +22,10 @@ public class Divide extends AbstractAction {
         Object val2 = FunctionHelper.getValueToInvoke(arg2, context, resultProp);
 
         // send the actual values in object format and the res-prop to set the new value into
-        divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+        multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
     }
 
-    private void divideFunction(PropertyInstance prop, Object val1, Object val2){
+    private void multiplyFunction(PropertyInstance prop, Object val1, Object val2){
         // check the operation needed
         Type entityType = prop.getType();
 
@@ -32,12 +33,12 @@ public class Divide extends AbstractAction {
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(val1);
                 Integer int2 = Type.DECIMAL.convert(val2);
-                prop.setVal( int1 / int2);
+                prop.setVal( int1 * int2);
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(val1);
                 Float float2 = Type.FLOAT.convert(val2);
-                prop.setVal( float1 / float2);
+                prop.setVal( float1 * float2);
                 break;
         }
     }

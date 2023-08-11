@@ -31,7 +31,8 @@ public class Simulation {
 
             // copy the information from PRDWorld to World
             world = new World();
-            CopyHandler.copyData(prdWorld, world);
+            CopyHandler copy = new CopyHandler();
+            copy.copyData(prdWorld, world);
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("File " + fileName + " was not found");

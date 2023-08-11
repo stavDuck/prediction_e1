@@ -4,12 +4,12 @@ import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
 import engine.execution.context.Context;
 
-public class Set extends AbstractAction {
+public class SetAction extends AbstractAction {
     private final String property;
     private String newValue;
 
 
-    public Set(String entityName, String property, String actionType, String newValue) {
+    public SetAction(String entityName, String property, String actionType, String newValue) {
         super(entityName, actionType);
         this.property = property;
         this.newValue = newValue;
