@@ -5,6 +5,10 @@ import engine.action.type.IncreaseAction;
 import engine.action.type.KillAction;
 import engine.action.type.SetAction;
 import engine.action.type.calculation.Calculation;
+import engine.action.type.condition.Condition;
+import engine.action.type.condition.ConditionMultiple;
+import engine.action.type.condition.ConditionSingle;
+import engine.action.type.condition.conditionSingularityApi;
 import engine.activation.Activation;
 import engine.entity.EntityStructure;
 import engine.range.Range;
@@ -121,9 +125,85 @@ public class CopyHandler {
             return null; // THROW ERROR !!!
         }
     }
-    public DecreaseAction createNewCondition(PRDAction action){
+    public Condition createNewCondition(PRDAction action){
+        // create new condition when (single or multi)
+        conditionSingularityApi newWhenCondition = createNewWhen(action.getPRDCondition(), action.getEntity(), action.getType());
 
+        Condition newCondition = new Condition(action.getEntity(), action.getType(), newWhenCondition);
+
+        // create new then
+        createNewActionInThen(newCondition,action.getPRDThen().getPRDAction());
+        // create new when
+        createNewActionInElse(newCondition, action.getPRDElse().getPRDAction());
+
+        return newCondition;
     }
+
+    // getting the PRDcondition when and creating world when condition
+    private conditionSingularityApi createNewWhen(PRDCondition condition, String entityName, String actionType){
+        String singularity = condition.getSingularity();
+        conditionSingularityApi newWhenCondition;
+
+        switch (singularity){
+            case "multiple":
+                newWhenCondition = createNewConditionMultiple(condition, entityName, actionType);
+                break;
+            case "single":
+                // Check if list is empty
+                newWhenCondition = createNewConditionSingle(condition, entityName, actionType);
+                break;
+            default:
+                newWhenCondition = null;
+                break;
+        }
+
+        return newWhenCondition;
+    }
+
+    private ConditionMultiple createNewConditionMultiple(PRDCondition condition, String entityName, String actionType){
+        ConditionMultiple newConditionMultiple = new ConditionMultiple(entityName, condition.getLogical(), actionType);
+        conditionSingularityApi newConditionToAdd;
+
+        // if not null else ERROR !!!!!
+        for(PRDCondition currCondition: condition.getPRDCondition()){
+            switch (currCondition.getSingularity()){
+                case "multiple":
+                    newConditionMultiple.addNewMultipleCondition(currCondition.getLogical());
+                    createNewConditionMultiple(currCondition,  entityName,  actionType);
+                    break;
+                case "single":
+                    newConditionMultiple.addNewSingleCondition(currCondition.getEntity(), currCondition.getProperty(),
+                    currCondition.getOperator(), currCondition.getValue());
+                    break;
+            }
+        }
+        return newConditionMultiple;
+    }
+
+    private ConditionSingle createNewConditionSingle(PRDCondition condition, String entityName, String actionType){
+
+        return new ConditionSingle(entityName, actionType, condition.getEntity(),
+                condition.getProperty(), condition.getOperator(), condition.getValue());
+    }
+
+    private void createNewActionInThen(Condition newCondition, List<PRDAction> prdAction ){
+        for(PRDAction currAction : prdAction){
+            AbstractAction newAction = copyActionFromPRDRule(currAction);
+            newCondition.addNewThenAction(newAction);
+        }
+    }
+    private void createNewActionInElse(Condition newCondition, List<PRDAction> prdAction){
+        for(PRDAction currAction : prdAction){
+            AbstractAction newAction = copyActionFromPRDRule(currAction);
+            newCondition.addNewElseAction(newAction);
+        }
+    }
+
+
+
+
+
+
     public SetAction createNewSet(PRDAction action){
         return new SetAction(action.getEntity(), action.getProperty(), action.getType(), action.getValue());
 

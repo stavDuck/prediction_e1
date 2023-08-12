@@ -2,6 +2,7 @@ package engine.action.type.condition;
 
 import engine.action.AbstractAction;
 import engine.action.ActionType;
+import engine.action.FunctionHelper;
 import engine.entity.EntityInstance;
 import engine.execution.context.Context;
 import engine.property.type.Type;
@@ -100,8 +101,10 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
     public void invoke(Context context) throws RuntimeException{
        Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
        Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
-       Object valueForCondition = parseByTypeAndString(propType, value);
-       result = evaluateCondition(propType, propVal,  valueForCondition);
+
+      // Object valueForCondition = parseByTypeAndString(propType, value);
+        Object valueForCondition = FunctionHelper.getValueToInvoke(value, context, propertyToInvoke);
+        result = evaluateCondition(propType, propVal,  valueForCondition);
     }
 
     // NEED TO COVER EXCEPTION PARSE !!!!!!
