@@ -13,8 +13,6 @@ public class World {
     private Environment environment;
 
     private EntityInstanceManager instanceManager;
-
-    //private Map<String, List<EntityInstance>> entityInstances; //key = smoker, value = list of all smoker instances
     private Map<String, EntityStructure> entityStructures; //key = smoker, value = structure
     private Termination termination;
     private Map<String, Rule> rules; //key = rule name, value = rule
@@ -66,7 +64,6 @@ public class World {
     }
 
 
-
     public void addEntityStructure(String entityName, EntityStructure entityStructure) {
         this.entityStructures.put(entityName, entityStructure);
     }
@@ -75,5 +72,18 @@ public class World {
     }
     public void addRule(String ruleName, Rule newRule){
         rules.put(ruleName, newRule);
+    }
+
+    public void printEnvProp(){
+        environment.printPropertyInstancesMap();
+    }
+    public void printEntitiesStruchers(){
+        entityStructures.values().forEach(value -> value.printEntityStructure());
+    }
+    public void printRules(){
+        rules.values().forEach(value -> value.printRule());
+    }
+    public void printTermination(){
+        termination.printTermination();
     }
 }

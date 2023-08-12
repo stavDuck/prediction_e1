@@ -27,7 +27,7 @@ public class ValidationCommonFunctions {
 
     // validate type is only decimal/float/boolean/string
     public static boolean isPropertyTypeValid(String type) {
-        return (type.contains("decimal") || type.contains("float ") || type.contains("boolean") || type.contains("string"));
+        return (type.contains("decimal") || type.contains("float") || type.contains("boolean") || type.contains("string"));
     }
 
     // validate range has values only if property type is decimal/float

@@ -25,4 +25,10 @@ public class Termination {
     public int getByTick() {
         return byTick;
     }
+
+    public void printTermination() {
+        System.out.println("Termination by seconds: "+ bySec);
+        System.out.println("Termination by ticks: "+ byTick);
+
+    }
 }

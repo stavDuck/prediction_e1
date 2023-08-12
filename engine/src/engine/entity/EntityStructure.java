@@ -38,4 +38,12 @@ public class EntityStructure {
     public void addProperty(String name, String strType, Range range, boolean isRandom, String defaultValue) {
         entityPropMap.put(name, new PropertyStructure(name, strType, range, isRandom, defaultValue));
     }
+
+    public void printEntityStructure(){
+        System.out.println("Entity name: "+ entityName);
+        System.out.println("Entity population: " + population);
+        System.out.println("Propery list: " + population);
+        System.out.println("---------------------------");
+        entityPropMap.values().forEach(value ->{value.printPropertyStructure();});
+    }
 }

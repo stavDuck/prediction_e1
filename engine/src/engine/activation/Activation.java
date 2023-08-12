@@ -24,4 +24,9 @@ public class Activation {
     public void setProbability(double probability) {
         this.probability = probability;
     }
+
+    public void printActivation() {
+        System.out.println("Activation tick: " + tick);
+        System.out.println("Activation probability: " + probability);
+    }
 }

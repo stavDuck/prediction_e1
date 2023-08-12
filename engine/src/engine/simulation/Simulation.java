@@ -45,12 +45,26 @@ public class Simulation {
             throw new RuntimeException("xml validation failed with the error: " + e);
         }
     }
-    private static PRDWorld deserializeFrom(InputStream in) throws JAXBException {
+    private PRDWorld deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
         return (PRDWorld) u.unmarshal(in);
     }
 
+    public void printEntities(){
+        world.printEntitiesStruchers();
+    }
+    public void printRules(){
+        world.printRules();
+    }
+    public void printTermination(){
+        world.printTermination();
+    }
 
+    public void simulationPrintAllInformation(){
+        printEntities();
+        printRules();
+        printTermination();
+    }
 
 }

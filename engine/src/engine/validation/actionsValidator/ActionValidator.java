@@ -14,6 +14,7 @@ public class ActionValidator {
         PRDEntity actionEntity = null;
         List<PRDEntity> prdEntityList = entities.getPRDEntity();
         int byValue;
+
         //get the entity from action
         for(PRDEntity prdEntity : prdEntityList) {
             if(prdEntity.getName().equals(prdAction.getEntity())) {
@@ -32,9 +33,9 @@ public class ActionValidator {
             }
 
         }
-        if(prdAction.getType().equals("increase") || prdAction.getType().equals("decrease") ||prdAction.getType().equals("calculation")) {
+       /* if(prdAction.getType().equals("increase") || prdAction.getType().equals("decrease") ||prdAction.getType().equals("calculation")) {
             res = VerifyTypeIsNumber(prdAction.getBy(), prdEvironment);
-        }
+        }*/
         return res;
     }
 

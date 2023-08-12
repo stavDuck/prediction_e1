@@ -62,4 +62,8 @@ public abstract class AbstractAction implements Action {
     public void setEntityName(String entityName) {
         this.entityName = entityName;
     }
+
+    public void printAction() {
+        System.out.println("Action Type: " + actionType.name().toLowerCase());
+    }
 }

@@ -32,7 +32,7 @@ public class CopyHandler {
     public void copyData(PRDWorld prdWorld, World world) {
         copyEnvironmentProperties(prdWorld, world);
         copyEntityStructure(prdWorld, world);
-        //copy rules
+        copyRules(prdWorld, world);
         copyTermination(prdWorld, world);
 
     }
@@ -61,7 +61,8 @@ public class CopyHandler {
                 //go to the created entity, and add all property structures
                 world.getEntityStructures().get(entity.getName()).addProperty(property.getPRDName(),
                         property.getType(),
-                        new Range((int)property.getPRDRange().getTo(), (int)property.getPRDRange().getFrom()),
+                       (property.getPRDRange() == null) ?
+                               null : new Range((int)property.getPRDRange().getTo(), (int)property.getPRDRange().getFrom()),
                         property.getPRDValue().isRandomInitialize(),
                         property.getPRDValue().getInit());
             }
@@ -76,13 +77,11 @@ public class CopyHandler {
         for (PRDRule rule : prdWorld.getPRDRules().getPRDRule()) {
             Rule newRule = copyRuleFromPRDWorld(rule);
             world.addRule(newRule.getName(), newRule);
-
         }
-
     }
 
      private Rule copyRuleFromPRDWorld(PRDRule rule){
-        Activation newActivation = new Activation(rule.getPRDActivation().getTicks(), rule.getPRDActivation().getProbability());
+        Activation newActivation = createNewActivation(rule);
         Rule newRule = new Rule(rule.getName(), newActivation);
 
         // adding all the actions into the list
@@ -92,6 +91,20 @@ public class CopyHandler {
         }
 
         return newRule;
+     }
+     private Activation createNewActivation(PRDRule rule){
+         // set Activation
+         Integer newTicks;
+         Double probability;
+         if(rule.getPRDActivation() == null){
+             newTicks = 1;
+             probability = 1.0;
+         }
+         else {
+             probability = rule.getPRDActivation().getProbability() != null ? rule.getPRDActivation().getProbability() : 1;
+             newTicks = rule.getPRDActivation().getTicks() != null ? rule.getPRDActivation().getTicks() : 1;
+         }
+         return  new Activation(newTicks, probability);
      }
 
      private AbstractAction copyActionFromPRDRule(PRDAction action){
@@ -133,8 +146,10 @@ public class CopyHandler {
 
         // create new then
         createNewActionInThen(newCondition,action.getPRDThen().getPRDAction());
-        // create new when
-        createNewActionInElse(newCondition, action.getPRDElse().getPRDAction());
+        // create new else - if exist
+        if(action.getPRDElse() != null) {
+            createNewActionInElse(newCondition, action.getPRDElse().getPRDAction());
+        }
 
         return newCondition;
     }
@@ -162,14 +177,14 @@ public class CopyHandler {
 
     private ConditionMultiple createNewConditionMultiple(PRDCondition condition, String entityName, String actionType){
         ConditionMultiple newConditionMultiple = new ConditionMultiple(entityName, condition.getLogical(), actionType);
-        conditionSingularityApi newConditionToAdd;
 
         // if not null else ERROR !!!!!
         for(PRDCondition currCondition: condition.getPRDCondition()){
             switch (currCondition.getSingularity()){
                 case "multiple":
-                    newConditionMultiple.addNewMultipleCondition(currCondition.getLogical());
-                    createNewConditionMultiple(currCondition,  entityName,  actionType);
+                    // create mew multiple to the condition list
+                    newConditionMultiple.getConditionLst().add(createNewConditionMultiple(currCondition,entityName,actionType));
+
                     break;
                 case "single":
                     newConditionMultiple.addNewSingleCondition(currCondition.getEntity(), currCondition.getProperty(),
