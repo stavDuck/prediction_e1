@@ -63,7 +63,7 @@ public class EntityInstance {
                 case BOOLEAN:
                     return ValueGeneratorFactory.createRandomBoolean().generateValue();
                 default: // String type
-                    return defVal;
+                    return ValueGeneratorFactory.createRandomString().generateValue();
             }
         }
         // get fixed value

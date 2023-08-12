@@ -1,5 +1,12 @@
 package menu;
+import engine.property.PropertyInstance;
+import engine.property.type.Type;
 import engine.simulation.Simulation;
+import engine.value.generator.ValueGeneratorFactory;
+import sun.awt.windows.WPrinterJob;
+
+import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -61,6 +68,14 @@ public class Menu {
 
                // Option three = run simulation
                case(OPTION_THREE):
+                   // set env values
+                   setSimulationEnvValues(simulation);
+
+                   // Print all env names + values
+                   printEnvLivsNamesAndValues(simulation);
+
+                   // run simulation
+                   simulation.run();
                    break;
                case(OPTION_FOUR):
                    break;
@@ -76,6 +91,8 @@ public class Menu {
         }
         scanner.close();
     }
+
+
 
     public void printMainMenu(){
         System.out.println("MENU:");
@@ -95,6 +112,18 @@ public class Menu {
         System.out.println("2) Present rules");
         System.out.println("3) Present termination conditions");
         System.out.println("4) Return to main-menu");
+    }
+
+    public void printEnvLivsNamesAndValues(Simulation simulation){
+        int counter = 1;
+        System.out.println("List of all environment names and values:");
+        System.out.println("*********************");
+
+        for(PropertyInstance prop: simulation.getWorld().getEnvironment().getPropertyInstancesMap().values()){
+            System.out.println(counter + ". Name: " + prop.getName() + ", Value: " + prop.getType().convert(prop.getVal()));
+        }
+
+
     }
     public String getFileNameFromUser(){
         Scanner scanner = new Scanner(System.in);
@@ -155,9 +184,185 @@ public class Menu {
         }
     }
 
+    private void setSimulationEnvValues(Simulation simulation) {
+        Scanner scanner = new Scanner(System.in);
+        boolean isFinishInput = false;
+        String input;
+        System.out.println("Please enter value for the following environment properies:");
+        System.out.println("For every property you can press 'Y' to set a valid value, or press 'N' to get default values");
+        System.out.println("*********************");
+
+        // going over all env properties and set values from user/ random
+        for (PropertyInstance currProp : simulation.getWorld().getEnvironment().getPropertyInstancesMap().values()){
+            System.out.println("Env Property name: " + currProp.getName());
+            System.out.println("Env Property type: " + currProp.getType().name().toLowerCase());
+            setEnvValueByType(currProp);
+        }
+
+        System.out.println("All environment values are set successfully");
+    }
+
+    public void setEnvValueByType(PropertyInstance currProp){
+        Type type = currProp.getType();
+
+        switch (type){
+            case DECIMAL:
+                setDecimalValue(currProp);
+                break;
+            case FLOAT:
+                setFloatValue(currProp);
+                break;
+            case BOOLEAN:
+                setBooleanValue(currProp);
+                break;
+            case STRING:
+                setStringValue(currProp);
+                break;
+        }
+    }
+
+    public void setDecimalValue(PropertyInstance currProp){
+        Scanner scanner = new Scanner(System.in);
+        boolean isStop = false;
+        int choice;
+
+        // print for range if needed
+        if(currProp.getRange() != null) {
+            System.out.println("Env Property range: from: " + currProp.getRange().getFrom() +
+                    ", to: "+ currProp.getRange().getTo());
+        }
+
+        // if true need to get from user
+        if(isValueInputOrGenerated()){
+            while(!isStop){
+                try {
+                System.out.println("Please enter Integer valid value");
+                choice = scanner.nextInt();
+                currProp.setVal(choice);
+                isStop = true;
+                }
+                catch (InputMismatchException e){
+                    System.out.println("value is invalid, value need to be integer, please try again");
+                }
+            }
+        }
+        // generate value
+        else{
+            //Random random = new Random();
+            if(currProp.getRange() != null) {
+                currProp.setVal(ValueGeneratorFactory.createRandomInteger((int) currProp.getRange().getFrom(),
+                        (int)currProp.getRange().getTo()));
+               // currProp.setVal( (int)currProp.getRange().getFrom() + random.nextInt((int)(currProp.getRange().getTo()) - (int)(currProp.getRange().getFrom()) + 1));
+            }
+            else {
+                currProp.setVal(ValueGeneratorFactory.createRandomInteger(1,100));
+                //currProp.setVal(random.nextInt(100) + 1);
+            }
+        }
+    }
+
+    public void setFloatValue(PropertyInstance currProp) {
+        Scanner scanner = new Scanner(System.in);
+        boolean isStop = false;
+        Float choice;
+
+        // print for range if needed
+        if (currProp.getRange() != null) {
+            System.out.println("Env Property range: from: " + currProp.getRange().getFrom() +
+                    ", to: " + currProp.getRange().getTo());
+        }
+
+        // if true need to get from user
+        if (isValueInputOrGenerated()) {
+            while (!isStop) {
+                try {
+                System.out.println("Please enter Float valid value");
+                choice = scanner.nextFloat();
+                currProp.setVal(choice);
+                isStop = true;
+
+                } catch (InputMismatchException  e) {
+                    System.out.println("value is invalid, value need to be float, please try again");
+                }
+            }
+        }
+        // generate value
+        else {
+            //Random random = new Random();
+            if (currProp.getRange() != null) {
+                currProp.setVal( ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
+                        currProp.getRange().getTo()));
+                //currProp.setVal(currProp.getRange().getFrom() + random.nextFloat()* ((currProp.getRange().getTo()) - (currProp.getRange().getFrom())));
+            } else {
+                //currProp.setVal(random.nextFloat()*100.0 + 1);
+                currProp.setVal(ValueGeneratorFactory.createRandomFloat(1.0f,100.0f));
+            }
+        }
+    }
+
+    public void setBooleanValue(PropertyInstance currProp){
+        Scanner scanner = new Scanner(System.in);
+        boolean isStop = false;
+        boolean choice;
+
+        // if true need to get from user
+        if (isValueInputOrGenerated()) {
+            while (!isStop) {
+                try {
+                System.out.println("Please enter Boolean valid value");
+                choice = scanner.nextBoolean();
+                currProp.setVal(choice);
+                isStop = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("value is invalid, value need to be boolean, please try again");
+                }
+            }
+        }
+        // generate value
+        else {
+            Random random = new Random();
+            currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
+        }
+    }
+
+    public void setStringValue(PropertyInstance currProp){
+        Scanner scanner = new Scanner(System.in);
+        boolean isStop = false;
+        String choice;
+
+        if (isValueInputOrGenerated()) {
+            System.out.println("Please enter a string");
+            choice = scanner.nextLine();
+            currProp.setVal(choice);
+        }
+        // generate value
+        else {
+            currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
+        }
+    }
 
 
+    // function return true - user will insert value
+    // function return false - value will be generated
+    public boolean isValueInputOrGenerated() {
+        Scanner scanner = new Scanner(System.in);
+        boolean isStop = false;
+        String choice;
 
+        while (!isStop) {
+            System.out.println("Press 'Y' to set value manually, 'N' for default value");
+            choice = scanner.nextLine();
 
+            switch (choice.toLowerCase()) {
+                case "y":
+                    return true;
+                case "n":
+                    return false;
+                default:
+                    System.out.println("Invalid option, input can only be Y or N");
+            }
+        }
+        return false;
+    }
 
 }

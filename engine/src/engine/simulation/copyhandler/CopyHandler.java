@@ -229,8 +229,18 @@ public class CopyHandler {
 
 
     public void copyTermination(PRDWorld prdWorld, World world) {
-        PRDByTicks ticks = (PRDByTicks) prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond().get(0);
-        PRDBySecond seconds = (PRDBySecond) prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond().get(1);
-        world.setTermination(new Termination(ticks.getCount(), seconds.getCount()));
+        PRDByTicks ticks = null;
+        PRDBySecond seconds = null;
+        for (Object curr : prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond()){
+            if(curr instanceof PRDByTicks){
+                ticks = (PRDByTicks) curr;
+            }
+            else if(curr instanceof PRDBySecond){
+                seconds = (PRDBySecond) curr;
+            }
+        }
+        // supporting one of them is null of both has values
+        world.setTermination(new Termination(ticks != null ? ticks.getCount(): null,
+                seconds != null ? seconds.getCount() : null));
     }
 }

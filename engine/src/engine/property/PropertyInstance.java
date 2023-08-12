@@ -54,16 +54,16 @@ public class PropertyInstance extends Property {
     public void printVal(Type type){
         switch (type) {
             case DECIMAL:
-               System.out.println("Property type: " + (Integer) val);
+               System.out.println("Property value: " + (Integer) val);
                 break;
             case FLOAT:
-                System.out.println("Property type: " + (Float) val);
+                System.out.println("Property value: " + (Float) val);
                 break;
             case BOOLEAN:
-                System.out.println("Property type: " + (Boolean) val);
+                System.out.println("Property value: " + (Boolean) val);
                 break;
             case STRING:
-                System.out.println("Property type: " + (String) val);
+                System.out.println("Property value: " + (String) val);
         }
     }
 }
