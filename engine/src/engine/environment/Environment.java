@@ -17,6 +17,9 @@ public class Environment {
    public PropertyInstance getEnvProperty(String name) {
        return propertyInstancesMap.get(name);
    }
+   public Map<String, PropertyInstance> getPropertyInstancesMap(){
+        return propertyInstancesMap;
+   }
 
    // setters
     public void setEnvProperty(String name, String value) {
@@ -26,5 +29,9 @@ public class Environment {
 
     public void addEnvProperty(String name, String strType, Range range, String value) {
         propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
+    }
+    
+    public void printPropertyInstancesMap(){
+        propertyInstancesMap.values().forEach(value -> value.printPropertyInstance());
     }
 }

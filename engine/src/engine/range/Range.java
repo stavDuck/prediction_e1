@@ -27,4 +27,8 @@ public class Range {
     public float getTo() {
         return to;
     }
+
+    public void printRange(){
+        System.out.println("Range: to:" + to + " from: " + from);
+    }
 }

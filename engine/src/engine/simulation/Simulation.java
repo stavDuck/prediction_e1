@@ -15,9 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class Simulation {
-
+    private static int idGenerator = 0;
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
+    private  int simulationID;
 
     public Simulation(String fileName) throws RuntimeException{
         try {
@@ -34,6 +35,9 @@ public class Simulation {
             world = new World();
             CopyHandler copy = new CopyHandler();
             copy.copyData(prdWorld, world);
+
+            simulationID = idGenerator;
+            idGenerator ++;
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("File " + fileName + " was not found");
@@ -46,12 +50,37 @@ public class Simulation {
             throw new RuntimeException("xml validation failed with the error: " + e);
         }
     }
-    private static PRDWorld deserializeFrom(InputStream in) throws JAXBException {
+    private PRDWorld deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
         return (PRDWorld) u.unmarshal(in);
     }
 
+    public void printEntities(){
+        world.printEntitiesStruchers();
+    }
+    public void printRules(){
+        world.printRules();
+    }
+    public void printTermination(){
+        world.printTermination();
+    }
 
+    public void simulationPrintAllInformation(){
+        printEntities();
+        printRules();
+        printTermination();
+    }
 
+    public World getWorld(){
+        return world;
+    }
+
+    public void run() {
+        // create all instances
+        world.createEntitiesInstances();
+
+        // run all rules
+        world.invokeRules();
+    }
 }

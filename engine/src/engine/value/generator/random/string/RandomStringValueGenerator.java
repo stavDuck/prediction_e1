@@ -5,15 +5,16 @@ import engine.value.generator.random.AbstractRandomValueGenerator;
 import engine.value.generator.random.numeric.RandomIntegerGenerator;
 
 public class RandomStringValueGenerator extends AbstractRandomValueGenerator<String> {
-    private enum Category {LETTER, NUMBER, SPECIAL_CHAR,SPACE}
-    private enum SpecialChars {QUESTION_MARK, EXCLAMATION_MARK, COMMA, UNDER_SCORE, HYPHEN, DOT, OPEN_BRACKET, CLOSE_BRACKET}
+    public enum Category {LETTER, NUMBER, SPECIAL_CHAR,SPACE}
+    public enum SpecialChars {QUESTION_MARK, EXCLAMATION_MARK, COMMA, UNDER_SCORE, HYPHEN, DOT, OPEN_BRACKET, CLOSE_BRACKET}
     @Override
     public String generateValue() {
-      /*  int length = random.nextInt(50) + 1; //generate length 1-50
+        int length = random.nextInt(50) + 1; //generate length 1-50
         String res = "";
-        // for run lenght
-            res = res + randomChar();*/
-        return null;
+        for(int i = 0; i < length; i++){
+            res = res + randomChar();
+        }
+         return res;
     }
 
     private char randomChar(){
@@ -35,15 +36,30 @@ public class RandomStringValueGenerator extends AbstractRandomValueGenerator<Str
 
 
     private char randomLetter(){
-        // need to generate if small or big letter
-        // random letter and return
-        return 'A';
+        boolean isSmallLetter = ValueGeneratorFactory.createRandomBoolean().generateValue();
+        int whatLetter = ValueGeneratorFactory.createRandomInteger(0,25).generateValue(); // English has 26 letters
+
+        if(isSmallLetter){
+            return (char)(whatLetter + 'a');
+        }
+        else {
+            return (char)(whatLetter + 'A');
+        }
     }
 
     private char randomSpecialChar(){
-        // need to random number for SpecialChars list and return the spesific char
-        return 'A';
+        SpecialChars randomSpecialChars = SpecialChars.values()[random.nextInt(SpecialChars.values().length)];
+
+        switch (randomSpecialChars){
+            case QUESTION_MARK: return '?';
+            case EXCLAMATION_MARK: return '!';
+            case COMMA: return',';
+            case UNDER_SCORE: return '_';
+            case HYPHEN: return '-';
+            case DOT: return '.';
+            case OPEN_BRACKET: return '(';
+            case CLOSE_BRACKET: return  ')';
+            default: return ' ';
+        }
     }
-
-
 }

@@ -45,4 +45,25 @@ public class PropertyInstance extends Property {
            System.out.println("Property: " + name + ", has a value of: " + value + ", is not a proper number");
        }
     }
+
+    public void printPropertyInstance(){
+        super.printProperty();
+        printVal(type);
+    }
+
+    public void printVal(Type type){
+        switch (type) {
+            case DECIMAL:
+               System.out.println("Property value: " + (Integer) val);
+                break;
+            case FLOAT:
+                System.out.println("Property value: " + (Float) val);
+                break;
+            case BOOLEAN:
+                System.out.println("Property value: " + (Boolean) val);
+                break;
+            case STRING:
+                System.out.println("Property value: " + (String) val);
+        }
+    }
 }

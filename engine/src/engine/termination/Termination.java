@@ -2,10 +2,14 @@ package engine.termination;
 
 public class Termination {
     private boolean isStop = false;
-    private int bySec;
-    private int byTick;
+    private Integer bySec;
+    private Integer byTick;
 
     public Termination(int bySec, int byTick) {
+        this.bySec = bySec;
+        this.byTick = byTick;
+    }
+    public Termination(Integer bySec, Integer byTick) {
         this.bySec = bySec;
         this.byTick = byTick;
     }
@@ -18,11 +22,21 @@ public class Termination {
         return isStop;
     }
 
-    public int getBySec() {
+    public Integer getBySec() {
         return bySec;
     }
 
-    public int getByTick() {
+    public Integer getByTick() {
         return byTick;
     }
+
+    public void printTermination() {
+        System.out.println("Termination by seconds: "+ bySec);
+        System.out.println("Termination by ticks: "+ byTick);
+
+    }
+    public void setStop(boolean stop) {
+        isStop = stop;
+    }
+
 }
