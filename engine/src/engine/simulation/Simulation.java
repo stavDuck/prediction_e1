@@ -27,7 +27,8 @@ public class Simulation {
             // creating PRDWorld
             PRDWorld prdWorld = deserializeFrom(inputStream);
             // validating PRDworld XML
-            WorldValidator.validateWorldData(prdWorld);
+            WorldValidator worldValidator = new WorldValidator();
+            worldValidator.validateWorldData(prdWorld);
 
             // copy the information from PRDWorld to World
             world = new World();

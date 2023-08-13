@@ -32,7 +32,7 @@ public class CopyHandler {
     public void copyData(PRDWorld prdWorld, World world) {
         copyEnvironmentProperties(prdWorld, world);
         copyEntityStructure(prdWorld, world);
-        //copy rules
+        copyRules(prdWorld, world);
         copyTermination(prdWorld, world);
 
     }

@@ -2,6 +2,7 @@ package engine.validation.rulesValidator;
 
 import engine.validation.ValidationCommonFunctions;
 import engine.validation.actionsValidator.ActionsValidator;
+import engine.validation.exceptions.XmlValidationException;
 import generated.PRDRule;
 import generated.PRDWorld;
 
@@ -10,8 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RulesValidator extends ValidationCommonFunctions {
-    public boolean validateRulesData(PRDWorld prdWorld) {
-        boolean res;
+    public void validateRulesData(PRDWorld prdWorld) throws XmlValidationException {
         ActionsValidator actionsValidator = new ActionsValidator();
 
         List<PRDRule> prdRuleList = prdWorld.getPRDRules().getPRDRule();
@@ -21,17 +21,21 @@ public class RulesValidator extends ValidationCommonFunctions {
             String trimmedName = rule.getName().trim();
 
             //check if entity name is invalid
-            if(!isNameValid(trimmedName)) {
-                return false;
+            if (!isNameValid(trimmedName)) {
+                throw new XmlValidationException("Rule: " + trimmedName +
+                        " name is not valid, name should not have spaces");
             }
 
-            res = actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
-            if (!res)
-                return false;
+            actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
             prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?
                     1 : prdNameList.get(trimmedName + 1)));
 
         }
-        return isNameUnique(prdNameList);
+
+        // check if any name not unique
+        if (!isNameUnique(prdNameList)) {
+            throw new XmlValidationException("Invalid rule list, all rule names should be unique");
+        }
+
     }
 }

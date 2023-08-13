@@ -8,7 +8,7 @@ import engine.validation.terminationValidator.TerminationValidator;
 import generated.PRDWorld;
 
 public class WorldValidator {
-    public static void validateWorldData(PRDWorld prdWorld) throws XmlValidationException {
+    public void validateWorldData(PRDWorld prdWorld) throws XmlValidationException {
         EnvValidator envValidator = new EnvValidator();
         EntitiesValidator entitiesValidator = new EntitiesValidator();
         RulesValidator rulesValidator = new RulesValidator();
@@ -17,7 +17,6 @@ public class WorldValidator {
         try {
             envValidator.validateEnvData(prdWorld);
             entitiesValidator.validateEntitiesData(prdWorld);
-
             // NEED TO TEST !!!! + ADD EXCPTIONS
             rulesValidator.validateRulesData(prdWorld);
             // NEED TO FINISH !!!!
