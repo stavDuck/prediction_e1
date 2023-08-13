@@ -44,12 +44,13 @@ public class Rule {
     public void printRule() {
         System.out.println("Rule name: " + name);
         System.out.println("Rule action number: " + actions.size());
-        System.out.println("Rule actions: " + name);
-        System.out.println("---------------------------");
+        System.out.println("Rule actions for: " + name);
+        System.out.println("------------------------------");
         actions.forEach(value -> value.printAction());
         System.out.println("Rule activation: " + name);
-        System.out.println("---------------------------");
+        System.out.println("----------------");
         activation.printActivation();
+        System.out.println("\n");
 
     }
 

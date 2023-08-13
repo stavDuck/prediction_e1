@@ -87,7 +87,12 @@ public class World {
         environment.printPropertyInstancesMap();
     }
     public void printEntitiesStruchers(){
-        entityStructures.values().forEach(value -> value.printEntityStructure());
+        entityStructures.values().forEach(value -> {
+            int count=1;
+            System.out.print(count + ". ");
+            value.printEntityStructure();
+            System.out.println("\n");
+            count ++; });
     }
     public void printRules(){
         rules.values().forEach(value -> value.printRule());
@@ -141,7 +146,7 @@ public class World {
         double ruleProb = currRule.getActivation().getProbability();
         double randProb =(double) (ValueGeneratorFactory.createRandomFloat(0.0f,1.0f).generateValue());
 
-        if(tick == ruleTick){
+        if(tick % ruleTick == 0){ // e.g. if rul tick is 2 -> will run in tick: 2/4/6/8...
             // check if rule is active now
            if((ruleProb != 0) && (ruleProb == 1 || randProb < ruleProb))
                return true;

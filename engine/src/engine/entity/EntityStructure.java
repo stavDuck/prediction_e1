@@ -42,8 +42,14 @@ public class EntityStructure {
     public void printEntityStructure(){
         System.out.println("Entity name: "+ entityName);
         System.out.println("Entity population: " + population);
-        System.out.println("Propery list: " + population);
+        System.out.println("Propery list: ");
         System.out.println("---------------------------");
-        entityPropMap.values().forEach(value ->{value.printPropertyStructure();});
+        entityPropMap.values().forEach(value ->{
+            int count = 1;
+            System.out.println("Property " + count + " information:");
+            value.printPropertyStructure();
+            count ++;
+            System.out.println("\n");
+        });
     }
 }

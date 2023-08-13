@@ -1,7 +1,9 @@
 package menu;
+import engine.action.FunctionHelper;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
 import engine.simulation.Simulation;
+import engine.validation.exceptions.InvalidInputFromUser;
 import engine.value.generator.ValueGeneratorFactory;
 import sun.awt.windows.WPrinterJob;
 
@@ -20,6 +22,7 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
         boolean isFileHasValue = false;
+        boolean isSimulationDone = false;
         String fileName, tempFile;
         int choice;
         Simulation simulation = null, tempSimlate = null;
@@ -68,16 +71,29 @@ public class Menu {
 
                // Option three = run simulation
                case(OPTION_THREE):
-                   // set env values
-                   setSimulationEnvValues(simulation);
+                   if(isFileHasValue) {
+                       // set env values
+                       setSimulationEnvValues(simulation);
+                       // Print all env names + values
+                       printEnvLivsNamesAndValues(simulation);
+                       // run simulation
+                       simulation.run();
+                   }
+                   else
+                       System.out.println("File has not been loaded yet. please use option one first and load a new file.");
 
-                   // Print all env names + values
-                   printEnvLivsNamesAndValues(simulation);
-
-                   // run simulation
-                   simulation.run();
                    break;
+                   // Option four = show histograma
                case(OPTION_FOUR):
+                   if(!isFileHasValue)
+                       System.out.println("File has not been loaded yet. please use option one first and load a new file.");
+
+                   if(!isSimulationDone)
+                       System.out.println("No Simulation on file has been run yet. please use option two first to run a simulation.");
+                   // if file is loaded and simulation finished to run - can get information
+                    else{
+                        // get information
+                   }
                    break;
                case(OPTION_FIVE):
                    // stopint the application
@@ -228,8 +244,8 @@ public class Menu {
 
         // print for range if needed
         if(currProp.getRange() != null) {
-            System.out.println("Env Property range: from: " + currProp.getRange().getFrom() +
-                    ", to: "+ currProp.getRange().getTo());
+            System.out.println("Env Property range: from: " + (int)currProp.getRange().getFrom() +
+                    ", to: "+ (int)currProp.getRange().getTo());
         }
 
         // if true need to get from user
@@ -238,11 +254,20 @@ public class Menu {
                 try {
                 System.out.println("Please enter Integer valid value");
                 choice = scanner.nextInt();
+                // if choice is not between 'from' to 'to' values trow exceptions
+                if((currProp.getRange() != null) &&
+                        ((int)(currProp.getRange().getFrom()) > choice || (int)(currProp.getRange().getTo()) < choice)) {
+                    throw new InvalidInputFromUser("Value for this property out of rage, please try again and provide a valid value in between the range values");
+                }
+
                 currProp.setVal(choice);
                 isStop = true;
                 }
                 catch (InputMismatchException e){
                     System.out.println("value is invalid, value need to be integer, please try again");
+                }
+                catch (InvalidInputFromUser e){
+                    System.out.println(e);
                 }
             }
         }
@@ -278,11 +303,20 @@ public class Menu {
                 try {
                 System.out.println("Please enter Float valid value");
                 choice = scanner.nextFloat();
-                currProp.setVal(choice);
+
+                    if((currProp.getRange() != null) &&
+                            (currProp.getRange().getFrom() > choice || currProp.getRange().getTo() < choice)) {
+                        throw new InvalidInputFromUser("Value for this property out of rage, please try again and provide a valid value in between the range values");
+                    }
+
+                    currProp.setVal(choice);
                 isStop = true;
 
                 } catch (InputMismatchException  e) {
                     System.out.println("value is invalid, value need to be float, please try again");
+                }
+                catch (InvalidInputFromUser e){
+                    System.out.println(e);
                 }
             }
         }
