@@ -75,6 +75,7 @@ public class Simulation {
     public World getWorld(){
         return world;
     }
+    public int getSimulationID(){return simulationID;}
 
     public void run() {
         // create all instances

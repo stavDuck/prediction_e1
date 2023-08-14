@@ -23,6 +23,7 @@ public class EntityInstance {
     public EntityInstance(String entityName, int id) {
         this.entityName = entityName;
         this.propertyInstancesMap = new HashMap<>();
+        this.id = id;
     }
 
     // getters

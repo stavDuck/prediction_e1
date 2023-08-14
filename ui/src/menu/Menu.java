@@ -13,18 +13,18 @@ import java.util.Scanner;
 
 
 public class Menu {
-    final static int OPTION_ONE = 1;
-    final static int OPTION_TWO = 2;
-    final static int OPTION_THREE = 3;
-    final static int OPTION_FOUR = 4;
-    final static int OPTION_FIVE = 5;
+    final static int OPTION_ONE = '1';
+    final static int OPTION_TWO = '2';
+    final static int OPTION_THREE = '3';
+    final static int OPTION_FOUR = '4';
+    final static int OPTION_FIVE = '5';
     public void startMenu() {
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
         boolean isFileHasValue = false;
         boolean isSimulationDone = false;
         String fileName, tempFile;
-        int choice;
+        char choice;
         Simulation simulation = null, tempSimlate = null;
 
         System.out.println("Welcome to Prediction !");
@@ -32,7 +32,8 @@ public class Menu {
         while (!isStop) {
             printMainMenu();
             // get choice from user
-            choice = scanner.nextInt();
+           // choice = scanner.nextInt();
+            choice = scanner.next().charAt(0);
 
            switch (choice){
                // Option one = load file + copy info from xml
@@ -78,6 +79,10 @@ public class Menu {
                        printEnvLivsNamesAndValues(simulation);
                        // run simulation
                        simulation.run();
+
+                       System.out.println("Simulation id: " + simulation.getSimulationID() + "!!!!");
+
+
                    }
                    else
                        System.out.println("File has not been loaded yet. please use option one first and load a new file.");
@@ -137,6 +142,7 @@ public class Menu {
 
         for(PropertyInstance prop: simulation.getWorld().getEnvironment().getPropertyInstancesMap().values()){
             System.out.println(counter + ". Name: " + prop.getName() + ", Value: " + prop.getType().convert(prop.getVal()));
+            counter++;
         }
 
 
@@ -161,21 +167,22 @@ public class Menu {
     public Simulation loadFileXML(String fileName) throws RuntimeException{
 
        // Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-       // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
-         Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
+        Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
+        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
 
         return simulation;
     }
 
     public void overViewMenu(Simulation simulation){
         Scanner scanner = new Scanner(System.in);
-        int choice;
+        char choice;
         boolean isReturnToMainMenu = false;
 
         while(!isReturnToMainMenu){
             printOverViewMenu();
             // get choice from user
-            choice = scanner.nextInt();
+            //choice = scanner.nextInt();
+            choice = scanner.next().charAt(0);
 
             switch (choice){
                     // Option one = show entitis
@@ -201,9 +208,6 @@ public class Menu {
     }
 
     private void setSimulationEnvValues(Simulation simulation) {
-        Scanner scanner = new Scanner(System.in);
-        boolean isFinishInput = false;
-        String input;
         System.out.println("Please enter value for the following environment properies:");
         System.out.println("For every property you can press 'Y' to set a valid value, or press 'N' to get default values");
         System.out.println("*********************");
@@ -240,7 +244,8 @@ public class Menu {
     public void setDecimalValue(PropertyInstance currProp){
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
-        int choice;
+        String c;
+        Integer choice = null;
 
         // print for range if needed
         if(currProp.getRange() != null) {
@@ -252,22 +257,26 @@ public class Menu {
         if(isValueInputOrGenerated()){
             while(!isStop){
                 try {
-                System.out.println("Please enter Integer valid value");
-                choice = scanner.nextInt();
-                // if choice is not between 'from' to 'to' values trow exceptions
-                if((currProp.getRange() != null) &&
-                        ((int)(currProp.getRange().getFrom()) > choice || (int)(currProp.getRange().getTo()) < choice)) {
-                    throw new InvalidInputFromUser("Value for this property out of rage, please try again and provide a valid value in between the range values");
-                }
+                    System.out.println("Please enter Integer valid value");
+                    choice = scanner.nextInt();
+                    if (choice == null) {
+                        System.out.println("Value is not valid Integer");
+                    }
+                    if ((currProp.getRange() != null) &&
+                            ((int) (currProp.getRange().getFrom()) > choice || (int) (currProp.getRange().getTo()) < choice)) {
+                        throw new InvalidInputFromUser("Value for this property out of rage, please try again and provide a valid value in between the range values");
+                    }
 
-                currProp.setVal(choice);
-                isStop = true;
+                    currProp.setVal(choice);
+                    isStop = true;
                 }
                 catch (InputMismatchException e){
                     System.out.println("value is invalid, value need to be integer, please try again");
+                    scanner.next(); // to get any issues with the values that not int
+
                 }
                 catch (InvalidInputFromUser e){
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                 }
             }
         }
@@ -276,7 +285,7 @@ public class Menu {
             //Random random = new Random();
             if(currProp.getRange() != null) {
                 currProp.setVal(ValueGeneratorFactory.createRandomInteger((int) currProp.getRange().getFrom(),
-                        (int)currProp.getRange().getTo()));
+                        (int)currProp.getRange().getTo()).generateValue());
                // currProp.setVal( (int)currProp.getRange().getFrom() + random.nextInt((int)(currProp.getRange().getTo()) - (int)(currProp.getRange().getFrom()) + 1));
             }
             else {
@@ -314,6 +323,7 @@ public class Menu {
 
                 } catch (InputMismatchException  e) {
                     System.out.println("value is invalid, value need to be float, please try again");
+                    scanner.next(); // to get any issues with the values that not int
                 }
                 catch (InvalidInputFromUser e){
                     System.out.println(e);
@@ -325,7 +335,7 @@ public class Menu {
             //Random random = new Random();
             if (currProp.getRange() != null) {
                 currProp.setVal( ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
-                        currProp.getRange().getTo()));
+                        currProp.getRange().getTo()).generateValue());
                 //currProp.setVal(currProp.getRange().getFrom() + random.nextFloat()* ((currProp.getRange().getTo()) - (currProp.getRange().getFrom())));
             } else {
                 //currProp.setVal(random.nextFloat()*100.0 + 1);
@@ -349,12 +359,12 @@ public class Menu {
                 isStop = true;
                 } catch (InputMismatchException e) {
                     System.out.println("value is invalid, value need to be boolean, please try again");
+                    scanner.next(); // to get any issues with the values that not int
                 }
             }
         }
         // generate value
         else {
-            Random random = new Random();
             currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
         }
     }

@@ -32,7 +32,7 @@ public class Condition extends AbstractAction {
        if(check){
            invokeAbstractActions(context, thenCondition);
        }
-       else if(elseCondition != null){
+       else if(elseCondition.size() != 0){
            invokeAbstractActions(context, elseCondition);
        }
     }

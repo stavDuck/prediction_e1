@@ -19,7 +19,7 @@ public class ConditionMultiple extends AbstractAction implements conditionSingul
         this.conditionLst = new ArrayList<>(); // empty list
 
         // set result default value - if and -> start with true, if or -> start with false
-        this.result  = logical == "and" ? true : false;
+        this.result  = logical.equals("and") ? true : false;
     }
     public ConditionMultiple(String entityName, String logical, ActionType actionType) {
         super(entityName, actionType);
@@ -27,7 +27,7 @@ public class ConditionMultiple extends AbstractAction implements conditionSingul
         this.conditionLst = new ArrayList<>(); // empty list
 
         // set result default value - if and -> start with true, if or -> start with false
-        this.result  = logical == "and" ? true : false;
+        this.result  = logical.equals("and") ? true : false;
     }
 
     // add new multi condition to the conditions list
@@ -77,10 +77,10 @@ public class ConditionMultiple extends AbstractAction implements conditionSingul
                     ((ConditionSingle)condition).invoke(context);
                     break;
             }
-            if(logical == "and"){
+            if(logical.equals("and")){
                result =  result && condition.getResult();
             }
-            else if(logical == "or"){
+            else if(logical.equals("or")){
                 result =  result || condition.getResult();
             }
         }

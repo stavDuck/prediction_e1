@@ -11,7 +11,7 @@ public class Context {
     private Environment env;
 
     public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env){
-        this.primaryEntityInstance = primaryEntityInstance;
+        this.primaryEntityInstance = entityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.env = env;
     }

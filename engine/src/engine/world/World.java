@@ -135,7 +135,7 @@ public class World {
             termination.setStop(true);
             System.out.println("Simulation is Over !!!, you reached the max Ticks");
         }
-        else if((termination.getBySec() != null) && currentTimeSeconds >= startTimeSeconds){
+        else if((termination.getBySec() != null) && (currentTimeSeconds - startTimeSeconds) >= termination.getBySec()){
             termination.setStop(true);
             System.out.println("Simulation is Over !!! , you reached the max seconds");
         }
