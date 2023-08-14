@@ -25,8 +25,4 @@ public class Activation {
         this.probability = probability;
     }
 
-    public void printActivation() {
-        System.out.println("Activation tick: " + tick);
-        System.out.println("Activation probability: " + probability);
-    }
 }

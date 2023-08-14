@@ -13,11 +13,11 @@ import java.util.Scanner;
 
 
 public class Menu {
-    final static int OPTION_ONE = '1';
-    final static int OPTION_TWO = '2';
-    final static int OPTION_THREE = '3';
-    final static int OPTION_FOUR = '4';
-    final static int OPTION_FIVE = '5';
+    final static char OPTION_ONE = '1';
+    final static char OPTION_TWO = '2';
+    final static char OPTION_THREE = '3';
+    final static char OPTION_FOUR = '4';
+    final static char OPTION_FIVE = '5';
     public void startMenu() {
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
@@ -167,13 +167,16 @@ public class Menu {
     public Simulation loadFileXML(String fileName) throws RuntimeException{
 
        // Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-        Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
-        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
+       // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
+         Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
 
         return simulation;
     }
 
     public void overViewMenu(Simulation simulation){
+        // how to do copy data from world to dto ?
+        // how we save the start and end valuses if dto die
+        Dto dto = simulation.getWorld().createDto();
         Scanner scanner = new Scanner(System.in);
         char choice;
         boolean isReturnToMainMenu = false;
@@ -187,15 +190,15 @@ public class Menu {
             switch (choice){
                     // Option one = show entitis
                 case OPTION_ONE:
-                    simulation.printEntities();
+                    dto.printEntitiesStructure();
                     break;
                     // Option two = show rules
                 case OPTION_TWO:
-                    simulation.printRules();
+                    dto.printRules();
                     break;
                     // Option three = show termination
                 case OPTION_THREE:
-                    simulation.printTermination();
+                    dto.printTermination();
                     break;
                     // Option four = go back to main menu
                 case OPTION_FOUR:

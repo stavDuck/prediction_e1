@@ -26,15 +26,4 @@ public class PropertyStructure extends Property{
     public void setRandom(boolean random) {
         isRandom = random;
     }
-
-    public void printPropertyStructure(){
-        super.printProperty();
-       System.out.println("Is random: " + isRandom);
-       if(!isRandom){
-           System.out.println("Defualt value: " + defaultValue);
-       }
-
-    }
-
-
 }

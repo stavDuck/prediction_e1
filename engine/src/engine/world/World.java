@@ -1,11 +1,13 @@
 package engine.world;
 
+import dto.Dto;
 import engine.action.AbstractAction;
 import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
 import engine.execution.context.Context;
+import engine.property.PropertyStructure;
 import engine.rule.Rule;
 import engine.termination.Termination;
 import engine.value.generator.ValueGenerator;
@@ -83,23 +85,9 @@ public class World {
         rules.put(ruleName, newRule);
     }
 
-    public void printEnvProp(){
+    /*public void printEnvProp(){
         environment.printPropertyInstancesMap();
-    }
-    public void printEntitiesStruchers(){
-        entityStructures.values().forEach(value -> {
-            int count=1;
-            System.out.print(count + ". ");
-            value.printEntityStructure();
-            System.out.println("\n");
-            count ++; });
-    }
-    public void printRules(){
-        rules.values().forEach(value -> value.printRule());
-    }
-    public void printTermination(){
-        termination.printTermination();
-    }
+    }*/
 
     public void createEntitiesInstances(){
         for(EntityStructure currStructure : entityStructures.values()){
@@ -154,7 +142,33 @@ public class World {
         return false;
     }
 
+    public Dto createDto() {
+        Dto dto = new Dto();
+        for(EntityStructure entityStructure : entityStructures.values()) {
+            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation());
+            for(PropertyStructure propertyStructure : entityStructure.getEntityPropMap().values()) {
+                if(propertyStructure.getRange() != null) {
+                    dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),
+                            propertyStructure.getType().name(), propertyStructure.getRange().getTo(), propertyStructure.getRange().getFrom(),
+                            propertyStructure.getIsRandom());
+                }
+                else {
+                    dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),
+                            propertyStructure.getType().name(), null,
+                            propertyStructure.getIsRandom());
+                }
+            }
+        }
 
+        for(Rule rule : rules.values()) {
+            dto.addRule(rule.getName(), rule.getActivation().getTick(), rule.getActivation().getProbability(), rule.getActionsSize());
+            for(AbstractAction action : rule.getActions()) {
+                dto.addActionToRule(rule.getName(), action.getActionType().name());
+            }
+        }
+        dto.addTermination(termination.getByTick(), termination.getBySec());
+        return dto;
+    }
 
 
 }
