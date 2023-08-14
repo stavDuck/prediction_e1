@@ -29,12 +29,6 @@ public class Termination {
     public Integer getByTick() {
         return byTick;
     }
-
-    public void printTermination() {
-        System.out.println("Termination by seconds: "+ bySec);
-        System.out.println("Termination by ticks: "+ byTick);
-
-    }
     public void setStop(boolean stop) {
         isStop = stop;
     }

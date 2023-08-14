@@ -1,5 +1,6 @@
 package engine.simulation;
 
+import dto.Dto;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
 import engine.validation.exceptions.XmlValidationException;
@@ -35,7 +36,6 @@ public class Simulation {
             world = new World();
             CopyHandler copy = new CopyHandler();
             copy.copyData(prdWorld, world);
-
             simulationID = idGenerator;
             idGenerator ++;
         }
@@ -56,7 +56,7 @@ public class Simulation {
         return (PRDWorld) u.unmarshal(in);
     }
 
-    public void printEntities(){
+    /*public void printEntities(){
         world.printEntitiesStruchers();
     }
     public void printRules(){
@@ -70,7 +70,7 @@ public class Simulation {
         printEntities();
         printRules();
         printTermination();
-    }
+    }*/
 
     public World getWorld(){
         return world;

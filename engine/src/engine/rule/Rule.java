@@ -41,19 +41,6 @@ public class Rule {
         this.activation = activation;
     }
 
-    public void printRule() {
-        System.out.println("Rule name: " + name);
-        System.out.println("Rule action number: " + actions.size());
-        System.out.println("Rule actions for: " + name);
-        System.out.println("------------------------------");
-        actions.forEach(value -> value.printAction());
-        System.out.println("Rule activation: " + name);
-        System.out.println("----------------");
-        activation.printActivation();
-        System.out.println("\n");
-
-    }
-
     public void inokeRule(EntityInstanceManager instanceManager, Environment environment){
         // run on all actions
         for (AbstractAction currAction : actions) {
@@ -69,5 +56,9 @@ public class Rule {
 
     public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance){
         return new Context(currInstance, instanceManager, environment);
+    }
+
+    public int getActionsSize() {
+        return actions.size();
     }
 }

@@ -31,7 +31,7 @@ public class Environment {
         propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
     }
     
-    public void printPropertyInstancesMap(){
+    /*public void printPropertyInstancesMap(){
         propertyInstancesMap.values().forEach(value -> value.printPropertyInstance());
-    }
+    }*/
 }

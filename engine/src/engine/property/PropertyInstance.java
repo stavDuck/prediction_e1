@@ -46,10 +46,12 @@ public class PropertyInstance extends Property {
        }
     }
 
-    public void printPropertyInstance(){
+
+    //NO NEED
+    /*public void printPropertyInstance(){
         super.printProperty();
         printVal(type);
-    }
+    }*/
 
     public void printVal(Type type){
         switch (type) {

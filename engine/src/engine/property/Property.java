@@ -70,12 +70,4 @@ public abstract class Property {
         this.range = range;
     }
 
-    public void printProperty(){
-        System.out.println("Property name: " + name);
-        System.out.println("Property type: " + type.name().toLowerCase());
-        if(range!= null){
-            range.printRange(type);
-        }
-    }
-
 }

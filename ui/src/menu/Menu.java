@@ -1,4 +1,5 @@
 package menu;
+import dto.Dto;
 import engine.action.FunctionHelper;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
@@ -160,14 +161,17 @@ public class Menu {
     }
     public Simulation loadFileXML(String fileName) throws RuntimeException{
 
-       // Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
+        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
-         Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
+        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
 
         return simulation;
     }
 
     public void overViewMenu(Simulation simulation){
+        // how to do copy data from world to dto ?
+        // how we save the start and end valuses if dto die
+        Dto dto = simulation.getWorld().createDto();
         Scanner scanner = new Scanner(System.in);
         int choice;
         boolean isReturnToMainMenu = false;
@@ -180,15 +184,15 @@ public class Menu {
             switch (choice){
                     // Option one = show entitis
                 case OPTION_ONE:
-                    simulation.printEntities();
+                    dto.printEntitiesStructure();
                     break;
                     // Option two = show rules
                 case OPTION_TWO:
-                    simulation.printRules();
+                    dto.printRules();
                     break;
                     // Option three = show termination
                 case OPTION_THREE:
-                    simulation.printTermination();
+                    dto.printTermination();
                     break;
                     // Option four = go back to main menu
                 case OPTION_FOUR:
