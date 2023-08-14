@@ -28,8 +28,10 @@ public class FunctionHelper {
             switch (typeProp) {
                 case DECIMAL:
                     value = ValueGeneratorFactory.createRandomInteger( 1, Integer.parseInt(randNum)).generateValue();
+                    break;
                 case FLOAT:
                     value = ValueGeneratorFactory.createRandomFloat((float)1, Float.parseFloat(randNum)).generateValue();
+                    break;
                 default:
                     throw new RuntimeException("invalid action - The expression has random() function but property type is not numeric");
             }

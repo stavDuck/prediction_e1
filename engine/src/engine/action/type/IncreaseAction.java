@@ -36,12 +36,15 @@ public class IncreaseAction extends AbstractAction {
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(propVal);
                 Integer int2 = Type.DECIMAL.convert(increaseVal);
-                prop.setVal( int1 + int2);
+                //check that the increase stays in range
+                if((int1 + int2) >= prop.getRange().getFrom() && (int1 + int2) <= prop.getRange().getTo())
+                    prop.setVal( int1 + int2);
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(propVal);
                 Float float2 = Type.FLOAT.convert(increaseVal);
-                prop.setVal( float1 + float2);
+                if(((float1 + float2) >= prop.getRange().getFrom()) && ((float1 + float2) <= prop.getRange().getTo()))
+                    prop.setVal( float1 + float2);
                 break;
         }
     }

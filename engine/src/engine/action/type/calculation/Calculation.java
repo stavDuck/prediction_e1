@@ -48,11 +48,22 @@ public class Calculation extends AbstractAction {
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(val1);
                 Integer int2 = Type.DECIMAL.convert(val2);
+                if(int2 == 0) {
+                    throw new ArithmeticException("The denominator equals to 0, can a number can't be divided by 0");
+                }
+                if((int1 / int2) >= prop.getRange().getFrom() && (int1 / int2) <= prop.getRange().getTo())
+                    prop.setVal( int1 / int2);
+
                 prop.setVal( int1 / int2);
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(val1);
                 Float float2 = Type.FLOAT.convert(val2);
+                if(float2 == 0) {
+                    throw new ArithmeticException("The denominator equals to 0, can a number can't be divided by 0");
+                }
+                if((float1 / float2) >= prop.getRange().getFrom() && (float1 / float2) <= prop.getRange().getTo())
+                    prop.setVal( float1 / float2);
                 prop.setVal( float1 / float2);
                 break;
         }
@@ -66,12 +77,14 @@ public class Calculation extends AbstractAction {
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(val1);
                 Integer int2 = Type.DECIMAL.convert(val2);
-                prop.setVal( int1 * int2);
+                if((int1 * int2) >= prop.getRange().getFrom() && (int1 * int2) <= prop.getRange().getTo())
+                    prop.setVal( int1 * int2);
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(val1);
                 Float float2 = Type.FLOAT.convert(val2);
-                prop.setVal( float1 * float2);
+                if((float1 * float2) >= prop.getRange().getFrom() && (float1 * float2) <= prop.getRange().getTo())
+                    prop.setVal( float1 * float2);
                 break;
         }
     }
