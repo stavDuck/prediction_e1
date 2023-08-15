@@ -5,6 +5,8 @@ import engine.action.FunctionHelper;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 
+import static engine.property.type.Type.BOOLEAN;
+
 public class SetAction extends AbstractAction {
     private final String property;
     private String newValue;
@@ -29,10 +31,20 @@ public class SetAction extends AbstractAction {
                 if ((int) value < (int) prop.getRange().getFrom() ||
                         (int) value > (int) prop.getRange().getTo())
                     value = null;
-            } else if (prop.getType().name().toLowerCase().equals("decimal")) {
+            } else if (prop.getType().name().toLowerCase().equals("float")) {
                 if ((float) value < (float) prop.getRange().getFrom() ||
                         (float) value > (float) prop.getRange().getTo())
                     value = null;
+            }
+        }
+
+        // if prop is boolean - can get string "true" or "false"
+        else if(prop.getType() == BOOLEAN && (value instanceof String)){
+            if(((String)value).equals("true")){
+              prop.setVal(true);
+            }
+            else if(((String)value).equals("false")){
+                prop.setVal(false);
             }
         }
 

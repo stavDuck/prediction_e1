@@ -17,13 +17,11 @@ public class WorldValidator {
         try {
             envValidator.validateEnvData(prdWorld);
             entitiesValidator.validateEntitiesData(prdWorld);
-            // NEED TO TEST !!!! + ADD EXCPTIONS
             rulesValidator.validateRulesData(prdWorld);
-            // NEED TO FINISH !!!!
             terminationValidator.validateTerminationData(prdWorld);
         }
         catch (XmlValidationException e){
-            throw new XmlValidationException("XML data validation failed with the error: \n" + e);
+            throw new XmlValidationException("XML data validation failed with the error: \n" + e.getMessage());
         }
 
     }

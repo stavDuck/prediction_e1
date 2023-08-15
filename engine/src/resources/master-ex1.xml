@@ -59,12 +59,12 @@
 			<PRD-actions>
 				<PRD-action type="condition" entity="ent-1">
 				
-					 A)<PRD-condition singularity="multiple" logical="or">
-						1)<PRD-condition singularity="single" entity="ent-1" property="p1" operator="bt" value="4"/>
-						2)<PRD-condition singularity="single" entity="ent-1" property="p2" operator="lt" value="3"/>
-						3)<PRD-condition singularity="multiple" logical="and">
-							3.1)<PRD-condition singularity="single" entity="ent-1" property="p4" operator="!=" value="nothing"/>
-							3.2)<PRD-condition singularity="single" entity="ent-1" property="p3" operator="=" value="environment(e2)"/>
+					 <PRD-condition singularity="multiple" logical="or">
+						<PRD-condition singularity="single" entity="ent-1" property="p1" operator="bt" value="4"/>
+						<PRD-condition singularity="single" entity="ent-1" property="p2" operator="lt" value="3"/>
+						<PRD-condition singularity="multiple" logical="and">
+							<PRD-condition singularity="single" entity="ent-1" property="p4" operator="!=" value="nothing"/>
+							<PRD-condition singularity="single" entity="ent-1" property="p3" operator="=" value="environment(e2)"/>
 						</PRD-condition>
 					</PRD-condition>
 					

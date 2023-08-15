@@ -210,10 +210,11 @@ public class Menu {
     public Simulation loadFileXML(String fileName) throws RuntimeException {
 
         //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
+        //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
 
         //Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
+         Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/testActions.xml");
 
         return simulation;
     }

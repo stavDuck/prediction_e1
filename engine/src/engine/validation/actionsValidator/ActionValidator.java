@@ -219,7 +219,7 @@ public class ActionValidator {
 
     public void validateActionByType(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
         if(!(prdAction.getEntity().equals(actionEntity.getName()))) {
-            throw new XmlValidationException("Action entity: " + prdAction.getEntity() + " is invalid");
+            throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getEntity() + " is not found, please check the entity name is correct.");
         }
         if(prdAction.getType().equals("increase") || prdAction.getType().equals("decrease")) {
             verifyTypeIsNumber(prdAction.getBy(), prdEvironment, actionEntity);
