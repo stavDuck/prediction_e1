@@ -50,6 +50,10 @@ public class Rule {
             for (EntityInstance currInstance : lst) {
                 // inoke
                 currAction.invoke(createContext(instanceManager, environment, currInstance));
+                //if kill, instance is removed so no need to continue with actions
+                if((currAction.getActionType().name().toLowerCase()).equals("kill"))
+                    break;
+
             }
         }
     }

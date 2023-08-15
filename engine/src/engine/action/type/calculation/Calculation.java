@@ -38,7 +38,9 @@ public class Calculation extends AbstractAction {
                 try {
                     divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
                 }
-                catch (ArithmeticException e){}
+                catch (ArithmeticException e){
+                    throw new RuntimeException("Division failed with an error: " + e.getMessage());
+                }
                 break;
         }
     }
@@ -46,7 +48,7 @@ public class Calculation extends AbstractAction {
     private void divideFunction(PropertyInstance prop, Object val1, Object val2){
         // check the operation needed
         Type entityType = prop.getType();
-
+        Float float1, float2;
         switch (entityType){
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(val1);
@@ -60,9 +62,20 @@ public class Calculation extends AbstractAction {
                 prop.setVal( int1 / int2);
                 break;
             case FLOAT:
-                Float float1 = Type.FLOAT.convert(val1);
-                Float float2 = Type.FLOAT.convert(val2);
-                if(float2 == 0) {
+                if(val1 instanceof Integer) {
+                    float1 = Float.valueOf(val1.toString());
+                }
+
+                else {
+                    float1 = Type.FLOAT.convert(val1);
+                }
+                if(val2 instanceof Integer) {
+                    float2 = Float.valueOf(val2.toString());
+                }
+
+                else {
+                    float2 = Type.FLOAT.convert(val2);
+                }                if(float2 == 0) {
                     throw new ArithmeticException("The denominator equals to 0, can a number can't be divided by 0");
                 }
                 if((float1 / float2) >= prop.getRange().getFrom() && (float1 / float2) <= prop.getRange().getTo())
@@ -75,7 +88,7 @@ public class Calculation extends AbstractAction {
     private void multiplyFunction(PropertyInstance prop, Object val1, Object val2){
         // check the operation needed
         Type entityType = prop.getType();
-
+        Float float2, float1;
         switch (entityType){
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(val1);
@@ -84,8 +97,20 @@ public class Calculation extends AbstractAction {
                     prop.setVal( int1 * int2);
                 break;
             case FLOAT:
-                Float float1 = Type.FLOAT.convert(val1);
-                Float float2 = Type.FLOAT.convert(val2);
+                if(val1 instanceof Integer) {
+                    float1 = Float.valueOf(val1.toString());
+                }
+
+                else {
+                    float1 = Type.FLOAT.convert(val1);
+                }
+                if(val2 instanceof Integer) {
+                    float2 = Float.valueOf(val2.toString());
+                }
+
+                else {
+                    float2 = Type.FLOAT.convert(val2);
+                }
                 if((float1 * float2) >= prop.getRange().getFrom() && (float1 * float2) <= prop.getRange().getTo())
                     prop.setVal( float1 * float2);
                 break;

@@ -101,7 +101,7 @@ public class ActionValidator {
             verifyTypeIsNumber(prdAction.getPRDDivide().getArg2(), prdEvironment, actionEntity);
         }
         else {
-            throw new XmlValidationException("Invalid calculation action. Action can only be of typpe divide and multiply.");
+            throw new XmlValidationException("Invalid calculation action. Action can only be of type divide and multiply.");
         }
     }
 
@@ -148,7 +148,7 @@ public class ActionValidator {
             value = environmentType(expression.substring(
                     expression.indexOf("environment(") + 12,
                     expression.indexOf(")")), prdEvironment);
-            if (!value.equals("boolean")) {
+            if (!value.equals("boolean") && !value.equals("string")) {
                 throw new XmlValidationException("Environment property: " + value +
                         " is not boolean");
             }
@@ -159,7 +159,7 @@ public class ActionValidator {
         }
         //if environment property
         else if (property != null) {
-            if (!((property.getType()).equals("boolean"))) {
+            if (!((property.getType()).equals("boolean")) && !((property.getType()).equals("string"))) {
                 throw new XmlValidationException("Property: " + property +
                         " is not boolean");
             }

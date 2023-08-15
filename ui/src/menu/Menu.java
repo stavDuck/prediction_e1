@@ -86,23 +86,30 @@ public class Menu {
                 // Option three = run simulation
                 case (OPTION_THREE):
                     if (isFileHasValue) {
-                        // set env values
-                        setSimulationEnvValues(simulation);
-                        // Print all env names + values
-                        printEnvLivsNamesAndValues(simulation);
+                        try {
 
-                        // set startSimulation in simulation history
-                        simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
-                                currentDate.format(dateFormatter), currentTime.format(timeFormatter)));
-                        isSimulateHistoryNotEmpty = true;
 
-                        // run simulation
-                        simulation.run();
-                        System.out.println("Simulation id: " + simulation.getSimulationID() + "!!!!");
+                            // set env values
+                            setSimulationEnvValues(simulation);
+                            // Print all env names + values
+                            printEnvLivsNamesAndValues(simulation);
 
-                        isSimulationDone = true;
-                        // set the end simulation after run is done
-                        simulationHistory.get(simulationHistory.size() - 1).setEndSimulation(simulation);
+                            // set startSimulation in simulation history
+                            simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
+                                    currentDate.format(dateFormatter), currentTime.format(timeFormatter)));
+                            isSimulateHistoryNotEmpty = true;
+
+                            // run simulation
+                            simulation.run();
+                            System.out.println("Simulation id: " + simulation.getSimulationID() + "!!!!");
+
+                            isSimulationDone = true;
+                            // set the end simulation after run is done
+                            simulationHistory.get(simulationHistory.size() - 1).setEndSimulation(simulation);
+                        }
+                        catch (RuntimeException e) {
+                            System.out.println("Simulation failed with an error: " + e.getMessage());
+                        }
                     } else
                         System.out.println("File has not been loaded yet. please use option one first and load a new file.");
 

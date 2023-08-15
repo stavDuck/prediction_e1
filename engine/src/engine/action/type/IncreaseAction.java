@@ -31,7 +31,7 @@ public class IncreaseAction extends AbstractAction {
     private void increasePropertyValWithVal(PropertyInstance prop, Object increaseVal){
         Type propType = prop.getType();
         Object propVal = prop.getVal();
-
+        Float float2;
         switch (propType){
             case DECIMAL:
                 Integer int1 = Type.DECIMAL.convert(propVal);
@@ -42,7 +42,13 @@ public class IncreaseAction extends AbstractAction {
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(propVal);
-                Float float2 = Type.FLOAT.convert(increaseVal);
+                if(increaseVal instanceof Integer) {
+                    float2 = Float.valueOf(increaseVal.toString());
+                }
+
+                else {
+                    float2 = Type.FLOAT.convert(increaseVal);
+                }
                 if(((float1 + float2) >= prop.getRange().getFrom()) && ((float1 + float2) <= prop.getRange().getTo()))
                     prop.setVal( float1 + float2);
                 break;

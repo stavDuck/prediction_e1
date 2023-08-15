@@ -80,8 +80,10 @@ public class Simulation {
     public void run() {
         // create all instances
         world.createEntitiesInstances();
-
-        // run all rules
-        world.invokeRules();
+        try {
+            // run all rules
+            world.invokeRules();
+        }
+        catch (IllegalArgumentException e) {}
     }
 }
