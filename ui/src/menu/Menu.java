@@ -25,14 +25,14 @@ public class Menu {
     final static char OPTION_THREE = '3';
     final static char OPTION_FOUR = '4';
     final static char OPTION_FIVE = '5';
-
+    private static int idGenerator = 0;
     public void startMenu() {
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
         boolean isFileHasValue = false;
         boolean isSimulationDone = false;
         boolean isSimulateHistoryNotEmpty = false;
-        String fileName, tempFile;
+        String fileName = null, tempFile = null;
         char choice;
         Simulation simulation = null, tempSimlate = null;
 
@@ -57,6 +57,8 @@ public class Menu {
                     if (tempFile != null) {
                         try {
                             tempSimlate = loadFileXML(tempFile);
+                            tempSimlate.setSimulationID(idGenerator);
+                            idGenerator++;
 
                             // if all went good - file name and file load
                             fileName = tempFile;
@@ -87,7 +89,12 @@ public class Menu {
                 case (OPTION_THREE):
                     if (isFileHasValue) {
                         try {
-
+                            // simulation already ran need to create a new one
+                            if(simulation.getWorld().getTermination().isStop() == true){
+                                simulation = loadFileXML(fileName);
+                                simulation.setSimulationID(idGenerator);
+                                idGenerator++;
+                            }
 
                             // set env values
                             setSimulationEnvValues(simulation);
@@ -120,7 +127,7 @@ public class Menu {
                         System.out.println("File has not been loaded yet. please use option one first and load a new file.");
 
                     else if (!isSimulationDone)
-                        System.out.println("No Simulation on file has been run yet. please use option two first to run a simulation.");
+                        System.out.println("No Simulation has run yet. please use option three first to run a simulation.");
                     else if (!isSimulateHistoryNotEmpty) {
                         System.out.println("No Simulation History found. please use option three first to run at lest one simulation.");
                     }

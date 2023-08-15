@@ -18,23 +18,15 @@ public class EntityValidator extends ValidationCommonFunctions {
 
         //check if entity name is invalid
         if (!isNameValid(trimmedName)) {
-            throw new XmlValidationException("Entity: " + prdEntity.getName() +
-                    " name is not valid, name should not have spaces");
+            throw new XmlValidationException(" name is not valid, name should not have spaces");
         }
 
         // go over every property and check if valid
         for(PRDProperty property : prdList) {
             trimmedPropName = property.getPRDName().trim();
 
-          /*  if(!isNameValid(trimmedPropName) ||
-                    !isPropertyTypeValid(property.getType()) ||
-                    !isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange()) ||
-                    ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())))
-                return false;*/
-
             if (!isNameValid(trimmedPropName)) {
-                throw new XmlValidationException("Entity: " + prdEntity.getName() +
-                        ", property : " + property.getPRDName() +
+                throw new XmlValidationException(" property : " + property.getPRDName() +
                         " name is not valid, name should not have spaces");
             }
             if (!isPropertyTypeValid(property.getType())) {
@@ -53,6 +45,11 @@ public class EntityValidator extends ValidationCommonFunctions {
                         "is not valid, from value should be smaller than to");
             }
 
+            // check if default value in range
+            if((property.getPRDRange() != null) && !isInitValInRange(property.getPRDValue().getInit(), property.getPRDRange(), property.getType())){
+                throw new XmlValidationException(" property : " + property.getPRDName() + "Init value is out of range");
+            }
+
             // add name to the map list
             prdNameList.put(trimmedPropName, (prdNameList.get(trimmedPropName) == null ?
                     1 : prdNameList.get(trimmedPropName + 1)));
@@ -64,7 +61,4 @@ public class EntityValidator extends ValidationCommonFunctions {
         }
     }
 
-    // test if prop name has no spaces
-    // test if name is uniq
-    // test if type is
 }

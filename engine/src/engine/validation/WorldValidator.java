@@ -14,15 +14,15 @@ public class WorldValidator {
         RulesValidator rulesValidator = new RulesValidator();
         TerminationValidator terminationValidator = new TerminationValidator();
 
-        try {
+       // try {
             envValidator.validateEnvData(prdWorld);
             entitiesValidator.validateEntitiesData(prdWorld);
             rulesValidator.validateRulesData(prdWorld);
             terminationValidator.validateTerminationData(prdWorld);
-        }
-        catch (XmlValidationException e){
+        //}
+       /* catch (XmlValidationException e){
             throw new XmlValidationException("XML data validation failed with the error: \n" + e.getMessage());
-        }
+        }*/
 
     }
 

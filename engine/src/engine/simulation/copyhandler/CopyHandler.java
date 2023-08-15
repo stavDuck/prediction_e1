@@ -240,7 +240,7 @@ public class CopyHandler {
             }
         }
         // supporting one of them is null of both has values
-        world.setTermination(new Termination(ticks != null ? ticks.getCount(): null,
-                seconds != null ? seconds.getCount() : null));
+        world.setTermination(new Termination(seconds != null ? seconds.getCount() : null,
+                ticks != null ? ticks.getCount(): null));
     }
 }

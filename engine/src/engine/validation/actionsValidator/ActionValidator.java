@@ -3,11 +3,13 @@ package engine.validation.actionsValidator;
 import engine.validation.exceptions.XmlValidationException;
 import generated.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActionValidator {
     public void validateActionData(PRDAction prdAction, PRDEntities entities, PRDEvironment prdEvironment) throws XmlValidationException {
         PRDEntity actionEntity = null;
+        boolean isPropertyFound = false;
         List<PRDEntity> prdEntityList = entities.getPRDEntity();
         //check entity exists
         for(PRDEntity prdEntity : prdEntityList) {
@@ -16,16 +18,26 @@ public class ActionValidator {
                 break;
             }
         }
+
+        // if actionEntity doesn't exist
+        if(actionEntity == null){
+            throw new XmlValidationException("In action the entity: " + prdAction.getEntity() + "doesn't exist");
+        }
+
         //check property exists, in case action isn't kill
         if((prdAction.getType().equals("increase") || prdAction.getType().equals("decrease") || prdAction.getType().equals("set")) && actionEntity != null) {
             List<PRDProperty> prdPropertyList = actionEntity.getPRDProperties().getPRDProperty();
-            for(PRDProperty prdProperty : prdPropertyList) {
-                if(prdProperty.getPRDName().equals(prdAction.getProperty())) {
+            for (PRDProperty prdProperty : prdPropertyList) {
+                if (prdProperty.getPRDName().equals(prdAction.getProperty())) {
+                    isPropertyFound = true;
                     break;
                 }
             }
-
+            if (!isPropertyFound) {
+                throw new XmlValidationException("In action the Property: " + prdAction.getProperty() + "doesn't exist");
+            }
         }
+        // validation conditions when/ then/ else
         validateActionByType(prdAction, prdEvironment, actionEntity);
     }
 
@@ -218,21 +230,48 @@ public class ActionValidator {
     }
 
     public void validateActionByType(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
+       // check if entity exist
         if(!(prdAction.getEntity().equals(actionEntity.getName()))) {
             throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getEntity() + " is not found, please check the entity name is correct.");
         }
         if(prdAction.getType().equals("increase") || prdAction.getType().equals("decrease")) {
+            // check if property exist
+            if(!isPropertyExistInAction(actionEntity.getPRDProperties().getPRDProperty(), prdAction.getProperty())){
+                throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getEntity() + " property: " + prdAction.getProperty() +
+                        " is not found, please check the property name is correct.");
+            }
             verifyTypeIsNumber(prdAction.getBy(), prdEvironment, actionEntity);
         }
+
         else if(prdAction.getType().equals("calculation")) {
+            if(!isPropertyExistInAction(actionEntity.getPRDProperties().getPRDProperty(), prdAction.getResultProp())){
+                throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getResultProp() + " property: " + prdAction.getProperty() +
+                        " is not found, please check the property name is correct.");
+            }
             validateCalculationAction(prdAction, prdEvironment, actionEntity);
         }
+
         else if(prdAction.getType().equals("condition")) {
             validateCondition(prdAction, prdEvironment, actionEntity);
         }
         else if(prdAction.getType().equals("set")) {
+            if(!isPropertyExistInAction(actionEntity.getPRDProperties().getPRDProperty(), prdAction.getProperty())){
+                throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getEntity() + " property: " + prdAction.getProperty() +
+                        " is not found, please check the property name is correct.");
+            }
             validateSet(prdAction, prdEvironment, actionEntity);
         }
+    }
+
+    private boolean isPropertyExistInAction(List<PRDProperty> lst, String propName){
+        boolean isFound = false;
+        for(PRDProperty curr : lst){
+            if(curr.getPRDName().equals(propName)) {
+                isFound = true;
+                break;
+            }
+        }
+        return isFound;
     }
 
     public void validateSingleCondition(PRDCondition prdCondition, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {

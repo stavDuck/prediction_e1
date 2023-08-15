@@ -1,12 +1,9 @@
 package engine.simulation;
-
-import dto.Dto;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
 import engine.validation.exceptions.XmlValidationException;
 import engine.world.World;
 import generated.PRDWorld;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -16,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class Simulation {
-    private static int idGenerator = 0;
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
     private  int simulationID;
@@ -36,8 +32,6 @@ public class Simulation {
             world = new World();
             CopyHandler copy = new CopyHandler();
             copy.copyData(prdWorld, world);
-            simulationID = idGenerator;
-            idGenerator ++;
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("File " + fileName + " was not found");
@@ -47,7 +41,7 @@ public class Simulation {
         }
         // exceptions from validate world
         catch (XmlValidationException e){
-            throw new RuntimeException("xml validation failed with the error: " + e);
+            throw new RuntimeException("xml validation failed with the error: " + e.getMessage());
         }
     }
     private PRDWorld deserializeFrom(InputStream in) throws JAXBException {
@@ -56,26 +50,12 @@ public class Simulation {
         return (PRDWorld) u.unmarshal(in);
     }
 
-    /*public void printEntities(){
-        world.printEntitiesStruchers();
-    }
-    public void printRules(){
-        world.printRules();
-    }
-    public void printTermination(){
-        world.printTermination();
-    }
-
-    public void simulationPrintAllInformation(){
-        printEntities();
-        printRules();
-        printTermination();
-    }*/
 
     public World getWorld(){
         return world;
     }
     public int getSimulationID(){return simulationID;}
+    public void setSimulationID(int i){simulationID = i;}
 
     public void run() {
         // create all instances

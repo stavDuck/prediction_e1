@@ -1,5 +1,6 @@
 package engine.validation;
 
+import engine.validation.exceptions.XmlValidationException;
 import generated.PRDRange;
 
 import java.util.Map;
@@ -48,5 +49,20 @@ public class ValidationCommonFunctions {
         if(range.getFrom() <= range.getTo())
             return true;
         return false;
+    }
+
+    // validate if init val is in range
+    public static boolean isInitValInRange(String init, PRDRange range, String type) {
+        if(type.equals("decimal")){
+            Integer number = Integer.parseInt(init);
+            if(number < (int)range.getFrom() || number > (int)range.getTo())
+               return false;
+        }
+        else if(type.equals("float")){
+            Float number = Float.parseFloat(init);
+            if(number < (float)range.getFrom() || number > (float)range.getTo())
+               return false;
+        }
+        return true;
     }
 }
