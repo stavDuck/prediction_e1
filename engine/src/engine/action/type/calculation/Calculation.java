@@ -35,7 +35,10 @@ public class Calculation extends AbstractAction {
                 multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
                 break;
             case DIVIDE:
-                divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                try {
+                    divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                }
+                catch (ArithmeticException e){}
                 break;
         }
     }
