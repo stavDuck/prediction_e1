@@ -14,6 +14,7 @@ import engine.value.generator.ValueGenerator;
 import engine.value.generator.ValueGeneratorFactory;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -29,7 +30,7 @@ public class World {
         this.environment = new Environment();
         this.instanceManager = new EntityInstanceManager();
         this.entityStructures = new HashMap<>();
-        this.rules = new HashMap<>();
+        this.rules = new LinkedHashMap<>();
         this.termination = new Termination();
     }
 

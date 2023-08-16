@@ -7,6 +7,7 @@ import dto.rule.activation.DtoActivation;
 import dto.termination.DtoTermination;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Dto {
@@ -16,7 +17,7 @@ public class Dto {
 
     public Dto() {
         this.entities = new HashMap<>();
-        this.rules = new HashMap<>();
+        this.rules = new LinkedHashMap<>();
     }
 
     //getter

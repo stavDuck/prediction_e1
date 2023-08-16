@@ -8,6 +8,7 @@ import engine.environment.Environment;
 import engine.execution.context.Context;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Rule {
@@ -51,9 +52,17 @@ public class Rule {
                 // inoke
                 currAction.invoke(createContext(instanceManager, environment, currInstance));
                 //if kill, instance is removed so no need to continue with actions
-                if((currAction.getActionType().name().toLowerCase()).equals("kill"))
-                    break;
-
+                /*if((currAction.getActionType().name().toLowerCase()).equals("kill"))
+                    break;*/
+            }
+            // run on all instances and invoke kill if needed
+            Iterator<EntityInstance> iterator = lst.iterator();
+            while (iterator.hasNext()) {
+                EntityInstance currInstance = iterator.next();
+                if (currInstance.isShouldKill()) {
+                    iterator.remove(); // Safely remove the current instance
+                    instanceManager.killEntity(currInstance);
+                }
             }
         }
     }

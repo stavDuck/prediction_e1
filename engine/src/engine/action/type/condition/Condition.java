@@ -67,6 +67,7 @@ public class Condition extends AbstractAction {
                     break;
                 case KILL:
                     ((KillAction)action).invoke(context);
+                    //context.getPrimaryEntityInstance().setShouldKill(true);
                     break;
             }
         }

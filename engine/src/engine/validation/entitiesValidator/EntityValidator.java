@@ -44,12 +44,12 @@ public class EntityValidator extends ValidationCommonFunctions {
                         ", property : " + property.getPRDName() +
                         "is not valid, from value should be smaller than to");
             }
+            if(property.getPRDRange() != null && property.getPRDValue().getInit() != null) {
+                if (!isInitValInRange(property.getPRDValue().getInit(), property.getPRDRange(), property.getType())) {
+                    throw new XmlValidationException(" property : " + property.getPRDName() + "Init value is out of range");
 
-            // check if default value in range
-            if((property.getPRDRange() != null) && !isInitValInRange(property.getPRDValue().getInit(), property.getPRDRange(), property.getType())){
-                throw new XmlValidationException(" property : " + property.getPRDName() + "Init value is out of range");
+                }
             }
-
             // add name to the map list
             prdNameList.put(trimmedPropName, (prdNameList.get(trimmedPropName) == null ?
                     1 : prdNameList.get(trimmedPropName + 1)));

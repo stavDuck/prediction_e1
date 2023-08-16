@@ -16,6 +16,7 @@ public class EntityInstance {
     private String entityName;
     private Map<String, PropertyInstance> propertyInstancesMap;
 
+    private boolean shouldKill;
     public EntityInstance() {
         this("", 0);
     }
@@ -24,6 +25,7 @@ public class EntityInstance {
         this.entityName = entityName;
         this.propertyInstancesMap = new HashMap<>();
         this.id = id;
+        this.shouldKill = false;
     }
 
     // getters
@@ -39,8 +41,16 @@ public class EntityInstance {
         return entityName;
     }
 
+    public boolean isShouldKill() {
+        return shouldKill;
+    }
+
     // setters
 
+
+    public void setShouldKill(boolean shouldKill) {
+        this.shouldKill = shouldKill;
+    }
 
     // Function gets entity strucher and create all the properties of the instances with all the valid values
     public void createPropertyInstancesMap(EntityStructure entityStructure){

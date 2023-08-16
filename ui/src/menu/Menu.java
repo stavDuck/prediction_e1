@@ -25,7 +25,7 @@ public class Menu {
     final static char OPTION_THREE = '3';
     final static char OPTION_FOUR = '4';
     final static char OPTION_FIVE = '5';
-    private static int idGenerator = 0;
+    private static int idGenerator = 1;
     public void startMenu() {
         Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
@@ -35,12 +35,11 @@ public class Menu {
         String fileName = null, tempFile = null;
         char choice;
         Simulation simulation = null, tempSimlate = null;
-
+        LocalDate currentDate;
+        LocalTime currentTime;
         // list of simulations history
         List<SimulationHistory> simulationHistory = null;
-        LocalDate currentDate = LocalDate.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalTime currentTime = LocalTime.now();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH.mm.ss");
 
         System.out.println("Welcome to Prediction !");
@@ -100,7 +99,8 @@ public class Menu {
                             setSimulationEnvValues(simulation);
                             // Print all env names + values
                             printEnvLivsNamesAndValues(simulation);
-
+                            currentDate = LocalDate.now();
+                            currentTime = LocalTime.now();
                             // set startSimulation in simulation history
                             simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
                                     currentDate.format(dateFormatter), currentTime.format(timeFormatter)));
@@ -154,7 +154,7 @@ public class Menu {
     public void printMainMenu() {
         System.out.println("MENU:");
         System.out.println("*********************");
-        System.out.println("Please select the desire action");
+        System.out.println("Please select the desired action:");
         System.out.println("1) Load new XML file by file path");
         System.out.println("2) Present simulation information");
         System.out.println("3) Start simulation");
@@ -165,7 +165,7 @@ public class Menu {
     public void printOverViewMenu() {
         System.out.println("OVER - VIEW - MENU:");
         System.out.println("*********************");
-        System.out.println("Please select the desire action");
+        System.out.println("Please select the desired action:");
         System.out.println("1) Present entities");
         System.out.println("2) Present rules");
         System.out.println("3) Present termination conditions");
@@ -217,11 +217,11 @@ public class Menu {
     public Simulation loadFileXML(String fileName) throws RuntimeException {
 
         //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-        //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
+        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
 
         //Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
-         Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/testActions.xml");
+        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/testActions.xml");
 
         return simulation;
     }
