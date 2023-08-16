@@ -29,20 +29,20 @@ public class EnvValidator extends ValidationCommonFunctions {
                 return false;
             */
             if (!isNameValid(trimmedName)) {
-                throw new XmlValidationException("Environment property : " + property.getPRDName() +
+                throw new XmlValidationException("Environment property: " + property.getPRDName() +
                         " name is not valid, name should not have spaces");
             }
             if (!isPropertyTypeValid(property.getType())) {
-                throw new XmlValidationException("Environment property : " + property.getPRDName() +
+                throw new XmlValidationException("Environment property: " + property.getPRDName() +
                         " type is not valid, only type decimal, float, string or boolean allowed");
             }
             if (!isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange())) {
-                throw new XmlValidationException("Environment property : " + property.getPRDName() +
+                throw new XmlValidationException("Environment property:: " + property.getPRDName() +
                         " is not valid, if type is not decimal or float range should not appear");
             }
             if ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())) {
-                throw new XmlValidationException("Environment property : " + property.getPRDName() +
-                        "is not valid, from value should be smaller than to");
+                throw new XmlValidationException("Environment property: " + property.getPRDName() +
+                        " has invalid range. 'From' value should be smaller than 'To'");
             }
 
             // add name to the map list

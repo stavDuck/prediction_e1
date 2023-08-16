@@ -19,8 +19,8 @@ public class ActionsValidator {
                 actionValidator.validateActionData(prdAction, prdEntities, prdEvironment);
             }
             catch (XmlValidationException e) {
-                throw new XmlValidationException("Rule: " + prdRule.getName() + " action: " + prdAction.getType().toLowerCase() +
-                        " failed validation with the error: " + e.getMessage());
+                throw new XmlValidationException("Rule: " + prdRule.getName() + ", action: " + prdAction.getType().toLowerCase() +
+                        ", failed validation with the error: \n" + e.getMessage());
             }
         }
     }

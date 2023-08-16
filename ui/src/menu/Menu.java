@@ -69,7 +69,7 @@ public class Menu {
                             isSimulateHistoryNotEmpty = false;
                         } catch (RuntimeException e) {
                             System.out.println(e.getMessage() +
-                                    "\n please try to fix the issue and reload the xml again.");
+                                    "\nplease try to fix the issue and reload the xml again.\n");
                         }
                     } else
                         System.out.println("File has not loaded because the file path is not valid, file needs to be an XML type,  " +
@@ -217,7 +217,8 @@ public class Menu {
     public Simulation loadFileXML(String fileName) throws RuntimeException {
 
         //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
+        //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
+        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\err-unique-name.xml");
 
         //Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");

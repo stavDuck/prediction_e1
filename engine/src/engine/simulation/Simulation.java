@@ -41,7 +41,7 @@ public class Simulation {
         }
         // exceptions from validate world
         catch (XmlValidationException e){
-            throw new RuntimeException("xml validation failed with the error: " + e.getMessage());
+            throw new RuntimeException("xml validation failed with the error: \n" + e.getMessage());
         }
     }
     private PRDWorld deserializeFrom(InputStream in) throws JAXBException {

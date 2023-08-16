@@ -21,7 +21,7 @@ public class ActionValidator {
 
         // if actionEntity doesn't exist
         if(actionEntity == null){
-            throw new XmlValidationException("In action the entity: " + prdAction.getEntity() + "doesn't exist");
+            throw new XmlValidationException("Action entity: " + prdAction.getEntity() + " doesn't exist");
         }
 
         //check property exists, in case action isn't kill
@@ -34,7 +34,7 @@ public class ActionValidator {
                 }
             }
             if (!isPropertyFound) {
-                throw new XmlValidationException("In action the Property: " + prdAction.getProperty() + "doesn't exist");
+                throw new XmlValidationException("Action property: " + prdAction.getProperty() + " doesn't exist");
             }
         }
         // validation conditions when/ then/ else
@@ -50,8 +50,8 @@ public class ActionValidator {
                     expression.indexOf("environment(") + 12,
                     expression.indexOf(")")), prdEvironment);
             if (!value.equals("decimal") && !value.equals("float")) {
-                throw new XmlValidationException("Environment property: " + value +
-                        " is not numeric");
+                throw new XmlValidationException("Environment property type is: " + value +
+                        ", which is not numeric");
             }
         }
         //if random function helper
@@ -60,22 +60,22 @@ public class ActionValidator {
                     expression.indexOf("random(") + 7,
                     expression.indexOf(")"));
             if (!randNum.matches("\\d+")) {
-                throw new XmlValidationException("Random value: " + randNum +
-                        " is not numeric");
+                throw new XmlValidationException("Random value is: " + randNum +
+                        ", which is not numeric");
             }
         }
         //if environment property
         else if (property != null) {
             if (!((property.getType()).equals("decimal")) && !((property.getType()).equals("float"))) {
-                throw new XmlValidationException("Property: " + property +
-                        " is not numeric");
+                throw new XmlValidationException("Property type is: " + property +
+                        ", which is not numeric");
             }
         }
         // if free value
         else {
             if (!(expression.matches("\\d+")) && !(expression.matches("\\d+\\.\\d+"))) {
-                throw new XmlValidationException("Expression: " + expression +
-                        " is not numeric");
+                throw new XmlValidationException("Expression value is: " + expression +
+                        ", which is not numeric");
             }
         }
     }
@@ -161,8 +161,8 @@ public class ActionValidator {
                     expression.indexOf("environment(") + 12,
                     expression.indexOf(")")), prdEvironment);
             if (!value.equals("boolean") && !value.equals("string")) {
-                throw new XmlValidationException("Environment property: " + value +
-                        " is not boolean");
+                throw new XmlValidationException("Environment property type is: " + value +
+                        ", which is not boolean");
             }
         }
         //if random function helper
@@ -172,15 +172,15 @@ public class ActionValidator {
         //if environment property
         else if (property != null) {
             if (!((property.getType()).equals("boolean")) && !((property.getType()).equals("string"))) {
-                throw new XmlValidationException("Property: " + property +
-                        " is not boolean");
+                throw new XmlValidationException("Property type is: " + property +
+                        ", which is not boolean");
             }
         }
         // if free value
         else {
             if (!(expression.equals("true")) && !(expression.equals("false"))) {
-                throw new XmlValidationException("Expression: " + expression +
-                        " is not boolean");
+                throw new XmlValidationException("Expression value is: " + expression +
+                        ", which is not boolean");
             }
         }
     }
@@ -194,8 +194,8 @@ public class ActionValidator {
                     expression.indexOf("environment(") + 12,
                     expression.indexOf(")")), prdEvironment);
             if (!value.equals("string")) {
-                throw new XmlValidationException("Environment property: " + value +
-                        " is not string");
+                throw new XmlValidationException("Environment property type is: " + value +
+                        ", which is not string");
             }
         }
         //if random function helper
@@ -205,8 +205,8 @@ public class ActionValidator {
         //if environment property
         else if (property != null) {
             if (!((property.getType()).equals("string"))) {
-                throw new XmlValidationException("Property: " + property +
-                        " is not string");
+                throw new XmlValidationException("Property type is: " + property +
+                        ", which is not string");
             }
         }
         // free value is a regular string, no need to verfy

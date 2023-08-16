@@ -20,7 +20,7 @@ public class EntitiesValidator {
                 entityValidator.validateEntityData(prdEntity);
             }
             catch (XmlValidationException e){
-                throw new XmlValidationException("Entity validation error: " + prdEntity.getName() + e.getMessage());
+                throw new XmlValidationException("Entity validation error: \n" + e.getMessage());
             }
         }
     }
