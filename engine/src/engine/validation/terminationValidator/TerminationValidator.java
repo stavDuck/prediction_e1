@@ -22,5 +22,4 @@ public class TerminationValidator {
 
         return true;
     }
-
 }

@@ -14,8 +14,6 @@ public abstract class AbstractAction implements Action {
     protected String entityName;
     protected ActionType actionType;
 
-    //private ActionExecute actionExecute;
-
     public AbstractAction(String entityName, String actionType) {
         this.entityName = entityName;
         setActionType(actionType);

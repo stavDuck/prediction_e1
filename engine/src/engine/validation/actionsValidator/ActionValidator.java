@@ -2,8 +2,6 @@ package engine.validation.actionsValidator;
 
 import engine.validation.exceptions.XmlValidationException;
 import generated.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActionValidator {
@@ -138,7 +136,6 @@ public class ActionValidator {
             validateSingleCondition(prdCondition, prdEvironment, actionEntity);
         }
     }
-
 
     public void validateThenCondition(PRDThen prdThen, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
         for (PRDAction action : prdThen.getPRDAction()) {

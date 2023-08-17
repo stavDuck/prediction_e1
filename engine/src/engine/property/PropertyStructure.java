@@ -1,6 +1,4 @@
 package engine.property;
-
-import engine.property.type.Type;
 import engine.range.Range;
 
 public class PropertyStructure extends Property{

@@ -5,7 +5,6 @@ import engine.validation.actionsValidator.ActionsValidator;
 import engine.validation.exceptions.XmlValidationException;
 import generated.PRDRule;
 import generated.PRDWorld;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +28,11 @@ public class RulesValidator extends ValidationCommonFunctions {
             actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
             prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?
                     1 : prdNameList.get(trimmedName + 1)));
-
         }
 
         // check if any name not unique
         if (!isNameUnique(prdNameList)) {
-            throw new XmlValidationException("Invalid rule list, all rule names should be unique");
+            throw new XmlValidationException("Invalid rule list, all rule names should be unique, one or more has the same name");
         }
-
     }
 }

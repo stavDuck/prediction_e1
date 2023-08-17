@@ -50,7 +50,6 @@ public class Simulation {
         return (PRDWorld) u.unmarshal(in);
     }
 
-
     public World getWorld(){
         return world;
     }

@@ -16,10 +16,7 @@ import engine.rule.Rule;
 import engine.termination.Termination;
 import engine.world.World;
 import generated.*;
-
 import java.util.List;
-
-
 
 public class CopyHandler {
     private static final String INCREASE = "increase";
@@ -89,7 +86,6 @@ public class CopyHandler {
           AbstractAction newAction = copyActionFromPRDRule(action);
             newRule.getActions().add(newAction);
         }
-
         return newRule;
      }
      private Activation createNewActivation(PRDRule rule){
@@ -135,7 +131,7 @@ public class CopyHandler {
                     action.getResultProp(), action.getPRDMultiply().getArg1(), action.getPRDMultiply().getArg2());
         }
         else{
-            return null; // THROW ERROR !!!
+            return null;
         }
     }
     public Condition createNewCondition(PRDAction action){
@@ -171,14 +167,12 @@ public class CopyHandler {
                 newWhenCondition = null;
                 break;
         }
-
         return newWhenCondition;
     }
 
     private ConditionMultiple createNewConditionMultiple(PRDCondition condition, String entityName, String actionType){
         ConditionMultiple newConditionMultiple = new ConditionMultiple(entityName, condition.getLogical(), actionType);
 
-        // if not null else ERROR !!!!!
         for(PRDCondition currCondition: condition.getPRDCondition()){
             switch (currCondition.getSingularity()){
                 case "multiple":
@@ -214,11 +208,6 @@ public class CopyHandler {
         }
     }
 
-
-
-
-
-
     public SetAction createNewSet(PRDAction action){
         return new SetAction(action.getEntity(), action.getProperty(), action.getType(), action.getValue());
 
@@ -226,7 +215,6 @@ public class CopyHandler {
     public KillAction createNewKill(PRDAction action){
             return new KillAction(action.getEntity(), action.getType());
     }
-
 
     public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;

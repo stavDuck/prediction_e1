@@ -1,5 +1,4 @@
 package engine.range;
-
 import engine.property.type.Type;
 
 public class Range {
@@ -36,6 +35,5 @@ public class Range {
         }
         else
             System.out.println("Range: to:" + to + " from: " + from);
-
     }
 }

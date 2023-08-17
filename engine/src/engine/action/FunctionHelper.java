@@ -3,8 +3,6 @@ import engine.execution.context.Context;
 import engine.property.type.Type;
 import engine.value.generator.ValueGeneratorFactory;
 
-import java.util.Random;
-
 public class FunctionHelper {
     public static Object environment(Context context, String nameProp) {
         return context.getEnvironmentVariable(nameProp).getVal();

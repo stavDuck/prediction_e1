@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
 public class EnvValidator extends ValidationCommonFunctions {
 
     // function go over all the property list of env prop and return if valid or not
@@ -22,12 +20,6 @@ public class EnvValidator extends ValidationCommonFunctions {
             //need to check for trimmed name
             trimmedName = property.getPRDName().trim();
 
-           /* if(!isNameValid(trimmedName) ||
-                    !isPropertyTypeValid(property.getType()) ||
-                    !isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange()) ||
-                    ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())))
-                return false;
-            */
             if (!isNameValid(trimmedName)) {
                 throw new XmlValidationException("Environment property: " + property.getPRDName() +
                         " name is not valid, name should not have spaces");
@@ -52,9 +44,7 @@ public class EnvValidator extends ValidationCommonFunctions {
 
         // check if any name not unique
         if (!isNameUnique(prdNameList)) {
-            throw new XmlValidationException("Invalid environment properties list, all Environment properties need to have unique names");
+            throw new XmlValidationException("Invalid environment properties list, all Environment properties need to have unique names, one or more has the same name");
         }
-        // helper functions
-
     }
 }

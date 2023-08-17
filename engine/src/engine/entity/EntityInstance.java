@@ -4,9 +4,7 @@ import engine.property.PropertyInstance;
 import engine.property.PropertyStructure;
 import engine.property.type.Type;
 import engine.range.Range;
-import engine.value.generator.ValueGenerator;
 import engine.value.generator.ValueGeneratorFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,5 +97,4 @@ public class EntityInstance {
     public void addProperty(String name, Type strType, Range range, Object value) {
         propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
     }
-
 }

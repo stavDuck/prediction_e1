@@ -3,10 +3,8 @@ package engine.validation.entitiesValidator;
 import engine.validation.exceptions.XmlValidationException;
 import generated.PRDEntity;
 import generated.PRDWorld;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class EntitiesValidator {
     //need to add exeptions
@@ -24,8 +22,4 @@ public class EntitiesValidator {
             }
         }
     }
-
-    // helper functions
-    // validate entities name is uniq
-    // validate name is with no spaces
 }

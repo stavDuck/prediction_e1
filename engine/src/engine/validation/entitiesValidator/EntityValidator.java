@@ -3,13 +3,11 @@ package engine.validation.entitiesValidator;
 import engine.validation.ValidationCommonFunctions;
 import engine.validation.exceptions.XmlValidationException;
 import generated.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class EntityValidator extends ValidationCommonFunctions {
-    //need to add exceptions
     public void validateEntityData(PRDEntity prdEntity) throws XmlValidationException{
         String trimmedPropName;
         List<PRDProperty> prdList = prdEntity.getPRDProperties().getPRDProperty(); //property list of specific entity
@@ -45,12 +43,11 @@ public class EntityValidator extends ValidationCommonFunctions {
             if ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())) {
                 throw new XmlValidationException("Entity: " + prdEntity.getName() +
                         ", property : " + property.getPRDName() +
-                        "is not valid, from value should be smaller than to");
+                        " is not valid, from value should be smaller than to");
             }
             if(property.getPRDRange() != null && property.getPRDValue().getInit() != null) {
                 if (!isInitValInRange(property.getPRDValue().getInit(), property.getPRDRange(), property.getType())) {
                     throw new XmlValidationException(" property : " + property.getPRDName() + "Init value is out of range");
-
                 }
             }
             // add name to the map list
@@ -60,8 +57,7 @@ public class EntityValidator extends ValidationCommonFunctions {
 
         // check if any name not unique
         if (!isNameUnique(prdNameList)) {
-            throw new XmlValidationException("Invalid entity properties list, all entity's properties name need to have unique values");
+            throw new XmlValidationException("Invalid entity properties list, all entity's properties name need to have unique values, one or more has the same name");
         }
     }
-
 }

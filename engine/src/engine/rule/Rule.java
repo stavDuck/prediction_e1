@@ -6,7 +6,6 @@ import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.environment.Environment;
 import engine.execution.context.Context;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,9 +50,6 @@ public class Rule {
             for (EntityInstance currInstance : lst) {
                 // inoke
                 currAction.invoke(createContext(instanceManager, environment, currInstance));
-                //if kill, instance is removed so no need to continue with actions
-                /*if((currAction.getActionType().name().toLowerCase()).equals("kill"))
-                    break;*/
             }
             // run on all instances and invoke kill if needed
             Iterator<EntityInstance> iterator = lst.iterator();

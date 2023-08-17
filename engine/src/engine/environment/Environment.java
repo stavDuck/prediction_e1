@@ -1,8 +1,6 @@
 package engine.environment;
-
 import engine.property.PropertyInstance;
 import engine.range.Range;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,12 +24,7 @@ public class Environment {
         propertyInstancesMap.get(name).setVal(value);
     }
 
-
     public void addEnvProperty(String name, String strType, Range range, String value) {
         propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
     }
-    
-    /*public void printPropertyInstancesMap(){
-        propertyInstancesMap.values().forEach(value -> value.printPropertyInstance());
-    }*/
 }

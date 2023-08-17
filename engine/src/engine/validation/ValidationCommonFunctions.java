@@ -1,8 +1,5 @@
 package engine.validation;
-
-import engine.validation.exceptions.XmlValidationException;
 import generated.PRDRange;
-
 import java.util.Map;
 
 public class ValidationCommonFunctions {
@@ -15,16 +12,9 @@ public class ValidationCommonFunctions {
 
     // validate if name is uniqe
     public static boolean isNameUnique(Map<String, Integer> prdNameList){
-        // check if any name not unique
-        /*for (Map.Entry<String, Integer> entry : prdNameList.entrySet()) {
-            if(entry.getValue() != 1)
-                return false;
-        }
-        return true;*/
         return prdNameList.entrySet().stream()
                 .allMatch(entry -> entry.getValue() == 1);
     }
-
 
     // validate type is only decimal/float/boolean/string
     public static boolean isPropertyTypeValid(String type) {

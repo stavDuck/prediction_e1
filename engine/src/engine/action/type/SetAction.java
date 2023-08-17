@@ -11,7 +11,6 @@ public class SetAction extends AbstractAction {
     private final String property;
     private String newValue;
 
-
     public SetAction(String entityName, String property, String actionType, String newValue) {
         super(entityName, actionType);
         this.property = property;

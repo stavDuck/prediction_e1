@@ -1,21 +1,23 @@
 package engine.property;
-
 import engine.property.type.Type;
 import engine.range.Range;
 
 public class PropertyInstance extends Property {
     private Object val;
+    private boolean isUserSetValue;
 
     // doing create new instance for new entity
     public PropertyInstance(String name, Type type, Range range, Object value) {
         super(name, type, range);
         this.val = value;
+        isUserSetValue = false;
     }
 
     // doing create new env property
     public PropertyInstance(String name, String type, Range range, Object value) {
         super(name, type, range);
         this.val = value;
+        isUserSetValue = false;
     }
 
     public Object getVal() {
@@ -46,13 +48,6 @@ public class PropertyInstance extends Property {
        }
     }
 
-
-    //NO NEED
-    /*public void printPropertyInstance(){
-        super.printProperty();
-        printVal(type);
-    }*/
-
     public void printVal(Type type){
         switch (type) {
             case DECIMAL:
@@ -67,5 +62,13 @@ public class PropertyInstance extends Property {
             case STRING:
                 System.out.println("Property value: " + (String) val);
         }
+    }
+
+    public boolean isUserSetValue() {
+        return isUserSetValue;
+    }
+
+    public void setUserSetValue(boolean userSetValue) {
+        isUserSetValue = userSetValue;
     }
 }

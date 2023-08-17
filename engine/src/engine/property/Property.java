@@ -1,10 +1,7 @@
 package engine.property;
-
 import engine.property.type.Type;
 import engine.range.Range;
-
 public abstract class Property {
-
     private static final String DECIMAL = "decimal";
     private static final String FLOAT = "float";
     private static final String BOOLEAN = "boolean";
@@ -14,8 +11,6 @@ public abstract class Property {
     protected Type type;
     protected Range range;
 
-
-    // constractor for random = false with default value
     public Property(String name, String strType, Range range) {
         this.name = name;
         setType(strType);
@@ -69,5 +64,4 @@ public abstract class Property {
     public void setRange(Range range) {
         this.range = range;
     }
-
 }

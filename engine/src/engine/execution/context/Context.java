@@ -1,5 +1,4 @@
 package engine.execution.context;
-
 import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.environment.Environment;
@@ -18,16 +17,11 @@ public class Context {
     public EntityInstance getPrimaryEntityInstance() {
         return primaryEntityInstance;
     }
-
-
     public void removeEntity(EntityInstance entityInstance) {
         entityInstanceManager.killEntity(entityInstance);
     }
     public PropertyInstance getEnvironmentVariable(String name) {
         return env.getEnvProperty(name);
     }
-
-
-
 
 }

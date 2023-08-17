@@ -1,6 +1,4 @@
 package engine.validation.actionsValidator;
-
-import engine.validation.ValidationCommonFunctions;
 import engine.validation.exceptions.XmlValidationException;
 import generated.PRDAction;
 import generated.PRDEntities;

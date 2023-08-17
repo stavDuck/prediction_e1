@@ -1,7 +1,6 @@
 package engine.property.type;
 
 public enum Type {
-   // DECIMAL, FLOAT, BOOLEAN, STRING;
    DECIMAL {
 
        public Integer convert(Object value) {
@@ -35,8 +34,5 @@ public enum Type {
             return (String) value;
         }
     };
-
     public abstract <T> T convert(Object value);
-
-
 }

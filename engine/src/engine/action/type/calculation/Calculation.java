@@ -1,5 +1,4 @@
 package engine.action.type.calculation;
-
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
 import engine.execution.context.Context;

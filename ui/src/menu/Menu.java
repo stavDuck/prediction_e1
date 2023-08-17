@@ -1,6 +1,5 @@
 package menu;
 import dto.Dto;
-import engine.action.FunctionHelper;
 import engine.entity.EntityStructure;
 import engine.property.PropertyInstance;
 import engine.property.PropertyStructure;
@@ -9,15 +8,11 @@ import engine.simulation.Simulation;
 import engine.simulation.SimulationHistory;
 import engine.validation.exceptions.InvalidInputFromUser;
 import engine.value.generator.ValueGeneratorFactory;
-import sun.awt.windows.WPrinterJob;
-
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class Menu {
     final static char OPTION_ONE = '1';
@@ -144,12 +139,9 @@ public class Menu {
                 default:
                     System.out.println("Invalid option number, please try again with an option from the menu only");
             }
-
-
         }
         scanner.close();
     }
-
 
     public void printMainMenu() {
         System.out.println("MENU:");
@@ -181,6 +173,20 @@ public class Menu {
         System.out.println("3. Return to main-menu");
     }
 
+    public void printEnvNames(List<PropertyInstance> lst){
+       int index = 1;
+        System.out.println("ENVIRONMENT LIST:");
+        System.out.println("*********************");
+        System.out.println("Please select the environment value you want to set:");
+        System.out.println("NOTE if you don't select env var to set the value will be random !");
+        System.out.println();
+
+        for (PropertyInstance curr : lst){
+            System.out.println(index + ". Name: " + curr.getName());
+            index ++;
+        }
+        System.out.println(index + ". Exit");
+    }
 
     public void printEnvLivsNamesAndValues(Simulation simulation) {
         int counter = 1;
@@ -191,8 +197,6 @@ public class Menu {
             System.out.println(counter + ". Name: " + prop.getName() + ", Value: " + prop.getType().convert(prop.getVal()));
             counter++;
         }
-
-
     }
 
     public String getFileNameFromUser() {
@@ -215,15 +219,7 @@ public class Menu {
     }
 
     public Simulation loadFileXML(String fileName) throws RuntimeException {
-
-        //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\ex1-cigarets.xml");
-        //Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\master-ex1.xml");
-        Simulation simulation= new Simulation("C:\\Users\\USER\\IdeaProjects\\prediction_e1\\engine\\src\\resources\\err-unique-name.xml");
-
-        //Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/ex1-cigarets.xml");
-       // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/master-ex1.xml");
-        // Simulation simulation = new Simulation("C:/study/java/prediction/engine/src/resources/testActions.xml");
-
+        Simulation simulation= new Simulation(fileName);
         return simulation;
     }
 
@@ -266,17 +262,45 @@ public class Menu {
     }
 
     private void setSimulationEnvValues(Simulation simulation) {
-        System.out.println("Please enter value for the following environment properies:");
-        System.out.println("For every property you can press 'Y' to set a valid value, or press 'N' to get default values");
-        System.out.println("*********************");
+        List<PropertyInstance> lst = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        char choice;
+        boolean isExit = false;
+        PropertyInstance currProp;
 
-        // going over all env properties and set values from user/ random
-        for (PropertyInstance currProp : simulation.getWorld().getEnvironment().getPropertyInstancesMap().values()) {
-            System.out.println("Env Property name: " + currProp.getName());
-            System.out.println("Env Property type: " + currProp.getType().name().toLowerCase());
-            setEnvValueByType(currProp);
+        // init the lst - so we can use indexes
+        for (PropertyInstance curr : simulation.getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+            lst.add(curr);
         }
 
+        while (!isExit) {
+            // print menu
+            printEnvNames(lst);
+            choice = scanner.next().charAt(0);
+            int index = (choice - '0') - 1; // list in menu start with 1
+
+            // if index in range of property map
+            if(index < simulation.getWorld().getEnvironment().getPropertyInstancesMap().values().size() && index >= 0){
+                // if property is selected need to set value by user
+                currProp = lst.get(index);
+                currProp.setUserSetValue(true);
+                setEnvValueByType(currProp);
+            }
+            // last option will be exit
+            else if(index == simulation.getWorld().getEnvironment().getPropertyInstancesMap().values().size()){
+                isExit = true;
+            }
+            else{
+                System.out.println("Choice is not valid, please select a valid number from the list for your wanted value");
+            }
+        }
+
+        // After user finish to set desired values, all other that were not chosen will get random values
+        for (PropertyInstance prop : lst){
+            if(!prop.isUserSetValue()) {
+                setEnvValueByType(prop);
+            }
+        }
         System.out.println("All environment values are set successfully");
     }
 
@@ -305,14 +329,14 @@ public class Menu {
         String c;
         Integer choice = null;
 
-        // print for range if needed
-        if (currProp.getRange() != null) {
-            System.out.println("Env Property range: from: " + (int) currProp.getRange().getFrom() +
-                    ", to: " + (int) currProp.getRange().getTo());
-        }
+        // if true need to get from user - if true user will set manually the value
+        if (currProp.isUserSetValue()) {
+            // print for range if needed
+            if (currProp.getRange() != null) {
+                System.out.println("Env Property range: from: " + (int) currProp.getRange().getFrom() +
+                        ", to: " + (int) currProp.getRange().getTo());
+            }
 
-        // if true need to get from user
-        if (isValueInputOrGenerated()) {
             while (!isStop) {
                 try {
                     System.out.println("Please enter Integer valid value");
@@ -338,14 +362,12 @@ public class Menu {
         }
         // generate value
         else {
-            //Random random = new Random();
             if (currProp.getRange() != null) {
                 currProp.setVal(ValueGeneratorFactory.createRandomInteger((int) currProp.getRange().getFrom(),
                         (int) currProp.getRange().getTo()).generateValue());
-                // currProp.setVal( (int)currProp.getRange().getFrom() + random.nextInt((int)(currProp.getRange().getTo()) - (int)(currProp.getRange().getFrom()) + 1));
-            } else {
+            }
+            else {
                 currProp.setVal(ValueGeneratorFactory.createRandomInteger(1, 100));
-                //currProp.setVal(random.nextInt(100) + 1);
             }
         }
     }
@@ -362,7 +384,7 @@ public class Menu {
         }
 
         // if true need to get from user
-        if (isValueInputOrGenerated()) {
+        if (currProp.isUserSetValue()) {
             while (!isStop) {
                 try {
                     System.out.println("Please enter Float valid value");
@@ -372,7 +394,6 @@ public class Menu {
                             (currProp.getRange().getFrom() > choice || currProp.getRange().getTo() < choice)) {
                         throw new InvalidInputFromUser("Value for this property out of rage, please try again and provide a valid value in between the range values");
                     }
-
                     currProp.setVal(choice);
                     isStop = true;
 
@@ -390,9 +411,8 @@ public class Menu {
             if (currProp.getRange() != null) {
                 currProp.setVal(ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
                         currProp.getRange().getTo()).generateValue());
-                //currProp.setVal(currProp.getRange().getFrom() + random.nextFloat()* ((currProp.getRange().getTo()) - (currProp.getRange().getFrom())));
-            } else {
-                //currProp.setVal(random.nextFloat()*100.0 + 1);
+            }
+            else {
                 currProp.setVal(ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f));
             }
         }
@@ -404,7 +424,7 @@ public class Menu {
         boolean choice;
 
         // if true need to get from user
-        if (isValueInputOrGenerated()) {
+        if (currProp.isUserSetValue()) {
             while (!isStop) {
                 try {
                     System.out.println("Please enter Boolean valid value");
@@ -428,7 +448,7 @@ public class Menu {
         boolean isStop = false;
         String choice;
 
-        if (isValueInputOrGenerated()) {
+        if (currProp.isUserSetValue()) {
             System.out.println("Please enter a string");
             choice = scanner.nextLine();
             currProp.setVal(choice);
@@ -602,7 +622,6 @@ public class Menu {
         return list.get(choice);
     }
 
-
     // return the property name the user choice
     public String selectPropertyFromSimulationHistory(EntityStructure entityStructure){
         Scanner scanner = new Scanner(System.in);
@@ -618,7 +637,6 @@ public class Menu {
             list.add(propertyStructure.getName());
             index ++;
         }
-
 
         while (!isStop) {
             try {
@@ -641,18 +659,11 @@ public class Menu {
         return list.get(choice);
     }
 
-
     public void printHistogramByEntityAndValue(SimulationHistory sh, String entityName, String propertyName){
-        Map<String, Integer> histogramPropery = new HashMap<>();
-
-
-
-
-        Map<Object, Long> countByPropertyValue = sh.getEndSimulation().getWorld().getInstanceManager().getInstancesByName(entityName).stream()
+     Map<Object, Long> countByPropertyValue = sh.getEndSimulation().getWorld().getInstanceManager().getInstancesByName(entityName).stream()
                 .collect(Collectors.groupingBy(
                                 instance -> instance.getPropertyInstanceByName(propertyName).getVal(),
                                 Collectors.counting()));
-
 
         List<Map.Entry<Object, Long>> sortedEntries = countByPropertyValue.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -664,5 +675,4 @@ public class Menu {
             System.out.println( entry.getValue() + ":" + entry.getKey());
         }
     }
-
 }

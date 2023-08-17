@@ -1,7 +1,4 @@
 package engine.entity;
-
-import engine.property.PropertyStructure;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +6,7 @@ import java.util.Map;
 
 public class EntityInstanceManager {
     private int count;
-
     private Map<String, List<EntityInstance>> instances; //key = smoker, value = list of all smoker instances
-
 
     public EntityInstanceManager() {
         count = 0;
@@ -32,7 +27,6 @@ public class EntityInstanceManager {
         return newEntityInstance;
     }
 
-
     public Map<String, List<EntityInstance>> getAllInstances() {
         return instances;
     }
@@ -45,5 +39,4 @@ public class EntityInstanceManager {
         // go to the value of entity name and remove from list the recived instance in the list
         getInstancesByName(entityInstance.getEntityName()).remove(entityInstance);
     }
-
 }

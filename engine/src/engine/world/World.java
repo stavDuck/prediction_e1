@@ -2,20 +2,15 @@ package engine.world;
 
 import dto.Dto;
 import engine.action.AbstractAction;
-import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
-import engine.execution.context.Context;
 import engine.property.PropertyStructure;
 import engine.rule.Rule;
 import engine.termination.Termination;
-import engine.value.generator.ValueGenerator;
 import engine.value.generator.ValueGeneratorFactory;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -86,10 +81,6 @@ public class World {
         rules.put(ruleName, newRule);
     }
 
-    /*public void printEnvProp(){
-        environment.printPropertyInstancesMap();
-    }*/
-
     public void createEntitiesInstances(){
         for(EntityStructure currStructure : entityStructures.values()){
             IntStream.range(0, currStructure.getPopulation())
@@ -115,7 +106,6 @@ public class World {
             isSimulationTerminated(tick, startTimeSeconds);
         }
     }
-
 
     public void isSimulationTerminated(int tick, long startTimeSeconds){
         long currentTimeSeconds = System.currentTimeMillis() / 1000;
@@ -170,6 +160,4 @@ public class World {
         dto.addTermination(termination.getByTick(), termination.getBySec());
         return dto;
     }
-
-
 }

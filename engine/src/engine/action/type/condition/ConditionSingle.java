@@ -1,5 +1,4 @@
 package engine.action.type.condition;
-
 import engine.action.AbstractAction;
 import engine.action.ActionType;
 import engine.action.FunctionHelper;
@@ -19,8 +18,6 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
     private Operator op;
    private String value;
    private boolean result;
-
-
 
    public ConditionSingle(String entityName, String actionType, String entityToInvoke,
                           String propertyToInvoke,String operator, String value){
@@ -107,7 +104,6 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
         result = evaluateCondition(propType, propVal,  valueForCondition);
     }
 
-    // NEED TO COVER EXCEPTION PARSE !!!!!!
     private Object parseByTypeAndString(Type type, String defVal) {
         switch (type) {
             case DECIMAL:
@@ -188,6 +184,4 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
                 return false;
         }
     }
-
-
 }
