@@ -26,8 +26,10 @@ public class Condition extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
-       boolean check = invokeWhenCondition(context);
+        // init results for rule condition
+        initWhenCondition(whenCondition);
 
+       boolean check = invokeWhenCondition(context);
        // if check == true -> run thenCondition
        if(check){
            invokeAbstractActions(context, thenCondition);
@@ -36,7 +38,34 @@ public class Condition extends AbstractAction {
            invokeAbstractActions(context, elseCondition);
        }
     }
+
+    // go over all condition multi set result according to logical filed
+    public void initWhenCondition(conditionSingularityApi whenCondition){
+        if(whenCondition.getSingularity().equals("multi")){
+            // logical = and -> set true as start value
+            if(((ConditionMultiple)whenCondition).getLogical().equals("and")) {
+                ((ConditionMultiple) whenCondition).setResult(true);
+            }
+            // logical = or -> set false as start value
+            else{
+                ((ConditionMultiple) whenCondition).setResult(false);
+            }
+
+            // go over only multi cild in multi parent and set value according to ligical
+            for(conditionSingularityApi currMultiChild : ((ConditionMultiple)whenCondition).getConditionLst()){
+               if(currMultiChild.getSingularity().equals("multi")) {
+                   initWhenCondition(currMultiChild);
+               }
+            }
+        }
+    }
+
+
+
+
+
     public boolean invokeWhenCondition(Context context){
+
         switch (whenCondition.getSingularity()){
             case "multi":
                 ((ConditionMultiple)whenCondition).invoke(context);

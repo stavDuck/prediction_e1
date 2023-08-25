@@ -55,7 +55,7 @@
 			</PRD-actions>
 			<PRD-activation ticks="1" probability="0.4"/>
 		</PRD-rule>
-		<!---<PRD-rule name="r2">
+		<PRD-rule name="r2">
 			<PRD-actions>
 				<PRD-action type="condition" entity="ent-1">
 				
@@ -75,9 +75,9 @@
 					<PRD-else>
 						<PRD-action type="kill" entity="ent-1"/>
 					</PRD-else>
-				</PRD-action
+				</PRD-action>
 			</PRD-actions>
-		</PRD-rule>-->
+		</PRD-rule>
 	</PRD-rules>
 	<PRD-termination>
 		<PRD-by-ticks count="480"/>

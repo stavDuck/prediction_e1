@@ -59,6 +59,11 @@ public class ConditionMultiple extends AbstractAction implements conditionSingul
     }
 
     // setters
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
+
     public void setLogical(String logical) {
         this.logical = logical;
     }
