@@ -4,14 +4,13 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import sun.reflect.generics.tree.Tree;
 
 import java.io.File;
 
@@ -36,7 +35,7 @@ public class DetailsControler {
     @FXML
     private Label informationDetailsTitle;
     @FXML
-    private TreeView<?> treeViewInformation;
+    private TreeView<String> treeViewInformation;
     @FXML
     private TextArea informationDetailsBody;
 
@@ -54,6 +53,30 @@ public class DetailsControler {
     @FXML
     private void initialize() {
         selectedFileName.textProperty().bind(selectedFileProperty);
+
+
+        // set the tree root
+        TreeItem<String> rootItem = new TreeItem<>("Information");
+        // example for adding
+        TreeItem<String> branchItem1 = new TreeItem<>("Entities");
+        TreeItem<String> branchItem2 = new TreeItem<>("rules");
+        TreeItem<String> leafItem1 = new TreeItem<>("Entities");
+
+        branchItem1.getChildren().addAll(leafItem1);
+        rootItem.getChildren().addAll(branchItem1,branchItem2);
+        treeViewInformation.setRoot(rootItem);
+
+    }
+
+    @FXML
+    void selectItem(MouseEvent event) {
+        TreeItem<String> item = treeViewInformation.getSelectionModel().getSelectedItem();
+        if(item != null){
+            TreeItem<String> branchItem = new TreeItem<>("NEW");
+            treeViewInformation.getRoot().getChildren().add(branchItem);
+           // item.getParent().getValue(); // ???? to get if it is env, rule, entity
+            // need to copy the information to the txt Erea
+        }
     }
 
     public void setPrimaryStage(Stage primaryStage) {

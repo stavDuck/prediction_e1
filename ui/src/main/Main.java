@@ -1,13 +1,15 @@
 package main;
-import common.ResourcesConstants;
+import subcomponents.app.AppController;
+import subcomponents.common.ResourcesConstants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import screens.DetailsControler;
+import subcomponents.model.Model;
 
 import java.net.URL;
+
 
 public class Main extends Application {
    /* public static void main(String[] args) {
@@ -15,18 +17,22 @@ public class Main extends Application {
         menu.startMenu();
     }*/
 
+    private Model model;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader();
+        model = new Model();
+        FXMLLoader fxmlLoader = new FXMLLoader();
 
         // load main fxml
-        URL url = getClass().getResource(ResourcesConstants.MAIN_FXML_RESOURCE_IDENTIFIER);
-        loader.setLocation(url);
-        Parent root = loader.load(url.openStream());
+        //URL url = getClass().getResource(ResourcesConstants.MAIN_FXML_RESOURCE_IDENTIFIER);
+        URL url = getClass().getResource(ResourcesConstants.APP_FXML_INCLUDE_RESOURCE);
+        fxmlLoader.setLocation(url);
+        Parent root = fxmlLoader.load(url.openStream());
 
         // wire up controller
-        DetailsControler controller = loader.getController();
+        AppController controller = fxmlLoader.getController();
+        controller.setModel(model);
         controller.setPrimaryStage(primaryStage);
 
 
@@ -34,7 +40,7 @@ public class Main extends Application {
         primaryStage.setTitle("Prediction");
         Scene scene = new Scene(root, 1050, 600);
 
-        scene.getStylesheets().add(getClass().getResource(ResourcesConstants.MAIN_FXML_RESOURCE_CSS).toExternalForm());
+        //scene.getStylesheets().add(getClass().getResource(ResourcesConstants.MAIN_FXML_RESOURCE_CSS).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
 

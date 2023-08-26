@@ -1,0 +1,10 @@
+.menu-details-execution-result{
+   -fx-background-color: GRAY;
+}
+
+#openFileButton {
+   -fx-background-color: #468d2e;
+}
+#openFileButton:hover {
+   -fx-background-color: #53a835;
+}
