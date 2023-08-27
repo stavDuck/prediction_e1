@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import subcomponents.model.Model;
+import subcomponents.tabs.execution.ExecutionComponentController;
 
 import java.net.URL;
 
@@ -32,9 +33,10 @@ public class Main extends Application {
 
         // wire up controller
         AppController controller = fxmlLoader.getController();
+        //ExecutionComponentController executionComponentController = fxmlLoader.getController();
         controller.setModel(model);
         controller.setPrimaryStage(primaryStage);
-
+        //controller.setExecutionComponentController(executionComponentController);
 
         // set stage
         primaryStage.setTitle("Prediction");

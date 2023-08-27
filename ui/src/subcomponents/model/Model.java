@@ -57,5 +57,7 @@ public class Model {
         return simulation.getWorld().createDto();
     }
 
-
+    public Simulation getSimulation() {
+        return simulation;
+    }
 }
