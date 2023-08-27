@@ -10,16 +10,16 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="570.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.details.DetailsComponentController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.details.DetailsComponentController">
    <content>
-       <GridPane fx:id="gridPanelDetailsView" alignment="CENTER" hgap="5.0" maxWidth="1.7976931348623157E308" stylesheets="@DetailsComponent.css" BorderPane.alignment="CENTER">
+       <GridPane fx:id="gridPanelDetailsView" alignment="TOP_CENTER" hgap="5.0" maxWidth="1.7976931348623157E308" stylesheets="@DetailsComponent.css" BorderPane.alignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.0" minWidth="10.0" prefWidth="216.0" />
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="565.0" minWidth="10.0" prefWidth="542.0" />
            </columnConstraints>
            <rowConstraints>
-               <RowConstraints fillHeight="false" maxHeight="180.0" minHeight="55.0" vgrow="SOMETIMES" />
-               <RowConstraints maxHeight="517.0" minHeight="10.0" prefHeight="512.0" vgrow="SOMETIMES" />
+               <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="ALWAYS" />
+               <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="300.0" vgrow="SOMETIMES" />
            </rowConstraints>
            <children>
                <Label id="title-view" fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.columnIndex="1" />
