@@ -18,4 +18,11 @@ public class DtoRange {
 
     }
 
+    public float getTo() {
+        return to;
+    }
+
+    public float getFrom() {
+        return from;
+    }
 }

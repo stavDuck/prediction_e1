@@ -5,6 +5,7 @@ import engine.action.AbstractAction;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
+import engine.property.PropertyInstance;
 import engine.property.PropertyStructure;
 import engine.rule.Rule;
 import engine.termination.Termination;
@@ -157,7 +158,13 @@ public class World {
                 dto.addActionToRule(rule.getName(), action.getActionType().name());
             }
         }
+
+        for(PropertyInstance currEnv : environment.getPropertyInstancesMap().values()){
+            dto.addEnv(currEnv.getType().name(), currEnv.getName(), currEnv.getRange().getTo(), currEnv.getRange().getFrom());
+        }
+
         dto.addTermination(termination.getByTick(), termination.getBySec());
+
         return dto;
     }
 }

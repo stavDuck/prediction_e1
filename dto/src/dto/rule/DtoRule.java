@@ -34,4 +34,19 @@ public class DtoRule {
         System.out.println("");
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getActionNumber() {
+        return actionNumber;
+    }
+
+    public DtoActivation getActivation() {
+        return activation;
+    }
+
+    public List<String> getActionNames() {
+        return actionNames;
+    }
 }

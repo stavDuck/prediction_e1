@@ -12,6 +12,18 @@ public class DtoEntity {
     private List<DtoProperty> propertyList;
 
 
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public List<DtoProperty> getPropertyList() {
+        return propertyList;
+    }
+
     public DtoEntity(String entityName, int population) {
         this.entityName = entityName;
         this.population = population;

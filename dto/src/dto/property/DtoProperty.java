@@ -28,4 +28,19 @@ public class DtoProperty {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public DtoRange getRange() {
+        return range;
+    }
+
+    public boolean isInitRandom() {
+        return isInitRandom;
+    }
 }

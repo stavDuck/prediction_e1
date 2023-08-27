@@ -1,6 +1,7 @@
 package dto;
 
 import dto.entity.DtoEntity;
+import dto.env.DtoEnv;
 import dto.range.DtoRange;
 import dto.rule.DtoRule;
 import dto.rule.activation.DtoActivation;
@@ -14,10 +15,12 @@ public class Dto {
     private Map<String, DtoEntity> entities;
     private Map<String, DtoRule> rules;
     private DtoTermination termination;
+    private Map<String, DtoEnv> envs;
 
     public Dto() {
         this.entities = new HashMap<>();
         this.rules = new LinkedHashMap<>();
+        this.envs = new HashMap<>();
     }
 
     //getter
@@ -27,6 +30,8 @@ public class Dto {
     public Map<String, DtoRule> getRules() {
         return rules;
     }
+    public Map<String, DtoEnv> getEnvs(){return envs;}
+    public DtoTermination getTermination(){return termination;}
 
     public void addEntity(String entityName, int entityPopulation) {
         entities.put(entityName, new DtoEntity(entityName, entityPopulation));
@@ -36,6 +41,10 @@ public class Dto {
         DtoRange range = new DtoRange(rangeFrom, rangeTo);
         addPropertyToEntity(entityName, propertyName, propertyType, range, isInitRandom);
         //entities.get(entityName).addPropertyToEntity(propertyName, propertyType, range, isInitRandom);
+    }
+
+    public void addEnv(String envType, String envName, float to, float from){
+        envs.put(envName, new DtoEnv(envType, envName, from, to));
     }
 
     public void addPropertyToEntity(String entityName, String propertyName, String propertyType, DtoRange range, boolean isInitRandom) {

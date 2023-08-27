@@ -61,8 +61,6 @@ c
 -engine/src/engine/entity/EntityStructure.java,5\2\52c0095b80cb63a71043e7531b5278d705ecf883
 s
 Cengine/src/engine/validation/entitiesValidator/EntityValidator.java,c\5\c5defa81e8a29d49884e661ce1ff5a2b1fd3f30f
-^
-.engine/src/engine/environment/Environment.java,5\3\53e105a9dbba80fbf19f8ea4642ed359651efb86
 k
 ;engine/src/engine/validation/envValidator/EnvValidator.java,b\1\b113175841f83788a1dd75286132d67c37939aa0
 T

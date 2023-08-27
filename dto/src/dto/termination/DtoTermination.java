@@ -14,4 +14,12 @@ public class DtoTermination {
         System.out.println("Termination by ticks: "+ byTick);
         System.out.println();
     }
+
+    public Integer getByTick() {
+        return byTick;
+    }
+
+    public Integer getBySeconds() {
+        return bySeconds;
+    }
 }
