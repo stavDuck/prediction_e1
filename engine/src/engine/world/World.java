@@ -159,8 +159,13 @@ public class World {
             }
         }
 
-        for(PropertyInstance currEnv : environment.getPropertyInstancesMap().values()){
-            dto.addEnv(currEnv.getType().name(), currEnv.getName(), currEnv.getRange().getTo(), currEnv.getRange().getFrom());
+        for(PropertyInstance currEnv : environment.getPropertyInstancesMap().values()) {
+            if (currEnv.getRange() != null) {
+                dto.addEnv(currEnv.getType().name(), currEnv.getName(),
+                        currEnv.getRange().getTo(), currEnv.getRange().getFrom());
+            } else {
+                dto.addEnv(currEnv.getType().name(), currEnv.getName(), null);
+            }
         }
 
         dto.addTermination(termination.getByTick(), termination.getBySec());

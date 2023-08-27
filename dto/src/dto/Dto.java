@@ -46,6 +46,9 @@ public class Dto {
     public void addEnv(String envType, String envName, float to, float from){
         envs.put(envName, new DtoEnv(envType, envName, from, to));
     }
+    public void addEnv(String envType, String envName, DtoRange range){
+        envs.put(envName, new DtoEnv(envType, envName, range));
+    }
 
     public void addPropertyToEntity(String entityName, String propertyName, String propertyType, DtoRange range, boolean isInitRandom) {
         entities.get(entityName).addPropertyToEntity(propertyName, propertyType, range, isInitRandom);

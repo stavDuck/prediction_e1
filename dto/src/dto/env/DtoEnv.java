@@ -12,6 +12,11 @@ public class DtoEnv {
         this.envName = envName;
         this.envRange = new DtoRange(to,from);
     }
+    public DtoEnv(String envType, String envName, DtoRange range) {
+        this.envType = envType;
+        this.envName = envName;
+        this.envRange = range;
+    }
 
     public String getEnvType() {
         return envType;

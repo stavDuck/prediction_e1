@@ -85,6 +85,7 @@ public class AppController {
 
         String res = model.loadXmlFile(absolutePath);
         messageToUser.setText(res.isEmpty() ? "Successful" : res);
+        detailsTabController.loadDetailsView();
 
     }
 
