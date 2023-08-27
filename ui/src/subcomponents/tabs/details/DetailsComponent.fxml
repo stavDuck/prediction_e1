@@ -12,7 +12,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="570.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.details.DetailsComponentController">
    <content>
-       <GridPane fx:id="gridPanelDetailsView" alignment="CENTER" hgap="5.0" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+       <GridPane fx:id="gridPanelDetailsView" alignment="CENTER" hgap="5.0" maxWidth="1.7976931348623157E308" stylesheets="@DetailsComponent.css" BorderPane.alignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.0" minWidth="10.0" prefWidth="216.0" />
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="565.0" minWidth="10.0" prefWidth="542.0" />
@@ -22,7 +22,7 @@
                <RowConstraints maxHeight="517.0" minHeight="10.0" prefHeight="512.0" vgrow="SOMETIMES" />
            </rowConstraints>
            <children>
-               <Label fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.columnIndex="1" />
+               <Label id="title-view" fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.columnIndex="1" />
                <TreeView fx:id="treeViewInformation" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="200.0" prefWidth="200.0" stylesheets="@DetailsComponent.css" GridPane.rowIndex="1" />
                <TextArea fx:id="informationDetailsBody" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
            </children>

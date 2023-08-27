@@ -33,4 +33,8 @@ public class DtoEnv {
     public void setEnvName(String envName) {
         this.envName = envName;
     }
+
+    public DtoRange getEnvRange() {
+        return envRange;
+    }
 }

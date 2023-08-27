@@ -1,13 +1,31 @@
 .bordered-label{
     -fx-border-color: BLACK;
 }
-.menu-details-execution-result{
-    -fx-background-color: GRAY;
-}
 
 #openFileButton {
-    -fx-background-color: #468d2e;
+    //-fx-background-color: #468d2e;
+    -fx-background-color: linear-gradient(to bottom, #6B8E23, #4F7522);
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+
 }
 #openFileButton:hover {
-    -fx-background-color: #53a835;
+    //-fx-background-color: #53a835;
+    -fx-background-color: linear-gradient(to bottom, #4F7522, #6B8E23);
+
+}
+
+#tabPanelStyle{
+    -fx-background-color: #e0e0e0;
+}
+.tabStyles{
+    -fx-background-color: linear-gradient(to bottom, #c0c0c0, #a0a0a0);
+    -fx-background-radius: 5 5 0 0;
+    -fx-border-color: #808080;
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 5 5 0 0;
+    -fx-text-fill: black;
 }
