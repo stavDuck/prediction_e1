@@ -12,20 +12,20 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="570.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.execution.ExecutionComponentController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="570.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.execution.ExecutionComponentController">
    <content>
-      <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="441.0" prefWidth="712.0" stylesheets="@ExecutionComponent.css">
+      <GridPane alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@ExecutionComponent.css">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="32.66667175292969" />
-          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="341.0" />
-            <RowConstraints maxHeight="37.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="30.0" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="300.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" GridPane.rowIndex="1">
+            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" pannable="true" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -59,7 +59,7 @@
             </ScrollPane>
             <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" styleClass="panel-border" text="Entities" textAlignment="CENTER" />
             <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" styleClass="panel-border" text="Environment Variables" textAlignment="CENTER" GridPane.columnIndex="1" />
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" pannable="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <content>
                   <VBox fx:id="envVariablesVbox" styleClass="panel-border">
                      <children>

@@ -89,7 +89,7 @@ public class AppController {
         String res = model.loadXmlFile(absolutePath);
         //messageToUser.setText(res.isEmpty() ? "Successful" : res);
         showPopup(res);
-        //detailsTabController.loadDetailsView();
+        detailsTabController.loadDetailsView();
         executionTabController.populateTab();
     }
 
