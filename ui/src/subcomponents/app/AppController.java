@@ -5,9 +5,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -65,6 +67,7 @@ public class AppController {
     }
 
 
+
     public void setModel(Model model) {
         this.model = model;
     }
@@ -84,11 +87,40 @@ public class AppController {
         isFileSelected.set(true);
 
         String res = model.loadXmlFile(absolutePath);
-        messageToUser.setText(res.isEmpty() ? "Successful" : res);
-        detailsTabController.loadDetailsView();
-
+        //messageToUser.setText(res.isEmpty() ? "Successful" : res);
+        showPopup(res);
+        //detailsTabController.loadDetailsView();
+        executionTabController.populateTab();
     }
 
+    private void showPopup(String message) {
+        Popup popup = new Popup();
+
+        Label popupLabel = new Label(message.isEmpty() ? "File loaded successfully" : message);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(event -> popup.hide());
+
+        VBox popupContent = new VBox(10); // Use VBox layout
+        popupContent.setStyle("-fx-background-color: white" + ";-fx-border-color: #007bff" + "; -fx-padding: 10;");
+        popupContent.getChildren().addAll(popupLabel);
+
+        HBox buttonContainer = new HBox(closeButton); // Place the button in an HBox
+        //need to place the popup
+        buttonContainer.setAlignment(Pos.TOP_CENTER);
+        popupContent.getChildren().add(buttonContainer); // Add the button container to the VBox
+
+
+        /*HBox popupContent = new HBox(10);
+        popupContent.setStyle("-fx-background-color: white" + ";-fx-border-color: #007bff" + "; -fx-padding: 10;");
+        popupContent.getChildren().addAll(popupLabel, closeButton);
+
+        popup.setAutoHide(true); // Close popup when clicking outside
+        */
+        popup.getContent().add(popupContent);
+
+        popup.show(primaryStage);
+    }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
@@ -97,4 +129,16 @@ public class AppController {
         return model.getDtoWorld();
     }
 
+    public Model getModel() {
+        return model;
+    }
+
+    public void setExecutionComponentController(ExecutionComponentController executionTabController) {
+        this.executionTabController = executionTabController;
+        executionTabController.setMainController(this);
+    }
+
+    public void startExecutionTab() {
+        executionTabController.populateTab();
+    }
 }
