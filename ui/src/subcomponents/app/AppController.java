@@ -1,5 +1,6 @@
 package subcomponents.app;
 
+import dto.Dto;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -84,11 +85,15 @@ public class AppController {
 
         String res = model.loadXmlFile(absolutePath);
         messageToUser.setText(res.isEmpty() ? "Successful" : res);
+
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
+    public Dto getDtoWorld(){
+        return model.getDtoWorld();
+    }
 
 }

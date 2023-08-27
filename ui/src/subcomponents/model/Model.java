@@ -1,5 +1,6 @@
 package subcomponents.model;
 
+import dto.Dto;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationHistory;
 
@@ -50,6 +51,10 @@ public class Model {
     public Simulation createSimulationFromFile(String fileName) throws RuntimeException {
         Simulation simulation= new Simulation(fileName);
         return simulation;
+    }
+
+    public Dto getDtoWorld(){
+        return simulation.getWorld().createDto();
     }
 
 
