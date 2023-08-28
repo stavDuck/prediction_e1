@@ -68,7 +68,7 @@ public class World {
         this.termination = termination;
     }
 
-    public void setEnvValueByName(String name, String value){
+    public void setEnvValueByName(String name, String value) throws NumberFormatException {
         environment.setEnvProperty(name,value);
     }
 
@@ -171,5 +171,9 @@ public class World {
         dto.addTermination(termination.getByTick(), termination.getBySec());
 
         return dto;
+    }
+
+    public void setPopulationForEntity(String entityName, int population) {
+        entityStructures.get(entityName).setPopulation(population);
     }
 }

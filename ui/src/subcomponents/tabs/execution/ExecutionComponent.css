@@ -1,3 +1,7 @@
 .panel-border{
     -fx-border-color: BLACK;
 }
+
+.color-error-label {
+    -fx-text-fill: RED;
+}

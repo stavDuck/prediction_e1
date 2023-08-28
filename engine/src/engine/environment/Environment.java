@@ -20,7 +20,7 @@ public class Environment {
    }
 
    // setters
-    public void setEnvProperty(String name, String value) {
+    public void setEnvProperty(String name, String value) throws NumberFormatException{
         propertyInstancesMap.get(name).setVal(value);
     }
 

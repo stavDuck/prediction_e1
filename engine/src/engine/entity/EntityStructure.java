@@ -35,4 +35,8 @@ public class EntityStructure {
     public void addProperty(String name, String strType, Range range, boolean isRandom, String defaultValue) {
         entityPropMap.put(name, new PropertyStructure(name, strType, range, isRandom, defaultValue));
     }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
 }
