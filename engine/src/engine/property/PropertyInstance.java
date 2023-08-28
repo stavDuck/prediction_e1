@@ -27,7 +27,7 @@ public class PropertyInstance extends Property {
     public void setVal(Object value) {
         this.val = value;
     }
-    public void setVal(String value) {
+    public void setVal(String value) throws NumberFormatException {
        try {
            switch (type) {
                case DECIMAL:
@@ -44,7 +44,7 @@ public class PropertyInstance extends Property {
            }
        }
        catch (NumberFormatException e) {
-           System.out.println("Property: " + name + ", has a value of: " + value + ", is not a proper number");
+           throw new NumberFormatException();
        }
     }
 

@@ -33,22 +33,22 @@
                   <VBox fx:id="entitiesVbox" spacing="5.0" styleClass="panel-border">
                      <children>
                         <VBox fx:id="entityOne" styleClass="EntityPopulationView">
-                           <children>
-                              <Label text="entity name" />
-                              <TextField fx:id="entityOnePopulation" promptText="Population" />
+                        <!--<children>
+                           <!-bel fx:id="entityNameLabel" text="entity name" />
+                           <TextField fx:id="entityOnePopulation" promptText="Population" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
+                           </padding>-->
                         </VBox>
                         <VBox fx:id="entityTwo" styleClass="EntityPopulationView">
-                           <children>
-                              <Label text="entity2 name" />
-                              <TextField fx:id="entityTwoPopulation" promptText="Population" />
+                        <!--<children>
+                           <!-bel text="entity2 name" />
+                           <TextField fx:id="entityTwoPopulation" promptText="Population" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
+                           </padding>-->
                         </VBox>
                      </children>
                      <padding>
@@ -64,7 +64,7 @@
                   <VBox fx:id="envVariablesVbox" styleClass="panel-border">
                      <children>
                         <VBox>
-                           <children>
+                           <!--<children>
                               <CheckBox fx:id="envVariableCheckbox" mnemonicParsing="false" styleClass="envVariableCheckbox" text="var name" />
                               <TextField fx:id="entityTwoPopulation1" promptText="Population">
                                  <padding>
@@ -74,7 +74,7 @@
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
+                           </padding>-->
                         </VBox>
                      </children>
                   </VBox>
@@ -82,7 +82,7 @@
             </ScrollPane>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="clearButton" mnemonicParsing="false" text="Clear">
+                  <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonAction" text="Clear">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -91,7 +91,7 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="startButton" alignment="CENTER" contentDisplay="CENTER" maxWidth="-Infinity" mnemonicParsing="false" text="Start">
+                  <Button fx:id="startButton" alignment="CENTER" contentDisplay="CENTER" maxWidth="-Infinity" mnemonicParsing="false" onAction="#startButtonAction" text="Start">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
