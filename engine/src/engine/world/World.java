@@ -5,6 +5,7 @@ import engine.action.AbstractAction;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
+import engine.grid.Grid;
 import engine.property.PropertyInstance;
 import engine.property.PropertyStructure;
 import engine.rule.Rule;
@@ -21,6 +22,7 @@ public class World {
     private Map<String, EntityStructure> entityStructures; //key = smoker, value = structure
     private Termination termination;
     private Map<String, Rule> rules; //key = rule name, value = rule
+    private Grid grid;
 
     public World() {
         this.environment = new Environment();
@@ -28,6 +30,7 @@ public class World {
         this.entityStructures = new HashMap<>();
         this.rules = new LinkedHashMap<>();
         this.termination = new Termination();
+        this.grid = new Grid();
     }
 
     // getters
@@ -48,8 +51,15 @@ public class World {
         return termination;
     }
 
+    public Grid getGrid() {
+        return grid;
+    }
 
     // setters
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }

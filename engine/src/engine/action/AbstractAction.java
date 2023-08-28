@@ -10,6 +10,8 @@ public abstract class AbstractAction implements Action {
     private static final String CONDITION = "condition";
     private static final String SET = "set";
     private static final String KILL = "kill";
+    private static final String REPLACE = "replace";
+    private static final String PROXIMITY = "proximity";
 
     protected String entityName;
     protected ActionType actionType;
@@ -53,7 +55,12 @@ public abstract class AbstractAction implements Action {
             case SET:
                 this.actionType = ActionType.SET;
                 break;
-
+            case REPLACE:
+                this.actionType = ActionType.REPLACE;
+                break;
+            case PROXIMITY:
+                this.actionType = ActionType.PROXIMITY;
+                break;
 
         }
     }

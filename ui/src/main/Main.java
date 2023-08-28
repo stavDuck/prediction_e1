@@ -14,8 +14,8 @@ import java.net.URL;
 
 public class Main extends Application {
    /* public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.startMenu();
+//        Menu menu = new Menu();
+//        menu.startMenu();
     }*/
 
     private Model model;

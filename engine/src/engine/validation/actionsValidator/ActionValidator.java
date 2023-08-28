@@ -8,20 +8,15 @@ public class ActionValidator {
     public void validateActionData(PRDAction prdAction, PRDEntities entities, PRDEvironment prdEvironment) throws XmlValidationException {
         PRDEntity actionEntity = null;
         boolean isPropertyFound = false;
-        List<PRDEntity> prdEntityList = entities.getPRDEntity();
-        //check entity exists
-        for(PRDEntity prdEntity : prdEntityList) {
-            if(prdEntity.getName().equals(prdAction.getEntity())) {
-                actionEntity = prdEntity;
-                break;
-            }
+        if(prdAction.getType().equals("replace")) {
+            actionEntity = checkEntityExist(prdAction.getKill(), entities);
         }
-
-        // if actionEntity doesn't exist
-        if(actionEntity == null){
-            throw new XmlValidationException("Action entity: " + prdAction.getEntity() + " doesn't exist");
+        else if(prdAction.getType().equals("proximity")) {
+            actionEntity = checkEntityExist(prdAction.getPRDBetween().getSourceEntity(), entities);
         }
-
+        else {
+            actionEntity = checkEntityExist(prdAction.getEntity(), entities);
+        }
         //check property exists, in case action isn't kill
         if((prdAction.getType().equals("increase") || prdAction.getType().equals("decrease") || prdAction.getType().equals("set")) && actionEntity != null) {
             List<PRDProperty> prdPropertyList = actionEntity.getPRDProperties().getPRDProperty();
@@ -36,9 +31,26 @@ public class ActionValidator {
             }
         }
         // validation conditions when/ then/ else
-        validateActionByType(prdAction, prdEvironment, actionEntity);
+        validateActionByType(prdAction, prdEvironment, entities, actionEntity);
     }
 
+    public PRDEntity checkEntityExist(String entityFromAction, PRDEntities entities) throws XmlValidationException {
+        PRDEntity actionEntity = null;
+        List<PRDEntity> prdEntityList = entities.getPRDEntity();
+        //check entity exists
+        for(PRDEntity prdEntity : prdEntityList) {
+            if(prdEntity.getName().equals(entityFromAction)) {
+                actionEntity = prdEntity;
+                break;
+            }
+        }
+
+        // if actionEntity doesn't exist
+        if(actionEntity == null){
+            throw new XmlValidationException("Action entity: " + entityFromAction + " doesn't exist");
+        }
+        return actionEntity;
+    }
     public void verifyTypeIsNumber(String expression, PRDEvironment prdEvironment, PRDEntity prdEntity) throws XmlValidationException {
         String value;
         PRDProperty property = checkProperty(expression, prdEntity);
@@ -115,11 +127,11 @@ public class ActionValidator {
         }
     }
 
-    public void validateCondition(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
+    public void validateCondition(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
         validateWhenCondition(prdAction.getPRDCondition(), prdEvironment, actionEntity);
-        validateThenCondition(prdAction.getPRDThen(), prdEvironment, actionEntity);
+        validateThenCondition(prdAction.getPRDThen(), prdEvironment, entities, actionEntity);
         if(prdAction.getPRDElse() != null) {
-            validateElseCondition(prdAction.getPRDElse(), prdEvironment, actionEntity);
+            validateElseCondition(prdAction.getPRDElse(), prdEvironment, entities, actionEntity);
         }
     }
 
@@ -137,15 +149,15 @@ public class ActionValidator {
         }
     }
 
-    public void validateThenCondition(PRDThen prdThen, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
+    public void validateThenCondition(PRDThen prdThen, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
         for (PRDAction action : prdThen.getPRDAction()) {
-            validateActionByType(action, prdEvironment, actionEntity);
+            validateActionByType(action, prdEvironment, entities, actionEntity);
         }
     }
 
-    public void validateElseCondition(PRDElse prdElse, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
+    public void validateElseCondition(PRDElse prdElse, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
         for (PRDAction action : prdElse.getPRDAction()) {
-            validateActionByType(action, prdEvironment, actionEntity);
+            validateActionByType(action, prdEvironment, entities, actionEntity);
         }
     }
 
@@ -226,11 +238,22 @@ public class ActionValidator {
         }
     }
 
-    public void validateActionByType(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
-       // check if entity exist
-        if(!(prdAction.getEntity().equals(actionEntity.getName()))) {
+    public void validateReplace(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
+        //need to only check the 'create' entity exist
+        checkEntityExist(prdAction.getCreate(), entities);
+    }
+
+    public void validateProximity(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
+        //need to only check the 'target' entity exist
+        checkEntityExist(prdAction.getPRDBetween().getTargetEntity(), entities);
+
+        //need to check 'of' expression is a number
+    }
+    public void validateActionByType(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
+       // check if entity exist - WHY????????
+        /*if(!(prdAction.getEntity().equals(actionEntity.getName()))) {
             throw new XmlValidationException("Action: " + prdAction.getType() + " entity: " + prdAction.getEntity() + " is not found, please check the entity name is correct.");
-        }
+        }*/
         if(prdAction.getType().equals("increase") || prdAction.getType().equals("decrease")) {
             // check if property exist
             if(!isPropertyExistInAction(actionEntity.getPRDProperties().getPRDProperty(), prdAction.getProperty())){
@@ -249,7 +272,7 @@ public class ActionValidator {
         }
 
         else if(prdAction.getType().equals("condition")) {
-            validateCondition(prdAction, prdEvironment, actionEntity);
+            validateCondition(prdAction, prdEvironment, entities, actionEntity);
         }
         else if(prdAction.getType().equals("set")) {
             if(!isPropertyExistInAction(actionEntity.getPRDProperties().getPRDProperty(), prdAction.getProperty())){
@@ -257,6 +280,12 @@ public class ActionValidator {
                         " is not found, please check the property name is correct.");
             }
             validateSet(prdAction, prdEvironment, actionEntity);
+        }
+        else if(prdAction.getType().equals("replace")) {
+            validateReplace(prdAction, prdEvironment, entities, actionEntity);
+        }
+        else if(prdAction.getType().equals("proximity")) {
+            validateProximity(prdAction, prdEvironment, entities, actionEntity);
         }
     }
 

@@ -1,9 +1,6 @@
 package engine.simulation.copyhandler;
 import engine.action.AbstractAction;
-import engine.action.type.DecreaseAction;
-import engine.action.type.IncreaseAction;
-import engine.action.type.KillAction;
-import engine.action.type.SetAction;
+import engine.action.type.*;
 import engine.action.type.calculation.Calculation;
 import engine.action.type.condition.Condition;
 import engine.action.type.condition.ConditionMultiple;
@@ -11,6 +8,7 @@ import engine.action.type.condition.ConditionSingle;
 import engine.action.type.condition.conditionSingularityApi;
 import engine.activation.Activation;
 import engine.entity.EntityStructure;
+import engine.grid.Grid;
 import engine.range.Range;
 import engine.rule.Rule;
 import engine.termination.Termination;
@@ -25,17 +23,18 @@ public class CopyHandler {
     private static final String CONDITION = "condition";
     private static final String SET = "set";
     private static final String KILL = "kill";
-
+    private static final String REPLACE = "replace";
+    private static final String PROXIMITY = "proximity";
     public void copyData(PRDWorld prdWorld, World world) {
         copyEnvironmentProperties(prdWorld, world);
         copyEntityStructure(prdWorld, world);
         copyRules(prdWorld, world);
         copyTermination(prdWorld, world);
-
+        copyGrid(prdWorld, world);
     }
 
     public void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
-        List<PRDEnvProperty> prdList = prdWorld.getPRDEvironment().getPRDEnvProperty();
+        List<PRDEnvProperty> prdList = prdWorld.getPRDEnvironment().getPRDEnvProperty();
         for(PRDEnvProperty property : prdList) {
 
             // if range in null (when type is not decimal/ float) set range in our world as null
@@ -100,7 +99,7 @@ public class CopyHandler {
              probability = rule.getPRDActivation().getProbability() != null ? rule.getPRDActivation().getProbability() : 1;
              newTicks = rule.getPRDActivation().getTicks() != null ? rule.getPRDActivation().getTicks() : 1;
          }
-         return  new Activation(newTicks, probability);
+         return new Activation(newTicks, probability);
      }
 
      private AbstractAction copyActionFromPRDRule(PRDAction action){
@@ -111,6 +110,8 @@ public class CopyHandler {
              case (CONDITION): return createNewCondition(action);
              case (SET): return createNewSet(action);
              case (KILL): return createNewKill(action);
+             case (REPLACE): return createNewReplace(action);
+             case (PROXIMITY): return createNewProximity(action);
              default: return null;
          }
      }
@@ -216,6 +217,8 @@ public class CopyHandler {
             return new KillAction(action.getEntity(), action.getType());
     }
 
+    public ReplaceAction createNewReplace(PRDAction action) { return new ReplaceAction(action.getKill(), action.getType(), action.getCreate(), action.getMode());}
+    public ProximityAction createNewProximity(PRDAction action) { return new ProximityAction(action.getPRDBetween().getSourceEntity(), action.getType(), action.getPRDBetween().getTargetEntity(), action.getPRDEnvDepth().getOf());}
     public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
@@ -230,5 +233,9 @@ public class CopyHandler {
         // supporting one of them is null of both has values
         world.setTermination(new Termination(seconds != null ? seconds.getCount() : null,
                 ticks != null ? ticks.getCount(): null));
+    }
+
+    public void copyGrid(PRDWorld prdWorld, World world) {
+        world.setGrid(new Grid(prdWorld.getPRDGrid().getRows(), prdWorld.getPRDGrid().getColumns()));
     }
 }
