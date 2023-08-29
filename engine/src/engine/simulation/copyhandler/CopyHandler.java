@@ -31,6 +31,7 @@ public class CopyHandler {
         copyRules(prdWorld, world);
         copyTermination(prdWorld, world);
         copyGrid(prdWorld, world);
+        copyTreadCount(prdWorld.getPRDThreadCount(),world);
     }
 
     public void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
@@ -237,5 +238,9 @@ public class CopyHandler {
 
     public void copyGrid(PRDWorld prdWorld, World world) {
         world.setGrid(new Grid(prdWorld.getPRDGrid().getRows(), prdWorld.getPRDGrid().getColumns()));
+    }
+
+    public void copyTreadCount(int count, World world){
+        world.setThreadCount(count);
     }
 }

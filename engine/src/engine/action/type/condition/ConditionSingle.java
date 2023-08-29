@@ -96,6 +96,10 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
 
     @Override
     public void invoke(Context context) throws RuntimeException{
+      // addition to task 2
+        // get property value in Ojbect form - actual type behind
+        // get value for condition by prop type
+
        Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
        Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
 

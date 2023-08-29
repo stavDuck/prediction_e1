@@ -3,6 +3,7 @@ package engine.grid;
 public class Grid {
     private int rows;
     private int columns;
+    private boolean[][] gridBoard;
 
     public Grid() {
         this.rows = 0;
@@ -12,6 +13,7 @@ public class Grid {
     public Grid(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
+        gridBoard = new boolean[rows][columns];
     }
 
     //getters
@@ -28,5 +30,9 @@ public class Grid {
     }
     public void setColumns(int columns) {
         this.columns = columns;
+    }
+
+    public void initGridBoard(){
+        gridBoard = new boolean[rows][columns]; // default values are false for free cells
     }
 }

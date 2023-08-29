@@ -23,6 +23,7 @@ public class World {
     private Termination termination;
     private Map<String, Rule> rules; //key = rule name, value = rule
     private Grid grid;
+    private int threadCount;
 
     public World() {
         this.environment = new Environment();
@@ -31,6 +32,7 @@ public class World {
         this.rules = new LinkedHashMap<>();
         this.termination = new Termination();
         this.grid = new Grid();
+        this.threadCount = 0;
     }
 
     // getters
@@ -54,10 +56,28 @@ public class World {
     public Grid getGrid() {
         return grid;
     }
+    public int getGridRows(){
+        return grid.getRows();
+    }
+    public int getGridCols(){
+        return grid.getColumns();
+    }
+    public int getMaxEntityInstancesAmount(){
+        return (getGridRows() * getGridCols());
+    }
+    public int getThreadCount() {
+        return threadCount;
+    }
 
     // setters
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+    public void setInitGrid(int rows, int cols){
+        grid.setRows(rows);
+        grid.setColumns(cols);
+        grid.initGridBoard();
     }
 
     public void setEnvironment(Environment environment) {
@@ -73,6 +93,9 @@ public class World {
     }
     public void setRules(Map<String, Rule> rules) {
         this.rules = rules;
+    }
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
     public void setTermination(Termination termination) {
         this.termination = termination;

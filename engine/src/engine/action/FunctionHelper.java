@@ -1,4 +1,5 @@
 package engine.action;
+import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import engine.execution.context.Context;
 import engine.property.type.Type;
 import engine.value.generator.ValueGeneratorFactory;
@@ -8,48 +9,64 @@ public class FunctionHelper {
         return context.getEnvironmentVariable(nameProp).getVal();
     }
 
-    // Function gets the string expression, the context (instanse, envList..) and the propName we need to set the value into
-    public static Object getValueToInvoke(String expression, Context context, String propName) throws RuntimeException{
-        Type typeProp = context.getPrimaryEntityInstance().getPropertyInstanceByName(propName).getType();
-        Object value;
+    // Function get an expression string, context and get the property correct name
 
-        // if value is in env func
-        if(expression.contains("environment(")){
-            value = FunctionHelper.environment(context,
-                    extractStringFromEnviromentFunc(expression));
-        }
-
-        // if value is in random func - random can be only numeric
-        else if(expression.contains("random(")){
-            String randNum = extractStringFromRandomFunc(expression);
-
-            switch (typeProp) {
-                case DECIMAL:
-                    value = ValueGeneratorFactory.createRandomInteger( 1, Integer.parseInt(randNum)).generateValue();
-                    break;
-                case FLOAT:
-                    value = ValueGeneratorFactory.createRandomFloat((float)1, Float.parseFloat(randNum)).generateValue();
-                    break;
-                default:
-                    throw new RuntimeException("invalid action - The expression has random() function but property type is not numeric");
-            }
-        }
-
-        // if value is a property from the instance get the value
-        else if(context.getPrimaryEntityInstance().getPropertyInstanceByName(expression) != null){
-            value = context.getPrimaryEntityInstance().getPropertyInstanceByName(expression).getVal();
-        }
-
-        // in free style string - try to convert according to the target property type
-        else{
-            value = parserFromStringAccordingToType(expression, typeProp);
-        }
-        return value;
+    // get used only by single condition with property expression
+    public static Object getPropertyExpression(String expression, Context context){
+        Object
     }
+
+
+    // Old function
+    // Function gets the string expression, the context (instanse, envList..) and the propName we need to set the value into
+    public static Object getValueToInvoke(String expression, Context context, String propName) throws RuntimeException {
+        return (getValueFromExpression(expression, context));
+    }
+
+    // new Function Get Value from Expression - Type is dynamic inside object
+        public static Object getValueFromExpression(String expression, Context context) throws RuntimeException {
+            Object value;
+
+            // if value is in env func
+            if (expression.contains("environment(")) {
+                value = FunctionHelper.environment(context,
+                        extractStringFromEnviromentFunc(expression));
+            }
+
+            // if Task 2 only Float avilable
+            else if (expression.contains("random(")) {
+                String randNum = extractStringFromRandomFunc(expression);
+                value = ValueGeneratorFactory.createRandomFloat((float) 1, Float.parseFloat(randNum)).generateValue();
+            }
+
+            // NEED TO ADD EVALUATE , PRECENT, TICKS + TICKS SUPPORT
+            else if(expression.contains("evaluate")){
+                String resVal = extraceStringFromEvaluateFunc(expression);
+                String[] res = resVal.split(".");
+                return context.getEntityInstanceManager().getInstancesByName(res[0]).get(0)
+            }
+
+
+            // if value is a property from the instance get the value
+            else if (context.getPrimaryEntityInstance().getPropertyInstanceByName(expression) != null) {
+                value = context.getPrimaryEntityInstance().getPropertyInstanceByName(expression).getVal();
+            }
+
+            // In Task 2 if free txt stay in String format
+            else {
+                value = expression;
+            }
+            return value;
+        }
 
     public static String extractStringFromEnviromentFunc(String input){
         return input.substring(
                 input.indexOf("environment(") + 12,
+                input.indexOf(")"));
+    }
+
+    public static String extraceStringFromEvaluateFunc(String input){
+        return input.substring(input.indexOf("evaluate(") + 9,
                 input.indexOf(")"));
     }
 

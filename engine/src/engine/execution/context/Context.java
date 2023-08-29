@@ -4,8 +4,13 @@ import engine.entity.EntityInstanceManager;
 import engine.environment.Environment;
 import engine.property.PropertyInstance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Context {
     private EntityInstance primaryEntityInstance; // the instance the rule invoke onto
+
+    private List<EntityInstance> secondaryEntityInstances;
     private EntityInstanceManager entityInstanceManager;// has a map with category and list of instanses
     private Environment env;
 
@@ -13,6 +18,8 @@ public class Context {
         this.primaryEntityInstance = entityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.env = env;
+        // init as empty list
+        this.secondaryEntityInstances = new ArrayList<>();
     }
     public EntityInstance getPrimaryEntityInstance() {
         return primaryEntityInstance;
@@ -24,4 +31,15 @@ public class Context {
         return env.getEnvProperty(name);
     }
 
+    public List<EntityInstance> getSecondaryEntityInstances(){
+        return secondaryEntityInstances;
+    }
+
+    public EntityInstanceManager getEntityInstanceManager() {
+        return entityInstanceManager;
+    }
+
+    public void addNewInstandToSecondaryEntityInstances(EntityInstance entityInstance){
+        secondaryEntityInstances.add(entityInstance);
+    }
 }
