@@ -93,10 +93,10 @@ public class AppController {
         executionTabController.populateTab();
     }
 
-    private void showPopup(String message) {
+    public void showPopup(String message) {
         Popup popup = new Popup();
 
-        Label popupLabel = new Label(message.isEmpty() ? "File loaded successfully" : message);
+        Label popupLabel = new Label(message);
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(event -> popup.hide());

@@ -2,16 +2,19 @@ package engine.termination;
 
 public class Termination {
     private boolean isStop = false;
+    private boolean stoppedByUser;
     private Integer bySec;
     private Integer byTick;
 
     public Termination(int bySec, int byTick) {
         this.bySec = bySec;
         this.byTick = byTick;
+        this.stoppedByUser = false;
     }
     public Termination(Integer bySec, Integer byTick) {
         this.bySec = bySec;
         this.byTick = byTick;
+        this.stoppedByUser = false;
     }
 
     public Termination() {

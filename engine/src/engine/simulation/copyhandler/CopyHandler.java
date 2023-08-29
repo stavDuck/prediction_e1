@@ -51,7 +51,8 @@ public class CopyHandler {
         List<PRDEntity> prdEntityListList = prdWorld.getPRDEntities().getPRDEntity();
         for(PRDEntity entity : prdEntityListList) {
             //adding a new entity to the world's entityStructure map
-            world.addEntityStructure(entity.getName(), new EntityStructure(entity.getPRDPopulation(), entity.getName()));
+            //the population is received by the user, so the initial value is 0
+            world.addEntityStructure(entity.getName(), new EntityStructure(0, entity.getName()));
 
             List<PRDProperty> prdPropertyList = entity.getPRDProperties().getPRDProperty();
             for(PRDProperty property : prdPropertyList) {
@@ -223,17 +224,22 @@ public class CopyHandler {
     public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
-        for (Object curr : prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond()){
-            if(curr instanceof PRDByTicks){
-                ticks = (PRDByTicks) curr;
+        //or by user or tick/ seconds
+        if (prdWorld.getPRDTermination().getPRDByUser() != null) {
+            world.setTermination(new Termination(null, null));
+        } else {
+            for (Object curr : prdWorld.getPRDTermination().getPRDBySecondOrPRDByTicks()) {
+                if (curr instanceof PRDByTicks) {
+                    ticks = (PRDByTicks) curr;
+                } else if (curr instanceof PRDBySecond) {
+                    seconds = (PRDBySecond) curr;
+                }
             }
-            else if(curr instanceof PRDBySecond){
-                seconds = (PRDBySecond) curr;
-            }
-        }
+
         // supporting one of them is null of both has values
         world.setTermination(new Termination(seconds != null ? seconds.getCount() : null,
-                ticks != null ? ticks.getCount(): null));
+                ticks != null ? ticks.getCount() : null));
+        }
     }
 
     public void copyGrid(PRDWorld prdWorld, World world) {

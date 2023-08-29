@@ -25,7 +25,7 @@ public class RulesValidator extends ValidationCommonFunctions {
                         " name is not valid, name should not have spaces");
             }
 
-            actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEvironment());
+            actionsValidator.validateActionsData(rule, prdWorld.getPRDEntities(), prdWorld.getPRDEnvironment());
             prdNameList.put(trimmedName, (prdNameList.get(trimmedName) == null ?
                     1 : prdNameList.get(trimmedName + 1)));
         }

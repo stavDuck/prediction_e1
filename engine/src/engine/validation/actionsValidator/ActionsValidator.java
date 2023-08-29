@@ -1,14 +1,11 @@
 package engine.validation.actionsValidator;
 import engine.validation.exceptions.XmlValidationException;
-import generated.PRDAction;
-import generated.PRDEntities;
-import generated.PRDEvironment;
-import generated.PRDRule;
+import generated.*;
 
 import java.util.List;
 
 public class ActionsValidator {
-    public void validateActionsData(PRDRule prdRule, PRDEntities prdEntities, PRDEvironment prdEvironment) throws XmlValidationException {
+    public void validateActionsData(PRDRule prdRule, PRDEntities prdEntities, PRDEnvironment prdEvironment) throws XmlValidationException {
         ActionValidator actionValidator = new ActionValidator();
 
         List<PRDAction> prdActionList = prdRule.getPRDActions().getPRDAction();
