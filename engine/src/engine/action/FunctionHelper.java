@@ -1,12 +1,20 @@
 package engine.action;
 import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import engine.execution.context.Context;
+import engine.property.PropertyInstance;
 import engine.property.type.Type;
 import engine.value.generator.ValueGeneratorFactory;
 
 public class FunctionHelper {
     public static Object environment(Context context, String nameProp) {
         return context.getEnvironmentVariable(nameProp).getVal();
+    }
+
+    // Function get an expression string, context and get the property correct name
+
+    // get used only by single condition with property expression
+    public static Object getPropertyExpression(String expression, Context context) {
+        Object
     }
 
     // Old function
@@ -23,7 +31,6 @@ public class FunctionHelper {
         if (expression.contains("environment(")) {
             value = FunctionHelper.environment(context,
                     extractStringFromEnviromentFunc(expression));
-
         }
 
         // if Task 2 only Float avilable
@@ -44,7 +51,7 @@ public class FunctionHelper {
         } else if (expression.contains("ticks")) {
             String resVal = extractStringFromTicksFunc(expression);
             String[] res = resVal.split(".");
-            value = calculateTicks(res[0], res[1]);
+            value = calculateTicks(res[0], res[1], context);
         }
         // if value is a property from the instance get the value
         else if (context.getPrimaryEntityInstance().getPropertyInstanceByName(expression) != null) {
@@ -64,8 +71,10 @@ public class FunctionHelper {
         return ((Integer)arg1 * (Integer) arg2) / 100;
     }
 
-    public static Integer calculateTicks(String entity, String property) {
-
+    public static Integer calculateTicks(String entity, String property, Context context) {
+        //need to get the property using the evaluate func
+        PropertyInstance propertyInstance  = getfromEvaluate;
+        return (context.getCurrTick() - propertyInstance.getLastEndTick());
     }
     public static String extractStringFromEnviromentFunc(String input) {
         return input.substring(

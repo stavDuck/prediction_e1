@@ -146,7 +146,7 @@ public class World {
                 for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
                     // on every entity run all the active rules
                     for (Rule currRule : ActiveRules) {
-                        currRule.inokeRule(instanceManager, environment, currEntity);
+                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0]);
                     }
                 }
             }
@@ -182,10 +182,10 @@ public class World {
             for(Rule currRule : rules.values()){
                 // if rule is active
                 if(isRuleActive(currRule, tick)) {
-                    currRule.inokeRule(instanceManager, environment);
+                    currRule.inokeRule(instanceManager, environment, tick);
                 }
             }
-            tick ++;
+            tick++;
             // check if termination coditions are met
             isSimulationTerminated(tick, startTimeSeconds);
         }*/

@@ -12,20 +12,23 @@ public class Context {
     private EntityInstance secondaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;// has a map with category and list of instanses
     private Environment env;
+    private int currTick;
 
     // ctor when action has secondary
-    public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env, EntityInstance secondaryEntityInstance){
+    public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env, EntityInstance secondaryEntityInstance, int currTick){
         this.primaryEntityInstance = entityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.env = env;
         this.secondaryEntityInstance = secondaryEntityInstance;
+        this.currTick = currTick;
     }
     // ctor when action doesn't have secondary
-    public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env){
+    public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env, int currTick){
         this.primaryEntityInstance = entityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.env = env;
         this.secondaryEntityInstance = null;
+        this.currTick = currTick;
     }
 
     //getter
@@ -53,5 +56,13 @@ public class Context {
     }
     public void setSecondaryEntityInstance(EntityInstance secondaryEntityInstance) {
         this.secondaryEntityInstance = secondaryEntityInstance;
+    }
+
+    public int getCurrTick() {
+        return currTick;
+    }
+
+    public void setCurrTick(int currTick) {
+        this.currTick = currTick;
     }
 }

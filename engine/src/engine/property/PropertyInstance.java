@@ -1,16 +1,21 @@
 package engine.property;
+import engine.property.tickhistory.TickHistory;
 import engine.property.type.Type;
 import engine.range.Range;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyInstance extends Property {
     private Object val;
     private boolean isUserSetValue;
-
+    private List<TickHistory> tickHistory;
     // doing create new instance for new entity
     public PropertyInstance(String name, Type type, Range range, Object value) {
         super(name, type, range);
         this.val = value;
         isUserSetValue = false;
+        this.tickHistory = new ArrayList<>();
     }
 
     // doing create new env property
@@ -70,5 +75,18 @@ public class PropertyInstance extends Property {
 
     public void setUserSetValue(boolean userSetValue) {
         isUserSetValue = userSetValue;
+    }
+
+    public List<TickHistory> getTickHistory() {
+        return tickHistory;
+    }
+
+    public void setTickHistory(List<TickHistory> tickHistory) {
+        this.tickHistory = tickHistory;
+    }
+
+    //gets the latest tick the property changed in
+    public int getLastEndTick() {
+        return tickHistory.get(tickHistory.size() - 1).getEndTick();
     }
 }

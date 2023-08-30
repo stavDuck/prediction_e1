@@ -45,7 +45,7 @@ public class Rule {
         this.activation = activation;
     }
 
-    public void inokeRule(EntityInstanceManager instanceManager, Environment environment, EntityInstance currEntity) {
+    public void inokeRule(EntityInstanceManager instanceManager, Environment environment, EntityInstance currEntity, int currTick) {
         // run on all actions
         for (AbstractAction currAction : actions) {
             /*
@@ -62,12 +62,12 @@ public class Rule {
 
                     // invoke for every pair (curr entity, secondary entity)
                     for (EntityInstance currSecondary : secondaryInstancesLst) {
-                        currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary));
+                        currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary, currTick));
                     }
                 }
                 // else no secondery - invoke rule only on curr instance
                 else {
-                    currAction.invoke(createContext(instanceManager, environment, currEntity));
+                    currAction.invoke(createContext(instanceManager, environment, currEntity, currTick));
                 }
 
 
@@ -103,12 +103,12 @@ public class Rule {
 
 
     // create context without secondary
-    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance){
-        return new Context(currInstance, instanceManager, environment);
+    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, int currTick){
+        return new Context(currInstance, instanceManager, environment, currTick);
     }
     // create context with secondary
-    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, EntityInstance secondaryInstance){
-        return new Context(currInstance, instanceManager, environment, secondaryInstance);
+    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, EntityInstance secondaryInstance, int currTick){
+        return new Context(currInstance, instanceManager, environment, secondaryInstance, currTick);
     }
 
     public int getActionsSize() {
