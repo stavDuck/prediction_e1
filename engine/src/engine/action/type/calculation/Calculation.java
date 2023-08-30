@@ -1,6 +1,7 @@
 package engine.action.type.calculation;
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
@@ -25,8 +26,8 @@ public class Calculation extends AbstractAction {
 
     // ctor for secondary
     public Calculation(String entityName, String actionType, String operatorType,
-                       String resultProp, String arg1, String arg2, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+                       String resultProp, String arg1, String arg2, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.operatorType = operatorType;
         this.resultProp = resultProp;
         this.arg1 = arg1;

@@ -31,16 +31,16 @@ public class ConditionMultiple extends AbstractAction implements conditionSingul
     }
 
     // ctor for secondary
-    public ConditionMultiple(String entityName, String logical, String actionType, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+    public ConditionMultiple(String entityName, String logical, String actionType, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.logical = logical;
         this.conditionLst = new ArrayList<>(); // empty list
 
         // set result default value - if and -> start with true, if or -> start with false
         this.result  = logical.equals("and") ? true : false;
     }
-    public ConditionMultiple(String entityName, String logical, ActionType actionType, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+    public ConditionMultiple(String entityName, String logical, ActionType actionType, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.logical = logical;
         this.conditionLst = new ArrayList<>(); // empty list
 

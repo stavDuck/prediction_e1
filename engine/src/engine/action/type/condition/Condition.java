@@ -25,8 +25,8 @@ public class Condition extends AbstractAction {
     }
 
     // ctor for secondary
-    public Condition(String entityName, String actionType, conditionSingularityApi whenCondition, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+    public Condition(String entityName, String actionType, conditionSingularityApi whenCondition, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.whenCondition = whenCondition;
         thenCondition = new ArrayList<>();
         elseCondition = new ArrayList<>();

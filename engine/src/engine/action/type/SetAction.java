@@ -2,6 +2,7 @@ package engine.action.type;
 
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 
@@ -18,8 +19,8 @@ public class SetAction extends AbstractAction {
     }
 
     // ctor for action with secondary
-    public SetAction(String entityName, String property, String actionType, String newValue, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType,secondaryAmount, secondaryEntityName);
+    public SetAction(String entityName, String property, String actionType, String newValue, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType,secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.property = property;
         this.newValue = newValue;
     }
