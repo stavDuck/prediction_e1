@@ -167,6 +167,8 @@ public class ExecutionComponentController {
     }
 
     public void validateEntityPopulation() {
+        int sum = 0;
+        int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
@@ -175,6 +177,7 @@ public class ExecutionComponentController {
                         try {
                             verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, "", true);
+                            sum += Integer.parseInt(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText());
                         }
                         catch (NumberFormatException e) {
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, e.getMessage(), false);
@@ -184,11 +187,13 @@ public class ExecutionComponentController {
             }
         }
 
+        if(sum > limit) {
+            mainController.showPopup("Population sum cannot exceed the limit of " + limit);
+        }
     }
 
     public void verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
-            //NEED TO ADD VALIDATION FOR GRID!!!
             int pop = Integer.parseInt(population);
             mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, pop);
         }
@@ -198,7 +203,7 @@ public class ExecutionComponentController {
 
             }
             else {
-                throw new NumberFormatException("Population value should be numeric");
+                throw new NumberFormatException("Population value should be numeric and an integer");
             }
         }
     }

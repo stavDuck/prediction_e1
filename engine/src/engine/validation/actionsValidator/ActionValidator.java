@@ -5,7 +5,7 @@ import generated.*;
 import java.util.List;
 
 public class ActionValidator {
-    public void validateActionData(PRDAction prdAction, PRDEntities entities, PRDEvironment prdEvironment) throws XmlValidationException {
+    public void validateActionData(PRDAction prdAction, PRDEntities entities, PRDEnvironment prdEvironment) throws XmlValidationException {
         PRDEntity actionEntity = null;
         boolean isPropertyFound = false;
         if(prdAction.getType().equals("replace")) {
@@ -51,7 +51,7 @@ public class ActionValidator {
         }
         return actionEntity;
     }
-    public void verifyTypeIsNumber(String expression, PRDEvironment prdEvironment, PRDEntity prdEntity) throws XmlValidationException {
+    public void verifyTypeIsNumber(String expression, PRDEnvironment prdEvironment, PRDEntity prdEntity) throws XmlValidationException {
         String value;
         PRDProperty property = checkProperty(expression, prdEntity);
         //if environment function helper
@@ -74,6 +74,12 @@ public class ActionValidator {
                         ", which is not numeric");
             }
         }
+        else if(expression.contains("evaluate(")) {
+
+        }
+        else if(expression.contains("percent(") || expression.contains("ticks(")) {
+
+        }
         //if environment property
         else if (property != null) {
             if (!((property.getType()).equals("decimal")) && !((property.getType()).equals("float"))) {
@@ -90,7 +96,7 @@ public class ActionValidator {
         }
     }
 
-    public String environmentType(String nameProp, PRDEvironment prdEvironment) {
+    public String environmentType(String nameProp, PRDEnvironment prdEvironment) {
         List<PRDEnvProperty> prdEnvProperties = prdEvironment.getPRDEnvProperty();
         for(PRDEnvProperty property : prdEnvProperties) {
             if(property.getPRDName().equals(nameProp)) {
@@ -109,7 +115,7 @@ public class ActionValidator {
         return null;
     }
 
-    public void validateCalculationAction(PRDAction prdAction, PRDEvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
+    public void validateCalculationAction(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntity actionEntity) throws XmlValidationException {
         //check result-prop is a number
         verifyTypeIsNumber(prdAction.getResultProp(), prdEvironment, actionEntity);
         if(prdAction.getPRDMultiply() != null) {

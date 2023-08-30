@@ -45,7 +45,7 @@ public class Model {
         }
 
         // loaded sucessfuly
-        return "";
+        return "File loaded successfully";
     }
 
     public Simulation createSimulationFromFile(String fileName) throws RuntimeException {

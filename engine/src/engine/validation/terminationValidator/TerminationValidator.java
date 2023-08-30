@@ -9,7 +9,7 @@ public class TerminationValidator {
     public boolean validateTerminationData(PRDWorld prdWorld) throws XmlValidationException {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
-        for (Object curr : prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond()){
+        for (Object curr : prdWorld.getPRDTermination().getPRDBySecondOrPRDByTicks()){
             if(curr instanceof PRDByTicks){
                 ticks = (PRDByTicks) curr;
             }
@@ -17,9 +17,13 @@ public class TerminationValidator {
                 seconds = (PRDBySecond) curr;
             }
         }
-        if (ticks == null && seconds == null)
-            throw new XmlValidationException("Invalid Termination conditions, ticks and seconds can't be both null");
-
+        //if no termination
+        if (ticks == null && seconds == null && prdWorld.getPRDTermination().getPRDByUser() == null)
+            throw new XmlValidationException("Invalid Termination conditions, please choose a termination option");
+        //if termination by user AND another option
+        else if(prdWorld.getPRDTermination().getPRDByUser() != null && (ticks != null || seconds != null)) {
+            throw new XmlValidationException("Invalid Termination conditions, 'User Termination' cannot be combined with other options");
+        }
         return true;
     }
 }
