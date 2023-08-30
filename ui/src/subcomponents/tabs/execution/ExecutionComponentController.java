@@ -170,12 +170,15 @@ public class ExecutionComponentController {
 
     @FXML
     void startButtonAction(ActionEvent event) {
-        validateEntityPopulation();
-        verifyEnvVariable();
-        mainController.moveToResultsTab();
+        boolean entityVal, envVal;
+        entityVal = validateEntityPopulation();
+        envVal = verifyEnvVariable();
+        if(entityVal && envVal)
+            mainController.moveToResultsTab();
     }
 
-    public void validateEntityPopulation() {
+    public boolean validateEntityPopulation() {
+        boolean res = true;
         int sum = 0;
         int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
         for (Node node : entitiesVbox.getChildren()) {
@@ -186,9 +189,11 @@ public class ExecutionComponentController {
                         try {
                             verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, "", true);
+                            res = true;
                             sum += Integer.parseInt(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText());
                         }
                         catch (NumberFormatException e) {
+                            res = false;
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, e.getMessage(), false);
                         }
                     }
@@ -197,8 +202,10 @@ public class ExecutionComponentController {
         }
 
         if(sum > limit) {
+            res = false;
             mainController.showPopup("Population sum cannot exceed the limit of " + limit);
         }
+        return res;
     }
 
     public void verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
@@ -216,7 +223,8 @@ public class ExecutionComponentController {
         }
     }
 
-    public void verifyEnvVariable() {
+    public boolean verifyEnvVariable() {
+        boolean valid = true;
         boolean checked = false;
         String type = "";
         String envName = "";
@@ -246,7 +254,7 @@ public class ExecutionComponentController {
                                 else if(type.equalsIgnoreCase("string")) {
                                     mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, ((TextField) innerNode).getText());
                                 }
-
+                                valid = true;
                             }
                             //checkbox is not checked
                             else {
@@ -260,13 +268,16 @@ public class ExecutionComponentController {
                                     }
                                     //delete error message, because value is not set anymore
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
+                                    valid = true;
                                 }
                                 //there is a value in the text field
                                 else {
+                                    valid = false;
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "Please check the checkbox if you want to set a value", false);
                                 }
                             }
                         } catch (NumberFormatException e) {
+                            valid = false;
                             setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, e.getMessage(), false);
 
                         }
@@ -277,11 +288,14 @@ public class ExecutionComponentController {
                             if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected()) {
                                 mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, TRUE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
+                                valid = true;
 
                             } else if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected()) {
                                 mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, FALSE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
+                                valid = true;
                             } else {//in case user didn't select any button
+                                valid = false;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "checkbox is checked, please choose a value.", false);
                             }
 
@@ -292,10 +306,12 @@ public class ExecutionComponentController {
                                 //checkbox is not checked, and there's no user input --> generate value
                                 generateBoolean(envName);
                                 //delete error message, because value is not set anymore
+                                valid = true;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                             }
                             //there is a value in the text field
                             else {
+                                valid = false;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "Please check the checkbox if you want to set a value", false);
 
                             }
@@ -306,6 +322,7 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
+        return valid;
     }
 
     public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
