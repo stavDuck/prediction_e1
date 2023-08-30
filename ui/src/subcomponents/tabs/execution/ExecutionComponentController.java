@@ -1,6 +1,7 @@
 package subcomponents.tabs.execution;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
+import dto.range.DtoRange;
 import engine.entity.EntityStructure;
 import engine.property.PropertyInstance;
 import engine.value.generator.ValueGeneratorFactory;
@@ -80,7 +81,7 @@ public class ExecutionComponentController {
 
     public void populateEnvVariables() {
         for(DtoEnv env : mainController.getDtoWorld().getEnvs().values()) {
-            envVariablesVbox.getChildren().add(createEnvVariableVbox(env.getEnvName(), env.getEnvType(), VALUE_PROMPT_TEXT));
+            envVariablesVbox.getChildren().add(createEnvVariableVbox(env.getEnvName(), env.getEnvType(), VALUE_PROMPT_TEXT, env.getEnvRange()));
         }
 
     }
@@ -95,11 +96,18 @@ public class ExecutionComponentController {
         return dynamicVBox;
     }
 
-    public VBox createEnvVariableVbox(String checkBoxLabelText, String typeLabel, String textFieldPrompt) {
+    public VBox createEnvVariableVbox(String checkBoxLabelText, String typeLabel, String textFieldPrompt, DtoRange range) {
         VBox dynamicBox;
+        Label label;
         CheckBox checkBox = new CheckBox(checkBoxLabelText);
         checkBox.setPadding(new Insets(5, 0, 0, 0));
-        Label label = new Label("Type: " + typeLabel.toLowerCase());
+        if((typeLabel.equalsIgnoreCase("float")) && range != null) {
+            label = new Label("Type: " + typeLabel.toLowerCase()
+                    + ", Range: " + range.getFrom() + "-" + range.getTo());
+        }
+        else {
+            label = new Label("Type: " + typeLabel.toLowerCase());
+        }
         Label errorLabel = new Label();
         if(typeLabel.equalsIgnoreCase("boolean")) {
             RadioButton trueButton = new RadioButton(TRUE_RADIO_BUTTON);
@@ -164,6 +172,7 @@ public class ExecutionComponentController {
     void startButtonAction(ActionEvent event) {
         validateEntityPopulation();
         verifyEnvVariable();
+        mainController.moveToResultsTab();
     }
 
     public void validateEntityPopulation() {
@@ -199,8 +208,7 @@ public class ExecutionComponentController {
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
-                throw new NumberFormatException("This field is mandatory");
-
+                mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, 0);
             }
             else {
                 throw new NumberFormatException("Population value should be numeric and an integer");

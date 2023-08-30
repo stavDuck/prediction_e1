@@ -53,7 +53,7 @@
                 </VBox>
             </top>
          <center>
-            <TabPane id="tabPanelStyle" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="TOP_CENTER">
+            <TabPane fx:id="tabPane" id="tabPanelStyle" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="TOP_CENTER">
               <tabs>
                 <Tab fx:id="detailsTabComponent" styleClass="tabStyles" text="Details">
                      <content>

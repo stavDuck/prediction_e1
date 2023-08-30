@@ -33,6 +33,8 @@ public class AppController {
     @FXML private ResultsComponentController resultTabController;
 
     @FXML
+    private TabPane tabPane;
+    @FXML
     private Label titlePrediction;
     @FXML
     private Button openFileButton;
@@ -140,5 +142,12 @@ public class AppController {
 
     public void startExecutionTab() {
         executionTabController.populateTab();
+    }
+
+    public TabPane getTabPane() {
+        return tabPane;
+    }
+    public void moveToResultsTab() {
+        tabPane.getSelectionModel().select(resultTabComponent);
     }
 }
