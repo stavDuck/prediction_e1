@@ -23,6 +23,15 @@ public class Calculation extends AbstractAction {
         this.arg2 = arg2;
     }
 
+    // ctor for secondary
+    public Calculation(String entityName, String actionType, String operatorType,
+                       String resultProp, String arg1, String arg2, int secondaryAmount, String secondaryEntityName) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+        this.operatorType = operatorType;
+        this.resultProp = resultProp;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+    }
     @Override
     public void invoke(Context context) {
         Object val1 = FunctionHelper.getValueToInvoke(arg1, context, resultProp);

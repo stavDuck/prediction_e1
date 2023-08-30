@@ -15,7 +15,12 @@ public class IncreaseAction extends AbstractAction {
         this.property = property;
         this.byExpression = byExpression;
     }
-
+    //ctor for secondary
+    public IncreaseAction(String entityName, String property, String actionType, String byExpression, int secondaryAmount, String secondaryEntityName) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+        this.property = property;
+        this.byExpression = byExpression;
+    }
     @Override
     public void invoke(Context context) throws RuntimeException{
         try {

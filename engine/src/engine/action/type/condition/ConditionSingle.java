@@ -2,7 +2,6 @@ package engine.action.type.condition;
 import engine.action.AbstractAction;
 import engine.action.ActionType;
 import engine.action.FunctionHelper;
-import engine.entity.EntityInstance;
 import engine.execution.context.Context;
 import engine.property.type.Type;
 
@@ -38,7 +37,26 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
         this.value = value;
         result = true;
     }
+    // ctors for secondary
+    public ConditionSingle(String entityName, String actionType, String entityToInvoke,
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName){
+        super(entityName, actionType, secondaryAmount,secondaryEntityName);
+        this.entityToInvoke = entityToInvoke;
+        this.propertyToInvoke = propertyToInvoke;
+        setOperatorFromString(operator);
+        this.value = value;
+        result = true;
+    }
 
+    public ConditionSingle(String entityName, ActionType actionType, String entityToInvoke,
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName){
+        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+        this.entityToInvoke = entityToInvoke;
+        this.propertyToInvoke = propertyToInvoke;
+        setOperatorFromString(operator);
+        this.value = value;
+        result = true;
+    }
     // getters
     public String getEntityToInvoke() {
         return entityToInvoke;

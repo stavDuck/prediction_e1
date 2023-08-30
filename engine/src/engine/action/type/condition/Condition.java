@@ -24,6 +24,13 @@ public class Condition extends AbstractAction {
         elseCondition = new ArrayList<>();
     }
 
+    // ctor for secondary
+    public Condition(String entityName, String actionType, conditionSingularityApi whenCondition, int secondaryAmount, String secondaryEntityName) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+        this.whenCondition = whenCondition;
+        thenCondition = new ArrayList<>();
+        elseCondition = new ArrayList<>();
+    }
     @Override
     public void invoke(Context context) {
         // init results for rule condition

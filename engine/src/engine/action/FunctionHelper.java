@@ -9,14 +9,6 @@ public class FunctionHelper {
         return context.getEnvironmentVariable(nameProp).getVal();
     }
 
-    // Function get an expression string, context and get the property correct name
-
-    // get used only by single condition with property expression
-    public static Object getPropertyExpression(String expression, Context context){
-        Object
-    }
-
-
     // Old function
     // Function gets the string expression, the context (instanse, envList..) and the propName we need to set the value into
     public static Object getValueToInvoke(String expression, Context context, String propName) throws RuntimeException {

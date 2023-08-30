@@ -17,6 +17,13 @@ public class SetAction extends AbstractAction {
         this.newValue = newValue;
     }
 
+    // ctor for action with secondary
+    public SetAction(String entityName, String property, String actionType, String newValue, int secondaryAmount, String secondaryEntityName) {
+        super(entityName, actionType,secondaryAmount, secondaryEntityName);
+        this.property = property;
+        this.newValue = newValue;
+    }
+
     @Override
     public void invoke(Context context) {
         Object value = FunctionHelper.getValueToInvoke(newValue, context, property);

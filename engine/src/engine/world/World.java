@@ -2,6 +2,7 @@ package engine.world;
 
 import dto.Dto;
 import engine.action.AbstractAction;
+import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
@@ -11,9 +12,9 @@ import engine.property.PropertyStructure;
 import engine.rule.Rule;
 import engine.termination.Termination;
 import engine.value.generator.ValueGeneratorFactory;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class World {
@@ -123,9 +124,58 @@ public class World {
     }
 
     public void invokeRules() {
-        int tick = 0;
+        final int[] tick = {0};
+
+        // get list of valid rules according to tick
+        // run on all entities -> invoke all rules
+            // before invoking rule check if have secondery - if true create list of secondary
+
         // save the start time in seconds
         long startTimeSeconds = System.currentTimeMillis() / 1000;
+
+        while (!termination.isStop()) {
+            // Move all instances on the screen !!!!!!!!!!
+
+            List<Rule> ActiveRules = rules.values()
+                    .stream()
+                    .filter(obj -> isRuleActive(obj, tick[0])) // Replace filterFunction with your actual filter function
+                    .collect(Collectors.toList());
+
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
+                    // on every entity run all the active rules
+                    for (Rule currRule : ActiveRules) {
+                        currRule.inokeRule(instanceManager, environment, currEntity);
+                    }
+                }
+            }
+
+
+            tick[0]++;
+
+            // go over all the entities and delete the unwanted instances
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                    Iterator<EntityInstance> iterator = instanceManager.getInstancesByName(currEntityName).iterator();
+
+                    while (iterator.hasNext()) {
+                        EntityInstance currInstance = iterator.next();
+                        if (currInstance.isShouldKill()) {
+                            iterator.remove(); // Safely remove the current instance
+                            instanceManager.killEntity(currInstance);
+                        }
+                    }
+            }
+
+            // check if termination coditions are met
+            isSimulationTerminated(tick[0], startTimeSeconds);
+        }
+
+
+
+        // save the start time in seconds
+        /*long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()){
             // run on the rules
@@ -138,7 +188,7 @@ public class World {
             tick ++;
             // check if termination coditions are met
             isSimulationTerminated(tick, startTimeSeconds);
-        }
+        }*/
     }
 
     public void isSimulationTerminated(int tick, long startTimeSeconds){

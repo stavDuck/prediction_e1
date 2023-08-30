@@ -9,18 +9,26 @@ import java.util.List;
 
 public class Context {
     private EntityInstance primaryEntityInstance; // the instance the rule invoke onto
-
-    private List<EntityInstance> secondaryEntityInstances;
+    private EntityInstance secondaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;// has a map with category and list of instanses
     private Environment env;
 
+    // ctor when action has secondary
+    public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env, EntityInstance secondaryEntityInstance){
+        this.primaryEntityInstance = entityInstance;
+        this.entityInstanceManager = entityInstanceManager;
+        this.env = env;
+        this.secondaryEntityInstance = secondaryEntityInstance;
+    }
+    // ctor when action doesn't have secondary
     public Context(EntityInstance entityInstance, EntityInstanceManager entityInstanceManager, Environment env){
         this.primaryEntityInstance = entityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.env = env;
-        // init as empty list
-        this.secondaryEntityInstances = new ArrayList<>();
+        this.secondaryEntityInstance = null;
     }
+
+    //getter
     public EntityInstance getPrimaryEntityInstance() {
         return primaryEntityInstance;
     }
@@ -31,15 +39,19 @@ public class Context {
         return env.getEnvProperty(name);
     }
 
-    public List<EntityInstance> getSecondaryEntityInstances(){
-        return secondaryEntityInstances;
+    public EntityInstance getSecondaryEntityInstance(){
+        return secondaryEntityInstance;
     }
 
     public EntityInstanceManager getEntityInstanceManager() {
         return entityInstanceManager;
     }
 
-    public void addNewInstandToSecondaryEntityInstances(EntityInstance entityInstance){
-        secondaryEntityInstances.add(entityInstance);
+    // setters
+    public void setPrimaryEntityInstance(EntityInstance primaryEntityInstance) {
+        this.primaryEntityInstance = primaryEntityInstance;
+    }
+    public void setSecondaryEntityInstance(EntityInstance secondaryEntityInstance) {
+        this.secondaryEntityInstance = secondaryEntityInstance;
     }
 }

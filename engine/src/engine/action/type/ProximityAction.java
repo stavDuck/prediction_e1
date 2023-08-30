@@ -14,6 +14,13 @@ public class ProximityAction extends AbstractAction {
         this.envDepthOf = envDepthOf;
     }
 
+    // ctor for secondary entity
+    public ProximityAction(String sourceEntity, String actionType, String targetEntity, String envDepthOf, int secondaryAmount, String secondaryEntityName) {
+        //in this action, kill is the main entity that's in the abstractAction class
+        super(sourceEntity, actionType, secondaryAmount, secondaryEntityName);
+        this.targetEntity = targetEntity;
+        this.envDepthOf = envDepthOf;
+    }
     @Override
     public void invoke(Context context) {
 

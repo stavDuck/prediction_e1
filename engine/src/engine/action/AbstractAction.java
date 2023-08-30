@@ -15,15 +15,32 @@ public abstract class AbstractAction implements Action {
 
     protected String entityName;
     protected ActionType actionType;
+    protected SecondaryInfo secondaryInfo;
 
     public AbstractAction(String entityName, String actionType) {
         this.entityName = entityName;
         setActionType(actionType);
+        this.secondaryInfo = new SecondaryInfo(); // set false
     }
     public AbstractAction(String entityName, ActionType actionType) {
         this.entityName = entityName;
         this.actionType = actionType;
+        this.secondaryInfo = new SecondaryInfo(); // set false
     }
+
+    // constractors when action has secondary values
+    public AbstractAction(String entityName, String actionType, int amountEntities, String secondaryEntityName) {
+        this.entityName = entityName;
+        setActionType(actionType);
+        this.secondaryInfo = new SecondaryInfo(amountEntities,secondaryEntityName); // set true
+
+    }
+    public AbstractAction(String entityName, ActionType actionType, int amountEntities, String secondaryEntityName) {
+        this.entityName = entityName;
+        this.actionType = actionType;
+        this.secondaryInfo = new SecondaryInfo(amountEntities,secondaryEntityName); // set true
+    }
+
 
     // getters
     public String getEntityName() {
@@ -33,8 +50,15 @@ public abstract class AbstractAction implements Action {
     public ActionType getActionType() {
         return actionType;
     }
+    public SecondaryInfo getSecondaryInfo() {
+        return secondaryInfo;
+    }
 
     // setters
+    public void setSecondaryInfo(SecondaryInfo secondaryInfo) {
+        this.secondaryInfo = secondaryInfo;
+    }
+
     public void setActionType(String actionType) {
         switch (actionType) {
             case INCREASE:
