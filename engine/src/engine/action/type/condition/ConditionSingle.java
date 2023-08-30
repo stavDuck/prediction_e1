@@ -39,8 +39,8 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
     }
     // ctors for secondary
     public ConditionSingle(String entityName, String actionType, String entityToInvoke,
-                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName){
-        super(entityName, actionType, secondaryAmount,secondaryEntityName);
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll){
+        super(entityName, actionType, secondaryAmount,secondaryEntityName, condition, isSelectedAll);
         this.entityToInvoke = entityToInvoke;
         this.propertyToInvoke = propertyToInvoke;
         setOperatorFromString(operator);
@@ -49,8 +49,8 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
     }
 
     public ConditionSingle(String entityName, ActionType actionType, String entityToInvoke,
-                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName){
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll){
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.entityToInvoke = entityToInvoke;
         this.propertyToInvoke = propertyToInvoke;
         setOperatorFromString(operator);

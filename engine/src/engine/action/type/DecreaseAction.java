@@ -1,6 +1,7 @@
 package engine.action.type;
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
@@ -16,8 +17,8 @@ public class DecreaseAction extends AbstractAction {
         this.byExpression = byExpression;
     }
     // ctor for secondary
-    public DecreaseAction(String entityName, String property, String actionType, String byExpression, int secondaryAmount, String secondaryEntityName) {
-        super(entityName, actionType, secondaryAmount, secondaryEntityName);
+    public DecreaseAction(String entityName, String property, String actionType, String byExpression, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
         this.property = property;
         this.byExpression = byExpression;
     }

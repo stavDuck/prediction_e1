@@ -1,5 +1,6 @@
 package engine.action;
 
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.type.Type;
 
@@ -29,16 +30,16 @@ public abstract class AbstractAction implements Action {
     }
 
     // constractors when action has secondary values
-    public AbstractAction(String entityName, String actionType, int amountEntities, String secondaryEntityName) {
+    public AbstractAction(String entityName, String actionType, int amountEntities, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
         this.entityName = entityName;
         setActionType(actionType);
-        this.secondaryInfo = new SecondaryInfo(amountEntities,secondaryEntityName); // set true
+        this.secondaryInfo = new SecondaryInfo(amountEntities, secondaryEntityName, condition, isSelectedAll); // set true
 
     }
-    public AbstractAction(String entityName, ActionType actionType, int amountEntities, String secondaryEntityName) {
+    public AbstractAction(String entityName, ActionType actionType, int amountEntities, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
         this.entityName = entityName;
         this.actionType = actionType;
-        this.secondaryInfo = new SecondaryInfo(amountEntities,secondaryEntityName); // set true
+        this.secondaryInfo = new SecondaryInfo(amountEntities, secondaryEntityName,condition, isSelectedAll); // set true
     }
 
 
