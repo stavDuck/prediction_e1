@@ -44,6 +44,6 @@ public class ReplaceAction extends AbstractAction {
     }
 
     public void derivedFunction(Context context){
-
+        context.getEntityInstanceManager().createByDerived(context.getEntityStructures().get(createEntity), context.getPrimaryEntityInstance(), context.getGrid());
     }
 }

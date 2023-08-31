@@ -34,6 +34,25 @@ public class EntityInstanceManager {
         return newEntityInstance;
     }
 
+     public EntityInstance createByDerived(EntityStructure entityStructure, EntityInstance sourceEntity, Grid grid){
+         count++;
+         // generate positions
+         Position freePos = grid.getRandomFreePoseInGrid();
+         EntityInstance newEntityInstance = new EntityInstance(entityStructure.getEntityName(), count, freePos);
+         // set pos is now occupied
+         grid.setPositionInGridBoard(newEntityInstance, freePos.getX(),freePos.getY());
+
+         // helper function to fill propertyInstanse map by entity structure
+         newEntityInstance.createPropertyInstancesMapByDerived(entityStructure,sourceEntity);
+
+         // check if map don't have the entity need to create new key and value
+         if(instances.get(newEntityInstance.getEntityName()) == null)
+             instances.put(newEntityInstance.getEntityName(),new ArrayList<>());
+         // add to the end of the list for the spesific instance
+         instances.get(newEntityInstance.getEntityName()).add(newEntityInstance);
+         return newEntityInstance;
+     }
+
 
     public Map<String, List<EntityInstance>> getAllInstances() {
         return instances;
