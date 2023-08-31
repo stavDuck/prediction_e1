@@ -1,10 +1,7 @@
 package engine.action.type.condition;
 
 import engine.action.AbstractAction;
-import engine.action.type.DecreaseAction;
-import engine.action.type.IncreaseAction;
-import engine.action.type.KillAction;
-import engine.action.type.SetAction;
+import engine.action.type.*;
 import engine.action.type.calculation.Calculation;
 import engine.execution.context.Context;
 import java.util.ArrayList;
@@ -107,6 +104,12 @@ public class Condition extends AbstractAction {
                 case KILL:
                     ((KillAction)action).invoke(context);
                     //context.getPrimaryEntityInstance().setShouldKill(true);
+                    break;
+                case PROXIMITY:
+                    ((ProximityAction)action).invoke(context);
+                    break;
+                case REPLACE:
+                    ((ReplaceAction)action).invoke(context);
                     break;
             }
         }

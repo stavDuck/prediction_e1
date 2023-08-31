@@ -41,11 +41,11 @@ public class Calculation extends AbstractAction {
         // send the actual values in object format and the res-prop to set the new value into
         switch (operatorType){
             case MULTIPLY:
-                multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2, context);
                 break;
             case DIVIDE:
                 try {
-                    divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                    divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2, context);
                 }
                 catch (ArithmeticException e){
                     throw new RuntimeException("Division failed with an error: " + e.getMessage());
@@ -54,7 +54,7 @@ public class Calculation extends AbstractAction {
         }
     }
 
-    private void divideFunction(PropertyInstance prop, Object val1, Object val2){
+    private void divideFunction(PropertyInstance prop, Object val1, Object val2, Context context){
         // check the operation needed
         Type entityType = prop.getType();
         Float float1, float2;
@@ -92,9 +92,11 @@ public class Calculation extends AbstractAction {
                 prop.setVal( float1 / float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+
     }
 
-    private void multiplyFunction(PropertyInstance prop, Object val1, Object val2){
+    private void multiplyFunction(PropertyInstance prop, Object val1, Object val2, Context context){
         // check the operation needed
         Type entityType = prop.getType();
         Float float2, float1;
@@ -124,5 +126,6 @@ public class Calculation extends AbstractAction {
                     prop.setVal( float1 * float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 }

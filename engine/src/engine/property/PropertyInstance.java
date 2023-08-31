@@ -89,4 +89,8 @@ public class PropertyInstance extends Property {
     public int getLastEndTick() {
         return tickHistory.get(tickHistory.size() - 1).getEndTick();
     }
+
+    public void setNewTickHistory(int startTick, int endTick) {
+        this.tickHistory.add(new TickHistory(startTick, endTick));
+    }
 }

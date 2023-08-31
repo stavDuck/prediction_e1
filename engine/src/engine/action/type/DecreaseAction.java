@@ -26,7 +26,7 @@ public class DecreaseAction extends AbstractAction {
     public void invoke(Context context) throws RuntimeException{
         try {
             Object value = FunctionHelper.getValueToInvoke(byExpression, context, property);
-            decreasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
+            decreasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value, context);
         }
         catch (RuntimeException e){
             throw new RuntimeException("Decrease action on Entity: " + entityName + " on property: " + property +  " failed \n"
@@ -34,7 +34,7 @@ public class DecreaseAction extends AbstractAction {
         }
     }
 
-    private void decreasePropertyValWithVal(PropertyInstance prop, Object increaseVal){
+    private void decreasePropertyValWithVal(PropertyInstance prop, Object increaseVal, Context context){
         Type propType = prop.getType();
         Object propVal = prop.getVal();
         Float float2;
@@ -58,5 +58,6 @@ public class DecreaseAction extends AbstractAction {
                     prop.setVal( float1 - float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 }

@@ -30,7 +30,12 @@ public class ActionValidator {
             }
         }
         // validation conditions when/ then/ else
-        validateActionByType(prdAction, prdEvironment, entities, actionEntity, prdAction.getPRDSecondaryEntity().getEntity());
+        if(prdAction.getPRDSecondaryEntity() != null) {
+            validateActionByType(prdAction, prdEvironment, entities, actionEntity, prdAction.getPRDSecondaryEntity().getEntity());
+        }
+        else {
+            validateActionByType(prdAction, prdEvironment, entities, actionEntity, null);
+        }
     }
 
     public PRDEntity checkEntityExist(String entityFromAction, PRDEntities entities) throws XmlValidationException {
@@ -80,7 +85,10 @@ public class ActionValidator {
                 throw new XmlValidationException("property: " + name + ", type is: " + value +
                         ", which is not numeric");
             }
-        } else if (expression.contains("percent(") || expression.contains("ticks(")) {
+        } else if (expression.contains("percent(")) {
+
+        }
+        else if(expression.contains("ticks(")) {
 
         }
         //if environment property
@@ -115,7 +123,7 @@ public class ActionValidator {
                 return prdProperty;
             }
         }
-        throw new XmlValidationException("Property: " + expression + " in entity: " + prdEntity.getName() + " doesn't exist");
+        return null;
     }
 
     public void validateCalculationAction(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntity actionEntity, String secondEntityName, PRDEntities entities) throws XmlValidationException {
@@ -273,16 +281,17 @@ public class ActionValidator {
         }
     }
 
-    public void validateReplace(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
+    public void validateReplace(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntity actionEntity, String secondEntityName, PRDEntities entities) throws XmlValidationException {
         //need to only check the 'create' entity exist
         checkEntityExist(prdAction.getCreate(), entities);
     }
 
-    public void validateProximity(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity) throws XmlValidationException {
-        //need to only check the 'target' entity exist
+    public void validateProximity(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntity actionEntity, String secondEntityName, PRDEntities entities) throws XmlValidationException {
+        //need to only check the 'target' entity exist, because the 'source' is already verified in the previous function
         checkEntityExist(prdAction.getPRDBetween().getTargetEntity(), entities);
 
         //need to check 'of' expression is a number
+        verifyTypeIsNumber(prdAction.getPRDEnvDepth().getOf(), prdEvironment, actionEntity, secondEntityName, entities);
     }
 
     public void validateActionByType(PRDAction prdAction, PRDEnvironment prdEvironment, PRDEntities entities, PRDEntity actionEntity, String secondEntityName) throws XmlValidationException {
@@ -312,9 +321,9 @@ public class ActionValidator {
             }
             validateSet(prdAction, prdEvironment, actionEntity, secondEntityName, entities);
         } else if (prdAction.getType().equals("replace")) {
-            validateReplace(prdAction, prdEvironment, entities, actionEntity);
+            validateReplace(prdAction, prdEvironment, actionEntity, secondEntityName, entities);
         } else if (prdAction.getType().equals("proximity")) {
-            validateProximity(prdAction, prdEvironment, entities, actionEntity);
+            validateProximity(prdAction, prdEvironment, actionEntity, secondEntityName, entities);
         }
     }
 
@@ -379,9 +388,13 @@ public class ActionValidator {
 
     public PRDProperty getEvaluateProperty(String expression, PRDEntity prdEntity, String secondaryEntity, PRDEntities entities) throws XmlValidationException {
         String[] evaluateExp = expression.split(".");
-        PRDEntity entity;
-        PRDProperty property = null;
-        try {
+        if(evaluateExp.length == 1) {
+            throw new XmlValidationException("Expression: " + expression + " is not in the correct format");
+        }
+        else {
+            PRDEntity entity;
+            PRDProperty property = null;
+
             //if there's a secondary entity
             if (secondaryEntity != null && evaluateExp[0].equalsIgnoreCase(secondaryEntity)) {
                 entity = checkEntityExist(secondaryEntity, entities);
@@ -391,10 +404,16 @@ public class ActionValidator {
                 entity = prdEntity;
             }
             property = checkProperty(evaluateExp[1], entity);
-        } catch (XmlValidationException e) {
-            throw new XmlValidationException(e.getMessage());
+
+            if (property == null)
+                throw new XmlValidationException("Property: " + evaluateExp[1] + " in entity: " + entity.getName() + " doesn't exist");
+
+            return property;
         }
-        return property;
     }
 
+    //validates that the property exist in case of: environment, evaluate and ticks functions
+    public void validatePropertyExistFromExpression() {
+
+    }
 }

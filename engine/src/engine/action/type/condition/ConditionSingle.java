@@ -4,6 +4,11 @@ import engine.action.ActionType;
 import engine.action.FunctionHelper;
 import engine.execution.context.Context;
 import engine.property.type.Type;
+import engine.validation.exceptions.XmlValidationException;
+import generated.PRDEntities;
+import generated.PRDEntity;
+import generated.PRDEnvironment;
+import generated.PRDProperty;
 
 public class ConditionSingle extends AbstractAction implements conditionSingularityApi {
     private static final String EQUALS = "=";
@@ -117,12 +122,13 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
       // addition to task 2
         // get property value in Ojbect form - actual type behind
         // get value for condition by prop type
-
-       Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
-       Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
+        Object propVal = FunctionHelper.getPropertyExpression(propertyToInvoke, context);
+        Type propType = getValueOfConditionExpressionValue(propVal);
+       //Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
+       //Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
 
       // Object valueForCondition = parseByTypeAndString(propType, value);
-        Object valueForCondition = FunctionHelper.getValueToInvoke(value, context, propertyToInvoke);
+        Object valueForCondition = FunctionHelper.getPropertyExpression(value, context);
         result = evaluateCondition(propType, propVal,  valueForCondition);
     }
 
@@ -205,5 +211,20 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
             default:
                 return false;
         }
+    }
+
+    public Type getValueOfConditionExpressionValue(Object conditionValue) {
+       if(conditionValue instanceof Float) {
+           return Type.FLOAT;
+       }
+       else if(conditionValue instanceof Boolean) {
+           return Type.BOOLEAN;
+       }
+       else if(conditionValue instanceof String) {
+           return Type.STRING;
+       }
+       else {
+           throw new RuntimeException("Value of condition expression: " + conditionValue + " has an invalid type.");
+       }
     }
 }

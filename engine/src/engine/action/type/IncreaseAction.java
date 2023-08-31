@@ -26,7 +26,7 @@ public class IncreaseAction extends AbstractAction {
     public void invoke(Context context) throws RuntimeException{
         try {
             Object value = FunctionHelper.getValueToInvoke(byExpression, context, property);
-            increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
+            increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value, context);
         }
         catch (RuntimeException e){
             throw new RuntimeException("Increase action on Entity: " + entityName + " on property: " + property +  " failed \n"
@@ -34,7 +34,7 @@ public class IncreaseAction extends AbstractAction {
         }
     }
 
-    private void increasePropertyValWithVal(PropertyInstance prop, Object increaseVal){
+    private void increasePropertyValWithVal(PropertyInstance prop, Object increaseVal, Context context){
         Type propType = prop.getType();
         Object propVal = prop.getVal();
         Float float2;
@@ -59,5 +59,6 @@ public class IncreaseAction extends AbstractAction {
                     prop.setVal( float1 + float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 }

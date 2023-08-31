@@ -1,9 +1,14 @@
 package engine.action;
 import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
+import engine.entity.EntityInstance;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
+import engine.validation.exceptions.XmlValidationException;
 import engine.value.generator.ValueGeneratorFactory;
+import generated.PRDEntities;
+import generated.PRDEntity;
+import generated.PRDProperty;
 
 public class FunctionHelper {
     public static Object environment(Context context, String nameProp) {
@@ -14,7 +19,7 @@ public class FunctionHelper {
 
     // get used only by single condition with property expression
     public static Object getPropertyExpression(String expression, Context context) {
-        Object
+        return getValueFromExpression(expression, context);
     }
 
     // Old function
@@ -39,19 +44,16 @@ public class FunctionHelper {
             value = ValueGeneratorFactory.createRandomFloat((float) 1, Float.parseFloat(randNum)).generateValue();
         }
 
-        // NEED TO ADD EVALUATE , PRECENT, TICKS + TICKS SUPPORT
         else if (expression.contains("evaluate")) {
             String resVal = extraceStringFromEvaluateFunc(expression);
-            String[] res = resVal.split(".");
-            return context.getEntityInstanceManager().getInstancesByName(res[0]).get(0)
+            value = getEvaluateProperty(resVal, context).getVal();
         } else if (expression.contains("percent")) {
             String resVal = extractStringFromPercentFunc(expression);
             String[] res = resVal.split(",");
             value = calculatePercent(res[0], res[1], context);
         } else if (expression.contains("ticks")) {
             String resVal = extractStringFromTicksFunc(expression);
-            String[] res = resVal.split(".");
-            value = calculateTicks(res[0], res[1], context);
+            value = calculateTicks(resVal, context);
         }
         // if value is a property from the instance get the value
         else if (context.getPrimaryEntityInstance().getPropertyInstanceByName(expression) != null) {
@@ -71,9 +73,9 @@ public class FunctionHelper {
         return ((Integer)arg1 * (Integer) arg2) / 100;
     }
 
-    public static Integer calculateTicks(String entity, String property, Context context) {
+    public static Integer calculateTicks(String expression, Context context) {
         //need to get the property using the evaluate func
-        PropertyInstance propertyInstance  = getfromEvaluate;
+        PropertyInstance propertyInstance  = getEvaluateProperty(expression, context);
         return (context.getCurrTick() - propertyInstance.getLastEndTick());
     }
     public static String extractStringFromEnviromentFunc(String input) {
@@ -121,5 +123,23 @@ public class FunctionHelper {
         }
         return val;
     }
+
+    public static PropertyInstance getEvaluateProperty(String expression, Context context) {
+        String[] evaluateExp = expression.split("\\.");
+        EntityInstance entity;
+        PropertyInstance property = null;
+
+        //if there's a secondary entity
+        if (context.getSecondaryEntityInstance() != null && evaluateExp[0].equalsIgnoreCase(context.getSecondaryEntityInstance().getEntityName())) {
+            entity = context.getSecondaryEntityInstance();
+        }
+        //if there isn't a secondary, there will be primary
+        else {
+            entity = context.getPrimaryEntityInstance();
+        }
+        property = entity.getPropertyInstanceByName(evaluateExp[1]);
+        return property;
+    }
+
 
 }

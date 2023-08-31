@@ -29,8 +29,8 @@ public class EnvValidator extends ValidationCommonFunctions {
                         " type is not valid, only type decimal, float, string or boolean allowed");
             }
             if (!isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange())) {
-                throw new XmlValidationException("Environment property:: " + property.getPRDName() +
-                        " is not valid, if type is not decimal or float range should not appear");
+                throw new XmlValidationException("Environment property: " + property.getPRDName() +
+                        " is not valid, if type is not decimal or float, range should not appear");
             }
             if ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())) {
                 throw new XmlValidationException("Environment property: " + property.getPRDName() +

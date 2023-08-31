@@ -58,5 +58,6 @@ public class SetAction extends AbstractAction {
         if (value != null) {
             context.getPrimaryEntityInstance().getPropertyInstanceByName(property).setVal(value);
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 }

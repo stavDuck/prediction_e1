@@ -109,15 +109,33 @@ public class CopyHandler {
          AbstractAction res;
 
          switch (action.getType()){
-             case (DECREASE): res = createNewDecrease(action);
-             case (INCREASE): res = createNewIncrease(action);
-             case (CALCULATION): res = createNewCalculation(action);
-             case (CONDITION): res = createNewCondition(action);
-             case (SET): res = createNewSet(action);
-             case (KILL): res = createNewKill(action);
-             case (REPLACE): res = createNewReplace(action);
-             case (PROXIMITY): res = createNewProximity(action);
-             default: res = null;
+             case (DECREASE):
+                 res = createNewDecrease(action);
+                 break;
+             case (INCREASE):
+                 res = createNewIncrease(action);
+                 break;
+             case (CALCULATION):
+                 res = createNewCalculation(action);
+                 break;
+             case (CONDITION):
+                 res = createNewCondition(action);
+                 break;
+             case (SET):
+                 res = createNewSet(action);
+                 break;
+             case (KILL):
+                 res = createNewKill(action);
+                 break;
+             case (REPLACE):
+                 res = createNewReplace(action);
+                 break;
+             case (PROXIMITY):
+                 res = createNewProximity(action);
+                 break;
+             default:
+                 res = null;
+                 break;
          }
 
          // create secondary if needed
