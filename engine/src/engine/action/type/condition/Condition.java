@@ -37,8 +37,11 @@ public class Condition extends AbstractAction {
         initWhenCondition(whenCondition);
 
        boolean check = invokeWhenCondition(context);
+
        // if check == true -> run thenCondition
-       if(check){
+        // addition check if the condition is part of secondary- only have when
+        // if not in secondary - xml validation check then is mandatory and neccessery
+       if(check && thenCondition.size() != 0){
            invokeAbstractActions(context, thenCondition);
        }
        else if(elseCondition.size() != 0){

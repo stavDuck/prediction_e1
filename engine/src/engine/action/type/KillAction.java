@@ -16,6 +16,8 @@ public class KillAction extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
+        // remove entity from grid
+        context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(),context.getPrimaryEntityInstance().getPosY());
         context.getPrimaryEntityInstance().setShouldKill(true);
     }
 }

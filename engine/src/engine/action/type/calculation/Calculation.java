@@ -7,8 +7,8 @@ import engine.property.PropertyInstance;
 import engine.property.type.Type;
 
 public class Calculation extends AbstractAction {
-    final static String MULTIPLY = "multiply";
-    final static String DIVIDE = "divide";
+    protected final static String MULTIPLY = "multiply";
+    protected final static String DIVIDE = "divide";
 
     private String resultProp;
     private String arg1;

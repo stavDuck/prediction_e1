@@ -1,6 +1,7 @@
 package engine.world;
 
 import dto.Dto;
+import engine.Position;
 import engine.action.AbstractAction;
 import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
@@ -66,6 +67,9 @@ public class World {
     public int getMaxEntityInstancesAmount(){
         return (getGridRows() * getGridCols());
     }
+    public EntityInstance getPositionInGridBoard(int x, int y){
+        return grid.getPositionInGridBoard(x, y);
+    }
     public int getThreadCount() {
         return threadCount;
     }
@@ -73,6 +77,10 @@ public class World {
     // setters
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+    public void setGridPosition(EntityInstance val, int x, int y){
+        grid.setPositionInGridBoard(val, x, y);
     }
 
     public void setInitGrid(int rows, int cols){
@@ -110,7 +118,7 @@ public class World {
         this.entityStructures.put(entityName, entityStructure);
     }
     public void addEntityInstance(String entityName){
-        instanceManager.create(entityStructures.get(entityName));
+        instanceManager.create(entityStructures.get(entityName), grid);
     }
     public void addRule(String ruleName, Rule newRule){
         rules.put(ruleName, newRule);
@@ -119,7 +127,7 @@ public class World {
     public void createEntitiesInstances(){
         for(EntityStructure currStructure : entityStructures.values()){
             IntStream.range(0, currStructure.getPopulation())
-                    .forEach(i -> instanceManager.create(currStructure));
+                    .forEach(i -> instanceManager.create(currStructure, grid));
         }
     }
 
@@ -134,7 +142,8 @@ public class World {
         long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()) {
-            // Move all instances on the screen !!!!!!!!!!
+            // Move all instances on the grid
+            moveAllInstancesInGrid(instanceManager);
 
             List<Rule> ActiveRules = rules.values()
                     .stream()
@@ -146,7 +155,7 @@ public class World {
                 for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
                     // on every entity run all the active rules
                     for (Rule currRule : ActiveRules) {
-                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0]);
+                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
                     }
                 }
             }
@@ -189,6 +198,68 @@ public class World {
             // check if termination coditions are met
             isSimulationTerminated(tick, startTimeSeconds);
         }*/
+    }
+
+    private void moveAllInstancesInGrid(EntityInstanceManager instanceManager) {
+       int increaseX;
+       int decreaseX;
+       int increaseY;
+       int decreaseY;
+
+
+        if (grid.getFreeSpots() != 0) {
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
+                    Position currEntityPos = currEntity.getPos();
+                    // to support infinity movement in the grid
+                    increaseX = (currEntityPos.getX() + 1) % grid.getRows();
+                    decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
+                    increaseY = (currEntityPos.getY() + 1) % grid.getColumns();
+                    decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+
+                    // move right
+                    if (grid.getPositionInGridBoard(currEntityPos.getX(), increaseY) == null) {
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+
+                        // set a new pos in entity and in grid
+                        currEntityPos.setY(increaseY);
+                        grid.setPositionInGridBoard(currEntity, currEntityPos.getX(), increaseY);
+                    }
+
+                    // move left
+                    else if(grid.getPositionInGridBoard(currEntityPos.getX(), decreaseY) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+
+                        // set a new pos in entity and in grid
+                        currEntityPos.setY(decreaseY);
+                        grid.setPositionInGridBoard(currEntity, currEntityPos.getX(), decreaseY);
+
+                    }
+
+                    // move up
+                    else if(grid.getPositionInGridBoard(decreaseX, currEntityPos.getY()) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+                        // set a new pos in entity and in grid
+                        currEntityPos.setX(decreaseX);
+                        grid.setPositionInGridBoard(currEntity, decreaseX, currEntityPos.getY());
+                    }
+
+                    // move down
+                    else if(grid.getPositionInGridBoard(increaseX, currEntityPos.getY()) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+                        // set a new pos in entity and in grid
+                        currEntityPos.setX(increaseX);
+                        grid.setPositionInGridBoard(currEntity, increaseX, currEntityPos.getY());
+
+                    }
+                }
+            }
+        }
     }
 
     public void isSimulationTerminated(int tick, long startTimeSeconds){

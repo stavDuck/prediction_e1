@@ -8,7 +8,7 @@ import engine.property.PropertyInstance;
 import engine.property.type.Type;
 
 public class IncreaseAction extends AbstractAction {
-    private final String property;
+    private String property;
     private String byExpression;
 
     public IncreaseAction(String entityName, String property, String actionType, String byExpression) {

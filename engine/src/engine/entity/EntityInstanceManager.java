@@ -1,8 +1,10 @@
 package engine.entity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import engine.Position;
+import engine.grid.Grid;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class EntityInstanceManager {
     private int count;
@@ -13,9 +15,14 @@ public class EntityInstanceManager {
         instances = new HashMap<>();
     }
 
-    public EntityInstance create(EntityStructure entityStructure) {
+    public EntityInstance create(EntityStructure entityStructure, Grid grid) {
         count++;
-        EntityInstance newEntityInstance = new EntityInstance(entityStructure.getEntityName(), count);
+        // generate positions
+        Position freePos = grid.getRandomFreePoseInGrid();
+        EntityInstance newEntityInstance = new EntityInstance(entityStructure.getEntityName(), count, freePos);
+        // set pos is now occupied
+        grid.setPositionInGridBoard(newEntityInstance, freePos.getX(),freePos.getY());
+
        // helper function to fill propertyInstanse map by entity structure
         newEntityInstance.createPropertyInstancesMap(entityStructure);
 
@@ -26,6 +33,7 @@ public class EntityInstanceManager {
         instances.get(newEntityInstance.getEntityName()).add(newEntityInstance);
         return newEntityInstance;
     }
+
 
     public Map<String, List<EntityInstance>> getAllInstances() {
         return instances;

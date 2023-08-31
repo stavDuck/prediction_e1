@@ -38,6 +38,9 @@ public class SecondaryInfo {
     public void setSecondaryEntityName(String secondaryEntityName) {
         this.secondaryEntityName = secondaryEntityName;
     }
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
 
 
     // getter
@@ -49,5 +52,9 @@ public class SecondaryInfo {
     }
     public String getSecondaryEntityName() {
         return secondaryEntityName;
+    }
+
+    public Condition getCondition() {
+        return condition;
     }
 }

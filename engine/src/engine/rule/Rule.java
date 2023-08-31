@@ -5,11 +5,12 @@ import engine.action.SecondaryInfo;
 import engine.activation.Activation;
 import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
+import engine.entity.EntityStructure;
 import engine.environment.Environment;
 import engine.execution.context.Context;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import engine.grid.Grid;
+
+import java.util.*;
 
 public class Rule {
     private String name;
@@ -45,7 +46,7 @@ public class Rule {
         this.activation = activation;
     }
 
-    public void inokeRule(EntityInstanceManager instanceManager, Environment environment, EntityInstance currEntity, int currTick) {
+    public void inokeRule(EntityInstanceManager instanceManager, Environment environment, EntityInstance currEntity, int currTick, Grid grid, Map<String, EntityStructure> entityStructure) {
         // run on all actions
         for (AbstractAction currAction : actions) {
             /*
@@ -58,16 +59,16 @@ public class Rule {
 
                 // check if action has secondery and create array of secondary
                 if (currAction.getSecondaryInfo().isExistSecondary()) {
-                    List<EntityInstance> secondaryInstancesLst = createSecondaryList(instanceManager, currAction.getSecondaryInfo());
+                    List<EntityInstance> secondaryInstancesLst = createSecondaryList(instanceManager, environment, currAction.getSecondaryInfo(), currTick, grid, entityStructure);
 
                     // invoke for every pair (curr entity, secondary entity)
                     for (EntityInstance currSecondary : secondaryInstancesLst) {
-                        currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary, currTick));
+                        currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary, currTick, grid, entityStructure));
                     }
                 }
                 // else no secondery - invoke rule only on curr instance
                 else {
-                    currAction.invoke(createContext(instanceManager, environment, currEntity, currTick));
+                    currAction.invoke(createContext(instanceManager, environment, currEntity, currTick, grid, entityStructure));
                 }
 
 
@@ -89,26 +90,59 @@ public class Rule {
         }
     }
 
-    private List<EntityInstance> createSecondaryList(EntityInstanceManager instanceManager, SecondaryInfo secondaryInfo) {
+    private List<EntityInstance> createSecondaryList(EntityInstanceManager instanceManager, Environment environment, SecondaryInfo secondaryInfo, int currTick, Grid grid, Map<String, EntityStructure> entityStructure) {
         int count = 0;
-        Iterator<EntityInstance> iterator = instanceManager.getInstancesByName(secondaryInfo.getSecondaryEntityName()).iterator();
-        List<EntityInstance> newLst = new ArrayList<>();
+        List<EntityInstance> validInstancesList;
+        List<EntityInstance> resLst;
 
-        while (count < secondaryInfo.getAmountEntities() && iterator.hasNext()){
-           // getting the current value and move to the next iterator in the list
-            newLst.add(iterator.next());
+        // get all valid instances
+        // if has condition need to get only condition true entities
+        if(secondaryInfo.getCondition() != null) {
+            validInstancesList = new ArrayList<>();
+
+            for (EntityInstance currEntity : instanceManager.getInstancesByName(secondaryInfo.getSecondaryEntityName())) {
+                // create context
+                Context currContext = new Context(currEntity, instanceManager, environment, currTick, grid, entityStructure);
+                secondaryInfo.getCondition().invoke(currContext);
+
+                // if condition is true on curr entity add to valid list
+                if (secondaryInfo.getCondition().getWhenCondition().getResult()) {
+                    validInstancesList.add(currEntity);
+                }
+            }
         }
-        return newLst;
+        // if no condition all the entities are valid ones
+        else{
+            validInstancesList =  instanceManager.getInstancesByName(secondaryInfo.getSecondaryEntityName());
+        }
+
+        // set the res list
+        if(secondaryInfo.getAmountEntities() > validInstancesList.size()){
+            resLst = validInstancesList;
+        }
+        else {
+            resLst = new ArrayList<>();
+            Random random= new Random();
+            int randIndex;
+            while(count < secondaryInfo.getAmountEntities()){
+                randIndex = random.nextInt(validInstancesList.size());
+                resLst.add(validInstancesList.get(randIndex));
+            }
+        }
+
+        return resLst;
     }
 
 
     // create context without secondary
-    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, int currTick){
-        return new Context(currInstance, instanceManager, environment, currTick);
+    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance,
+                                 int currTick, Grid grid, Map<String, EntityStructure> entityStructure){
+        return new Context(currInstance, instanceManager, environment, currTick, grid, entityStructure);
     }
     // create context with secondary
-    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, EntityInstance secondaryInstance, int currTick){
-        return new Context(currInstance, instanceManager, environment, secondaryInstance, currTick);
+    public Context createContext(EntityInstanceManager instanceManager, Environment environment, EntityInstance currInstance, EntityInstance secondaryInstance,
+                                 int currTick, Grid grid, Map<String, EntityStructure> entityStructure){
+        return new Context(currInstance, instanceManager, environment, secondaryInstance, currTick, grid, entityStructure);
     }
 
     public int getActionsSize() {

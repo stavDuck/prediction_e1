@@ -5,8 +5,10 @@ import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 
 public class ReplaceAction extends AbstractAction {
-    private final String createEntity;
-    private final String mode;
+    private final static String SCRATCH = "scratch";
+    private final static String DERIVED = "derived";
+    private String createEntity;
+    private String mode;
 
     public ReplaceAction(String killEntity, String actionType, String createEntity, String mode) {
         //in this action, kill is the main entity that's in the abstractAction class
@@ -23,6 +25,25 @@ public class ReplaceAction extends AbstractAction {
     }
     @Override
     public void invoke(Context context) {
+        switch (mode){
+            case SCRATCH:
+                scratchFunction(context);
+                break;
+            case DERIVED:
+                derivedFunction(context);
+                break;
+        }
+
+        // mark the entity for delete
+        context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(),context.getPrimaryEntityInstance().getPosY());
+        context.getPrimaryEntityInstance().setShouldKill(true);
+    }
+
+    public void scratchFunction(Context context){
+       context.getEntityInstanceManager().create(context.getEntityStructures().get(createEntity),context.getGrid());
+    }
+
+    public void derivedFunction(Context context){
 
     }
 }

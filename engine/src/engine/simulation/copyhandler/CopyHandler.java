@@ -1,5 +1,6 @@
 package engine.simulation.copyhandler;
 import engine.action.AbstractAction;
+import engine.action.SecondaryInfo;
 import engine.action.type.*;
 import engine.action.type.calculation.Calculation;
 import engine.action.type.condition.Condition;
@@ -105,20 +106,53 @@ public class CopyHandler {
      }
 
      private AbstractAction copyActionFromPRDRule(PRDAction action){
+         AbstractAction res;
+
          switch (action.getType()){
-             case (DECREASE): return createNewDecrease(action);
-             case (INCREASE): return createNewIncrease(action);
-             case (CALCULATION): return createNewCalculation(action);
-             case (CONDITION): return createNewCondition(action);
-             case (SET): return createNewSet(action);
-             case (KILL): return createNewKill(action);
-             case (REPLACE): return createNewReplace(action);
-             case (PROXIMITY): return createNewProximity(action);
-             default: return null;
+             case (DECREASE): res = createNewDecrease(action);
+             case (INCREASE): res = createNewIncrease(action);
+             case (CALCULATION): res = createNewCalculation(action);
+             case (CONDITION): res = createNewCondition(action);
+             case (SET): res = createNewSet(action);
+             case (KILL): res = createNewKill(action);
+             case (REPLACE): res = createNewReplace(action);
+             case (PROXIMITY): res = createNewProximity(action);
+             default: res = null;
          }
+
+         // create secondary if needed
+         if(action.getPRDSecondaryEntity() != null){
+             SecondaryInfo newSecInfo = copySecondary(action.getPRDSecondaryEntity());
+             res.setSecondaryInfo(newSecInfo);
+             }
+         return  res;
      }
 
-     public DecreaseAction createNewDecrease(PRDAction action){
+     // supporting adding secondary information to action if needed
+    private SecondaryInfo copySecondary(PRDAction.PRDSecondaryEntity prdSecondaryEntity) {
+        // if need to get all entities - no need of amount entities
+        if (prdSecondaryEntity.getPRDSelection().getCount().equals("ALL")) {
+            return new SecondaryInfo(0, prdSecondaryEntity.getEntity(), null, true);
+        }
+
+        // if not all- need to set how many and create condition if has condition
+        else {
+            Condition newCondition = null;
+            int count = Integer.parseInt(prdSecondaryEntity.getPRDSelection().getCount());
+
+            if (prdSecondaryEntity.getPRDSelection().getPRDCondition() != null) {
+                // secondaty has only when condition- no then no else
+                conditionSingularityApi newWhenCondition = createNewWhen(prdSecondaryEntity.getPRDSelection().getPRDCondition(),
+                        prdSecondaryEntity.getEntity(), "condition");
+
+                newCondition = new Condition(prdSecondaryEntity.getEntity(), "condition", newWhenCondition);
+            }
+
+            return new SecondaryInfo(count, prdSecondaryEntity.getEntity(), newCondition, false);
+        }
+    }
+
+    public DecreaseAction createNewDecrease(PRDAction action){
         return new DecreaseAction(action.getEntity(), action.getProperty(), action.getType(), action.getBy());
      }
     public IncreaseAction createNewIncrease(PRDAction action){

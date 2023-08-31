@@ -5,8 +5,8 @@ import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 
 public class ProximityAction extends AbstractAction {
-    private final String targetEntity;
-    private final String envDepthOf;
+    private String targetEntity;
+    private String envDepthOf;
 
     public ProximityAction(String sourceEntity, String actionType, String targetEntity, String envDepthOf) {
         //in this action, kill is the main entity that's in the abstractAction class

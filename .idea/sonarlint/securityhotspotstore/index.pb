@@ -5,8 +5,6 @@ A
 	ui/ui.iml,d\1\d138e7879c3a5036f9256d1eecaa2665bda9d0bf
 W
 'engine/src/generated/PRDProperties.java,d\e\de74dd8726ac70a3ca06533e75905d81141c5393
-e
-5engine/src/engine/action/type/condition/Operator.java,d\e\dea0bd667712c233686a13eb39d2e76bf835e67c
 \
 ,engine/src/engine/activation/Activation.java,4\d\4d9c36a6b15e5df3d6cd4b78834d1c5217c658d3
 c
@@ -39,8 +37,6 @@ X
 (engine/src/engine/property/Property.java,e\2\e25dc4531fb6c8ee023aa7eac38c9a128be07e43
 a
 1engine/src/engine/property/PropertyStructure.java,3\e\3e7b40ce33921e5fa991acea6e285868e593344a
-\
-,engine/src/engine/entity/EntityInstance.java,4\b\4bd24e17923b882fb750353789385a1f7ee88685
 ]
 -engine/src/engine/entity/EntityStructure.java,5\2\52c0095b80cb63a71043e7531b5278d705ecf883
 `
@@ -51,12 +47,8 @@ s
 Cengine/src/engine/validation/entitiesValidator/EntityValidator.java,c\5\c5defa81e8a29d49884e661ce1ff5a2b1fd3f30f
 k
 ;engine/src/engine/validation/ValidationCommonFunctions.java,d\e\de47fe4baac7b1ae6a1cc9c0e8473b65b25f9b6b
-o
-?engine/src/engine/validation/rulesValidator/RulesValidator.java,c\7\c745026d821d512768529d5d7abf4c55a14a72fe
 s
 Cengine/src/engine/validation/actionsValidator/ActionsValidator.java,f\f\fffebdb353431725b9a820e2c468f1f8f7daa033
-r
-Bengine/src/engine/validation/actionsValidator/ActionValidator.java,4\b\4ba93b569415b1feddb153e46bc6087e12743a6f
 `
 0engine/src/engine/validation/WorldValidator.java,3\a\3a708df6f957e5457bdec71e1b99940654ef781a
 Y
@@ -67,5 +59,3 @@ k
 Kengine/src/engine/validation/terminationValidator/TerminationValidator.java,8\1\8183e9dd4abc54b7ffa52b832bdf7aec216aca7d
 K
 ui/src/META-INF/MANIFEST.MF,8\7\87c2fbf6f4b4097be34053b97a445d1e57211ebd
-t
-Dengine/src/engine/action/type/condition/conditionSingularityApi.java,9\4\9482553fff9759b258874b8f85590371372a7ed4
