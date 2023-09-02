@@ -272,7 +272,13 @@ public class CopyHandler {
     }
 
     public ReplaceAction createNewReplace(PRDAction action) { return new ReplaceAction(action.getKill(), action.getType(), action.getCreate(), action.getMode());}
-    public ProximityAction createNewProximity(PRDAction action) { return new ProximityAction(action.getPRDBetween().getSourceEntity(), action.getType(), action.getPRDBetween().getTargetEntity(), action.getPRDEnvDepth().getOf());}
+    public ProximityAction createNewProximity(PRDAction action) {
+        ProximityAction proximityAction =  new ProximityAction(action.getPRDBetween().getSourceEntity(), action.getType(), action.getPRDBetween().getTargetEntity(), action.getPRDEnvDepth().getOf());
+        for(PRDAction currAction : action.getPRDActions().getPRDAction()) {
+            proximityAction.addAction(copyActionFromPRDRule(currAction));
+        }
+        return proximityAction;
+    }
     public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;

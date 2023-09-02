@@ -1,4 +1,5 @@
 package main;
+import menu.Menu;
 import subcomponents.app.AppController;
 import subcomponents.common.ResourcesConstants;
 import javafx.application.Application;
@@ -12,13 +13,15 @@ import subcomponents.tabs.execution.ExecutionComponentController;
 import java.net.URL;
 
 
-public class Main extends Application {
-   /* public static void main(String[] args) {
-//        Menu menu = new Menu();
-//        menu.startMenu();
-    }*/
+//public class Main extends Application {
+public class Main {
+    public static void main(String[] args) {
+        Menu menu = new Menu();
+        menu.startMenu();
+    }
 
-    private Model model;
+    //the new UI --> in comment for testing
+    /*private Model model;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -52,7 +55,7 @@ public class Main extends Application {
     public static void main(String[] args) {
        // Application.launch(Main.class);
         launch(args);
-    }
+    }*/
 
 
 }

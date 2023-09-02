@@ -128,7 +128,7 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
        //Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
 
       // Object valueForCondition = parseByTypeAndString(propType, value);
-        Object valueForCondition = FunctionHelper.getPropertyExpression(value, context);
+        Object valueForCondition = FunctionHelper.getValueToInvokeFromType(value, context, propType);
         result = evaluateCondition(propType, propVal,  valueForCondition);
     }
 
@@ -192,7 +192,8 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
                 return false;
         }
     }
-    public boolean evaluateBt(Type type, Object propVal, Object valueForCondition){
+    public boolean evaluateBt(Type type, Object propVal, Object valueForCondition) {
+
         switch (type){
             case DECIMAL:
                 return ((Integer)propVal > (Integer)valueForCondition);
@@ -203,6 +204,7 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
         }
     }
     public boolean evaluateLt(Type type, Object propVal, Object valueForCondition){
+
         switch (type){
             case DECIMAL:
                 return ((Integer)propVal < (Integer)valueForCondition);
@@ -214,7 +216,10 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
     }
 
     public Type getValueOfConditionExpressionValue(Object conditionValue) {
-       if(conditionValue instanceof Float) {
+        if(conditionValue instanceof Integer) {
+            return Type.DECIMAL;
+        }
+        if(conditionValue instanceof Float) {
            return Type.FLOAT;
        }
        else if(conditionValue instanceof Boolean) {

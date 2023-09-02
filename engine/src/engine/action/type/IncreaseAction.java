@@ -26,7 +26,12 @@ public class IncreaseAction extends AbstractAction {
     public void invoke(Context context) throws RuntimeException{
         try {
             Object value = FunctionHelper.getValueToInvoke(byExpression, context, property);
-            increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value, context);
+            if(context.getSecondaryEntityInstance() != null && entityName.equalsIgnoreCase(context.getSecondaryEntityInstance().getEntityName())) {
+                increasePropertyValWithVal(context.getSecondaryEntityInstance().getPropertyInstanceByName(property), value, context);
+            }
+            else {
+                increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value, context);
+            }
         }
         catch (RuntimeException e){
             throw new RuntimeException("Increase action on Entity: " + entityName + " on property: " + property +  " failed \n"

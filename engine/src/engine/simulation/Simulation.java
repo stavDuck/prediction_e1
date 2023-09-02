@@ -1,4 +1,5 @@
 package engine.simulation;
+import engine.entity.EntityStructure;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
 import engine.validation.exceptions.XmlValidationException;
@@ -32,6 +33,10 @@ public class Simulation {
             world = new World();
             CopyHandler copy = new CopyHandler();
             copy.copyData(prdWorld, world);
+            //TO DELETE:
+            for(EntityStructure entityStructure : world.getEntityStructures().values()) {
+                world.setPopulationForEntity(entityStructure.getEntityName(), 100);
+            }
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("File " + fileName + " was not found");

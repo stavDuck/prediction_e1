@@ -87,6 +87,9 @@ public class PropertyInstance extends Property {
 
     //gets the latest tick the property changed in
     public int getLastEndTick() {
+        if(tickHistory.isEmpty()) {
+            return 0;
+        }
         return tickHistory.get(tickHistory.size() - 1).getEndTick();
     }
 

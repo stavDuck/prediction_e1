@@ -28,10 +28,13 @@ public class SetAction extends AbstractAction {
     @Override
     public void invoke(Context context) {
         Object value = FunctionHelper.getValueToInvoke(newValue, context, property);
-
-        PropertyInstance prop = context.getPrimaryEntityInstance()
-                .getPropertyInstanceByName(property);
-
+        PropertyInstance prop;
+        if(context.getSecondaryEntityInstance() != null && entityName.equalsIgnoreCase(context.getSecondaryEntityInstance().getEntityName())) {
+            prop = context.getSecondaryEntityInstance().getPropertyInstanceByName(property);
+        }
+        else {
+            prop = context.getPrimaryEntityInstance().getPropertyInstanceByName(property);
+        }
         if (prop.getRange() != null) {
             // check if out of range for decimal
             if (prop.getType().name().toLowerCase().equals("decimal")) {
@@ -56,8 +59,8 @@ public class SetAction extends AbstractAction {
         }
 
         if (value != null) {
-            context.getPrimaryEntityInstance().getPropertyInstanceByName(property).setVal(value);
+            prop.setVal(value);
+            prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
         }
-        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 }
