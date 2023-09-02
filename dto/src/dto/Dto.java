@@ -2,6 +2,7 @@ package dto;
 
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
+import dto.grid.DtoGrid;
 import dto.range.DtoRange;
 import dto.rule.Action.*;
 import dto.rule.DtoRule;
@@ -17,6 +18,7 @@ public class Dto {
     private Map<String, DtoRule> rules;
     private DtoTermination termination;
     private Map<String, DtoEnv> envs;
+    private DtoGrid grid;
 
     public Dto() {
         this.entities = new HashMap<>();
@@ -25,6 +27,12 @@ public class Dto {
     }
 
     //getter
+    public DtoGrid getGrid() {
+        return grid;
+    }
+    public void setGrid(DtoGrid grid) {
+        this.grid = grid;
+    }
     public Map<String, DtoEntity> getEntities() {
         return entities;
     }
@@ -126,6 +134,8 @@ public class Dto {
     public void printTermination(){
         termination.printTermination();
     }
+
+
 
 }
 

@@ -1,6 +1,7 @@
 package engine.world;
 
 import dto.Dto;
+import dto.grid.DtoGrid;
 import dto.rule.DtoRule;
 import engine.Position;
 import engine.action.AbstractAction;
@@ -330,6 +331,7 @@ public class World {
         }
 
         dto.addTermination(termination.getByTick(), termination.getBySec());
+        dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
 
         return dto;
     }

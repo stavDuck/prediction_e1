@@ -72,4 +72,8 @@ public class DtoCondition extends DtoAbstractAction{
     public void setWhenConditionsNumber(int elseConditionsNumber) {
         this.elseConditionsNumber = elseConditionsNumber;
     }
+
+    public int getElseConditionsNumber() {
+        return elseConditionsNumber;
+    }
 }

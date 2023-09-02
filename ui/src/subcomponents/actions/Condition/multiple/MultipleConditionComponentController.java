@@ -16,6 +16,10 @@ public class MultipleConditionComponentController {
     private Label MultipleConditionLogicalLable;
     @FXML
     private Label MultipleConditionNumberLabel;
+    @FXML
+    private Label ThenConditionMulti;
+    @FXML
+    private Label ElseConditionMulti;
 
     public void setTxtTypeLabel(String input){
         MultipleConditionTypeLabel.setText(input);
@@ -34,6 +38,12 @@ public class MultipleConditionComponentController {
     }
     public void setTxtConditionNumberLabel(String input){
         MultipleConditionNumberLabel.setText(input);
+    }
+    public void setTxtThenConditionLabel(String input){
+        ThenConditionMulti.setText(input);
+    }
+    public void setTxtElseConditionLabel(String input){
+        ElseConditionMulti.setText(input);
     }
 
 }

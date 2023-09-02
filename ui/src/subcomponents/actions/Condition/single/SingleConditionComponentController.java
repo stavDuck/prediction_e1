@@ -3,7 +3,7 @@ package subcomponents.actions.Condition.single;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class SinelConditionComponentController {
+public class SingleConditionComponentController {
     @FXML
     private Label SingleConditionTypeLabel;
     @FXML
@@ -18,6 +18,10 @@ public class SinelConditionComponentController {
     private Label SingleConditionOperatorLabel;
     @FXML
     private Label SingleConditionValueLabel;
+    @FXML
+    private Label ThenConditionSingle;
+    @FXML
+    private Label ElseConditionSingle;
 
     public void setTxtTypeLabel(String input){
         SingleConditionTypeLabel.setText(input);
@@ -38,5 +42,11 @@ public class SinelConditionComponentController {
         SingleConditionOperatorLabel.setText(input);
     }
     public void setTxtValueLabel(String input){SingleConditionValueLabel.setText(input);}
+    public void setTxtThenConditionLabel(String input){
+        ThenConditionSingle.setText(input);
+    }
+    public void setTxtElseConditionLabel(String input){
+        ElseConditionSingle.setText(input);
+    }
 
 }

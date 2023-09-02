@@ -17,4 +17,12 @@ public class DtoReplace extends DtoAbstractAction{
     public void setMode(String mode) {
         this.mode = mode;
     }
+
+    public String getCreateEntity() {
+        return createEntity;
+    }
+
+    public String getMode() {
+        return mode;
+    }
 }
