@@ -176,7 +176,7 @@ public class ExecutionComponentController {
         if(entityVal && envVal) {
             mainController.moveToResultsTab();
         }
-        mainController.getModel().runSimulation();
+        mainController.runSimulation();
     }
 
     public boolean validateEntityPopulation() {

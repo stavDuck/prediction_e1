@@ -165,4 +165,8 @@ public class ResultsComponentController {
 
     }
 
+
+    public void runSimulation() {
+        mainController.getModel().runSimulation();
+    }
 }
