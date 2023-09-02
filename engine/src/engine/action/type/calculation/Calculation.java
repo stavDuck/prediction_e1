@@ -128,4 +128,20 @@ public class Calculation extends AbstractAction {
         }
         prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
+
+    public String getResultProp() {
+        return resultProp;
+    }
+
+    public String getArg1() {
+        return arg1;
+    }
+
+    public String getArg2() {
+        return arg2;
+    }
+
+    public String getOperatorType() {
+        return operatorType;
+    }
 }

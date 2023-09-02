@@ -52,6 +52,14 @@ public class ProximityAction extends AbstractAction {
 
     }
 
+    public String getTargetEntity() {
+        return targetEntity;
+    }
+
+    public String getEnvDepthOf() {
+        return envDepthOf;
+    }
+
     public EntityInstance checkPointProximity(Position source, int proximityCircle, Context context) {
         int maxX = context.getGrid().getRows();
         int maxY = context.getGrid().getColumns();

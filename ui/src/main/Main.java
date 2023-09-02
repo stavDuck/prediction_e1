@@ -13,15 +13,15 @@ import subcomponents.tabs.execution.ExecutionComponentController;
 import java.net.URL;
 
 
-//public class Main extends Application {
-public class Main {
-    public static void main(String[] args) {
+public class Main extends Application {
+//public class Main {
+   /* public static void main(String[] args) {
         Menu menu = new Menu();
         menu.startMenu();
-    }
+    }*/
 
     //the new UI --> in comment for testing
-    /*private Model model;
+    private Model model;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -55,7 +55,7 @@ public class Main {
     public static void main(String[] args) {
        // Application.launch(Main.class);
         launch(args);
-    }*/
+    }
 
 
 }

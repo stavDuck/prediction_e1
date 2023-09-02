@@ -63,4 +63,12 @@ public class SetAction extends AbstractAction {
             prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
         }
     }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public String getNewValue() {
+        return newValue;
+    }
 }

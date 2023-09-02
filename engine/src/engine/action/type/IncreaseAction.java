@@ -66,4 +66,12 @@ public class IncreaseAction extends AbstractAction {
         }
         prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public String getByExpression() {
+        return byExpression;
+    }
 }

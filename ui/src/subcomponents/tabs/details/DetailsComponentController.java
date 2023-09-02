@@ -4,17 +4,28 @@ import dto.Dto;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
 import dto.property.DtoProperty;
+import dto.rule.Action.DtoAbstractAction;
+import dto.rule.Action.DtoIncrease;
 import dto.rule.DtoRule;
 import dto.termination.DtoTermination;
+import engine.activation.Activation;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import subcomponents.actions.Increase.IncreaseComponentController;
 import subcomponents.app.AppController;
+import subcomponents.common.ResourcesConstants;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +34,18 @@ public class DetailsComponentController {
     private final static String ENTITIES_TITLE = "Entities";
     private final static String ENVS_TITLE = "Environment Variables";
     private final static String RULES_TITLE = "Rules List";
+    private final static String RULES_ACTIVATION = "Activation";
+    private final static String RULES_ACTIONS = "Actions";
     private final static String TERMINATION_TITLE = "Termination Conditions";
     private final static String ROOT_TITEL = "Simulation's Information";
+    private final static String INCREASE = "increase";
+    private final static String DECREASE = "decrease";
+    private final static String CALCULATION = "calculation";
+    private final static String CONDITION = "condition";
+    private final static String SET = "set";
+    private final static String KILL = "kill";
+    private final static String REPLACE = "replace";
+    private final static String PROXIMITY = "proximity";
 
     private AppController mainController;
     @FXML
@@ -37,8 +58,7 @@ public class DetailsComponentController {
     private TreeView<String> treeViewInformation;
 
     @FXML
-    private TextArea informationDetailsBody;
-
+    private VBox informationDetailsBody;
 
 
     public void setMainController(AppController mainController) {
@@ -80,7 +100,28 @@ public class DetailsComponentController {
             TreeItem<String> branchItemRules = new TreeItem<>(RULES_TITLE);
             // add leafs by env vars names
             for(DtoRule curr : dtoRuleLst){
-                branchItemRules.getChildren().add(new TreeItem<>(curr.getName()));
+                TreeItem<String> branchItemRuleName = new TreeItem<>(curr.getName());
+
+                TreeItem<String> branchItemRuleActions = new TreeItem<>(RULES_ACTIONS);
+                // create activation
+                TreeItem<String> branchItemRuleActivation = new TreeItem<>(RULES_ACTIVATION);
+
+                // create actions for curr rule
+                for(DtoAbstractAction currAction : curr.getAction()){
+                    branchItemRuleActions.getChildren().add(new TreeItem<>(currAction.getType()));
+                }
+
+
+                //- rules
+                // -- rule name
+                // --- actions
+                // ---- increase
+                // ---- decrease
+                // --- activation
+                branchItemRuleName.getChildren().add(branchItemRuleActions);
+                branchItemRuleName.getChildren().add(branchItemRuleActivation);
+                branchItemRules.getChildren().add(branchItemRuleName);
+
             }
             rootItem.getChildren().add(branchItemRules);
         }
@@ -101,13 +142,17 @@ public class DetailsComponentController {
         Dto dto = mainController.getDtoWorld();
         TreeItem<String> item = treeViewInformation.getSelectionModel().getSelectedItem();
 
-        // informationDetailsTitle --> title
-        //informationDetailsBody --> body
 
         if(item != null && !item.getValue().equals(ROOT_TITEL)){
+           boolean isValueRuleAction = false;
+            int indexChildInRuleLst;
+            DtoRule dtoRule;
+
             // reset info in screen
             informationDetailsTitle.setText("");
-            informationDetailsBody.clear();
+            // clear details body
+            informationDetailsBody.getChildren().clear();
+            informationDetailsBody.getChildren().removeAll();
             informationDetailsTitle.setText(item.getValue());
 
             String ifoType = item.getParent().getValue();
@@ -132,8 +177,6 @@ public class DetailsComponentController {
                         txt += "Property Range from: " + dtoEnv.getEnvRange().getFrom() + ", to: " + dtoEnv.getEnvRange().getTo() + "\n";
                     }
                     break;
-                case RULES_TITLE:
-                    break;
                 case TERMINATION_TITLE:
                     if (item.getValue().indexOf("Ticks") != -1){
                         txt += "End Condition By Ticks: " + dto.getTermination().getByTick();
@@ -142,9 +185,140 @@ public class DetailsComponentController {
                         txt += "End Condition By Seconds: " + dto.getTermination().getBySeconds();
                     }
                     break;
+                case RULES_ACTIONS:
+                    isValueRuleAction = true;
+                    handleRuleAction(dto, item);
+                    break;
             }
 
-            informationDetailsBody.setText(txt);
+            if(item.getValue().equals(RULES_ACTIVATION)) {
+                indexChildInRuleLst = getRuleIndexBySelectedActivation(item);
+                dtoRule = (new ArrayList<DtoRule>(dto.getRules().values())).get(indexChildInRuleLst);
+                txt += "Activation by Ticks: " + dtoRule.getActivation().getTicks() + "\n" +
+                        "Activation by Probability: " + dtoRule.getActivation().getProbability();
+            }
+
+            // if not rule action need to set regular txt in body
+            if(!isValueRuleAction) {
+                informationDetailsBody.getChildren().add(new Label(txt));
+            }
         }
+    }
+
+    private void handleRuleAction(Dto dto, TreeItem<String> item) {
+        int indexChildInRuleLst;
+        int indexChildActionLst;
+        DtoRule dtoRule;
+        DtoAbstractAction dtoAction;
+
+        switch (item.getValue()){
+            case INCREASE:
+                indexChildInRuleLst = getRuleIndexBySelectedRuleAction(item);
+                dtoRule = (new ArrayList<DtoRule>(dto.getRules().values())).get(indexChildInRuleLst);
+                indexChildActionLst = getActionIndexBySelectedRuleAction(item);
+                dtoAction = dtoRule.getAction().get(indexChildActionLst);
+                addIncreaseInformationToBody(dtoAction);
+                break;
+            case DECREASE:
+                indexChildInRuleLst = getRuleIndexBySelectedRuleAction(item);
+                dtoRule = (new ArrayList<DtoRule>(dto.getRules().values())).get(indexChildInRuleLst);
+                indexChildActionLst = getActionIndexBySelectedRuleAction(item);
+                dtoAction = dtoRule.getAction().get(indexChildActionLst);
+                //addDecreaseInformationToBody(dtoAction);
+                break;
+            case CALCULATION:
+                indexChildInRuleLst = getRuleIndexBySelectedRuleAction(item);
+                dtoRule = (new ArrayList<DtoRule>(dto.getRules().values())).get(indexChildInRuleLst);
+                indexChildActionLst = getActionIndexBySelectedRuleAction(item);
+                dtoAction = dtoRule.getAction().get(indexChildActionLst);
+                // addCalculationInformationToBody(dtoAction);
+                break;
+            case CONDITION:
+                break;
+            case SET:
+                break;
+            case KILL:
+                break;
+            case REPLACE:
+                break;
+            case PROXIMITY:
+                break;
+
+        }
+    }
+
+    private void addIncreaseInformationToBody(DtoAbstractAction dtoAction) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            URL url = getClass().getResource(ResourcesConstants.INCREACE_FXML_INCLUDE_RESOURCE);
+            loader.setLocation(url);
+            loader.setRoot(new VBox());
+            Node increaseTile = loader.load();
+            IncreaseComponentController increaseController = loader.getController();
+
+            // set information
+            increaseController.setTxtTypeLabel(dtoAction.getType());
+            increaseController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
+            increaseController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
+            increaseController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
+            increaseController.setTxtPropertyLabel(((DtoIncrease)dtoAction).getProperty());
+            increaseController.setTxtPropertyLabel(((DtoIncrease)dtoAction).getByExpression());
+
+            informationDetailsBody.getChildren().add(increaseTile);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private int getRuleIndexBySelectedActivation(TreeItem<String> item) {
+        TreeItem<String> selectedRule = item.getParent(); // get rule name item
+        TreeItem<String> RulesRoot = item.getParent().getParent(); // get rules root
+        int counter = 0;
+        boolean isFound = false;
+
+        // go over all the rules in the tree and count what is the index of the selected rule
+        for(TreeItem<String> currRule : RulesRoot.getChildren()){
+            if(selectedRule == currRule){
+                isFound = true;
+            }
+            else if(selectedRule != currRule && !isFound){
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private int getRuleIndexBySelectedRuleAction(TreeItem<String> item){
+        TreeItem<String> selectedRule = item.getParent().getParent(); // first parent - actions, secont parent - rule name item
+        TreeItem<String> RulesRoot = item.getParent().getParent().getParent(); // get rules root
+        int counter = 0;
+        boolean isFound = false;
+
+        for(TreeItem<String> currRule : RulesRoot.getChildren()) {
+            if(selectedRule == currRule){
+                isFound = true;
+            }
+            else if(selectedRule != currRule && !isFound){
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private int getActionIndexBySelectedRuleAction(TreeItem<String> item){
+        TreeItem<String> actionsLstTree = item.getParent();
+        int counter = 0;
+        boolean isFound = false;
+
+        for(TreeItem<String> currAction : actionsLstTree.getChildren()) {
+            if(currAction == item){
+                isFound = true;
+            }
+            else if(item != currAction && !isFound){
+                counter++;
+            }
+        }
+        return counter;
     }
 }

@@ -1,8 +1,14 @@
 package engine.world;
 
 import dto.Dto;
+import dto.rule.DtoRule;
 import engine.Position;
 import engine.action.AbstractAction;
+import engine.action.type.*;
+import engine.action.type.calculation.Calculation;
+import engine.action.type.condition.Condition;
+import engine.action.type.condition.ConditionMultiple;
+import engine.action.type.condition.ConditionSingle;
 import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
@@ -309,7 +315,8 @@ public class World {
         for(Rule rule : rules.values()) {
             dto.addRule(rule.getName(), rule.getActivation().getTick(), rule.getActivation().getProbability(), rule.getActionsSize());
             for(AbstractAction action : rule.getActions()) {
-                dto.addActionToRule(rule.getName(), action.getActionType().name());
+                // add rule action by it's type
+                addActionToRuleDto(dto,rule.getName(),action);
             }
         }
 
@@ -325,6 +332,64 @@ public class World {
         dto.addTermination(termination.getByTick(), termination.getBySec());
 
         return dto;
+    }
+
+    public void addActionToRuleDto(Dto dto, String ruleName, AbstractAction action){
+        // add new dto rule's action according to the action type
+        switch (action.getActionType().name().toLowerCase()){
+            case "increase":
+                IncreaseAction tempActionIncrease = (IncreaseAction) action;
+                dto.addIncreaseAction(ruleName, tempActionIncrease.getProperty(), tempActionIncrease.getByExpression(), "increase",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "decrease":
+                DecreaseAction tempActionDecrease = (DecreaseAction) action;
+                dto.addDecreaseAction(ruleName, tempActionDecrease.getProperty(),tempActionDecrease.getByExpression(), "decrease",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "calculation":
+                Calculation tempActionCalculation = (Calculation) action;
+                dto.addCalculationAction(ruleName, tempActionCalculation.getOperatorType(), tempActionCalculation.getResultProp(),
+                       tempActionCalculation.getArg1(),tempActionCalculation.getArg2(), "calculation",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "condition":
+                Condition tempActionCondition = (Condition) action;
+
+                if(tempActionCondition.getWhenCondition().getSingularity().equals("single")){
+                    ConditionSingle tempSingle = (ConditionSingle)tempActionCondition.getWhenCondition();
+
+                    dto.addSingelConditionAction(ruleName, "condition",action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                            tempSingle.getPropertyToInvoke(), tempSingle.getOp().name().toLowerCase(), tempSingle.getValue(),
+                            tempActionCondition.getThenCondition().size(), tempActionCondition.getElseCondition().size());
+                }
+                else{
+                    ConditionMultiple tempMulti = (ConditionMultiple)tempActionCondition.getWhenCondition();
+
+                    dto.addMultipleConditionAction(ruleName, "condition", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                            tempMulti.getLogical(), tempMulti.getConditionLst().size(), tempActionCondition.getThenCondition().size(), tempActionCondition.getElseCondition().size());
+                }
+                break;
+            case "set":
+                SetAction tempActionSet = (SetAction) action;
+                dto.addSetAction(ruleName, "set",action.getEntityName(),
+                        action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionSet.getProperty(),tempActionSet.getNewValue());
+                break;
+            case "kill":
+                dto.addKillAction(ruleName, "kill", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "replace":
+                ReplaceAction tempActionReplace = (ReplaceAction) action;
+                dto.addReplaceAction(ruleName, "replace",action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionReplace.getCreateEntity(), tempActionReplace.getMode());
+                break;
+            case "proximity":
+                ProximityAction tempActionProximity = (ProximityAction) action;
+                dto.addProximityAction(ruleName, "proximity", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionProximity.getTargetEntity(), tempActionProximity.getEnvDepthOf());
+                break;
+        }
     }
 
     public void setPopulationForEntity(String entityName, int population) {
