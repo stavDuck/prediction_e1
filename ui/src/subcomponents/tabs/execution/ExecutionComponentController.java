@@ -173,13 +173,16 @@ public class ExecutionComponentController {
         boolean entityVal, envVal;
         entityVal = validateEntityPopulation();
         envVal = verifyEnvVariable();
-        if(entityVal && envVal)
+        if(entityVal && envVal) {
             mainController.moveToResultsTab();
+        }
+        mainController.runSimulation();
     }
 
     public boolean validateEntityPopulation() {
         boolean res = true;
         int sum = 0;
+        int population;
         int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
@@ -187,10 +190,10 @@ public class ExecutionComponentController {
                 for (Node innerNode : vBox.getChildren()) {
                     if (innerNode instanceof TextField) {
                         try {
-                            verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
+                            population = verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, "", true);
                             res = true;
-                            sum += Integer.parseInt(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText());
+                            sum += population;
                         }
                         catch (NumberFormatException e) {
                             res = false;
@@ -208,14 +211,16 @@ public class ExecutionComponentController {
         return res;
     }
 
-    public void verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
+    public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
             int pop = Integer.parseInt(population);
             mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, pop);
+            return pop;
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
                 mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, 0);
+                return 0;
             }
             else {
                 throw new NumberFormatException("Population value should be numeric and an integer");

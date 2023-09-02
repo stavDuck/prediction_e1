@@ -149,5 +149,10 @@ public class AppController {
     }
     public void moveToResultsTab() {
         tabPane.getSelectionModel().select(resultTabComponent);
+        resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
+    }
+
+    public void runSimulation() {
+        resultTabController.runSimulation();
     }
 }

@@ -53,7 +53,7 @@
                 </VBox>
             </top>
          <center>
-            <TabPane fx:id="tabPane" id="tabPanelStyle" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="TOP_CENTER">
+            <TabPane id="tabPanelStyle" fx:id="tabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="TOP_CENTER">
               <tabs>
                 <Tab fx:id="detailsTabComponent" styleClass="tabStyles" text="Details">
                      <content>
@@ -77,7 +77,7 @@
                      <content>
                      <!--   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                            <content>-->
-                              <fx:include fx:id="resultTab" source="../tabs/results/ResultsComponent.fxml" />
+                              <fx:include fx:id="resultTab" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="../tabs/results/ResultsComponent.fxml" />
                           <!-- </content>
                         </ScrollPane>-->
                      </content>
