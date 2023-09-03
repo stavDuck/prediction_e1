@@ -29,6 +29,10 @@ public class ReplaceAction extends AbstractAction {
 //        if((context.getGrid().getRows() * context.getGrid().getColumns()) >
 //                context.getEntityInstanceManager().getCurrPopulationNumber()) {
 
+        // mark the entity for delete
+        context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(), context.getPrimaryEntityInstance().getPosY());
+        context.getPrimaryEntityInstance().setShouldKill(true);
+
             switch (mode) {
                 case SCRATCH:
                     scratchFunction(context);
@@ -38,9 +42,7 @@ public class ReplaceAction extends AbstractAction {
                     break;
             }
 
-            // mark the entity for delete
-            context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(), context.getPrimaryEntityInstance().getPosY());
-            context.getPrimaryEntityInstance().setShouldKill(true);
+
         }
 //    }
 

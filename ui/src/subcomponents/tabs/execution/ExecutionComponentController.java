@@ -327,6 +327,10 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
+        for(PropertyInstance propertyInstance :  mainController.getModel().getSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+            System.out.println(mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
+
+        }
         return valid;
     }
 
