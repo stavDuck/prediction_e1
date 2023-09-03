@@ -61,10 +61,11 @@ public class Rule {
                 if (currAction.getSecondaryInfo().isExistSecondary()) {
                     List<EntityInstance> secondaryInstancesLst = createSecondaryList(instanceManager, environment, currAction.getSecondaryInfo(), currTick, grid, entityStructure);
 
-                    // invoke for every pair (curr entity, secondary entity)
-                    for (EntityInstance currSecondary : secondaryInstancesLst) {
-                        currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary, currTick, grid, entityStructure));
-                    }
+                        // invoke for every pair (curr entity, secondary entity)
+                        for (EntityInstance currSecondary : secondaryInstancesLst) {
+                            currAction.invoke(createContext(instanceManager, environment, currEntity, currSecondary, currTick, grid, entityStructure));
+                        }
+
                 }
                 // else no secondery - invoke rule only on curr instance
                 else {

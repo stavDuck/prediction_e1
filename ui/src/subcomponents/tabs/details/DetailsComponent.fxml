@@ -22,9 +22,16 @@
                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="300.0" vgrow="SOMETIMES" />
            </rowConstraints>
            <children>
-               <Label id="title-view" fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" GridPane.columnIndex="1" />
+               <Label id="title-view" fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="title-information" textAlignment="CENTER" GridPane.columnIndex="1" />
                <TreeView fx:id="treeViewInformation" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="200.0" prefWidth="200.0" stylesheets="@DetailsComponent.css" GridPane.rowIndex="1" />
-            <VBox fx:id="informationDetailsBody" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <VBox fx:id="informationDetailsBody" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="40.0" />
+               </padding>
+            </VBox>
            </children>
            <BorderPane.margin>
                <Insets top="5.0" />
