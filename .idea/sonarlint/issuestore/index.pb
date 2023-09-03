@@ -35,8 +35,6 @@ s
 Cengine/src/engine/validation/actionsValidator/ActionsValidator.java,f\f\fffebdb353431725b9a820e2c468f1f8f7daa033
 u
 Eengine/src/engine/validation/entitiesValidator/EntitiesValidator.java,4\b\4bdacf0c8eb51e84730c449d56782a881402eef7
-]
--engine/src/engine/entity/EntityStructure.java,5\2\52c0095b80cb63a71043e7531b5278d705ecf883
 s
 Cengine/src/engine/validation/entitiesValidator/EntityValidator.java,c\5\c5defa81e8a29d49884e661ce1ff5a2b1fd3f30f
 k

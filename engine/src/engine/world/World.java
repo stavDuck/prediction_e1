@@ -33,6 +33,7 @@ public class World {
     private Map<String, Rule> rules; //key = rule name, value = rule
     private Grid grid;
     private int threadCount;
+    public int currTick;
 
     public World() {
         this.environment = new Environment();
@@ -42,6 +43,7 @@ public class World {
         this.termination = new Termination();
         this.grid = new Grid();
         this.threadCount = 0;
+        this.currTick = 0;
     }
 
     // getters
@@ -152,6 +154,14 @@ public class World {
             // Move all instances on the grid
             moveAllInstancesInGrid(instanceManager);
 
+            // save the population of all entities
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over every entity and save the curr population
+                entityStructures.get(currEntityName).addToPopulationHistoryList(
+                        instanceManager.getAllInstances().get(currEntityName).size());
+            }
+
+
             List<Rule> ActiveRules = rules.values()
                     .stream()
                     .filter(obj -> isRuleActive(obj, tick[0])) // Replace filterFunction with your actual filter function
@@ -169,19 +179,21 @@ public class World {
 
 
             tick[0]++;
-
+            this.currTick = tick[0];
             // go over all the entities and delete the unwanted instances
             for (String currEntityName : instanceManager.getAllInstances().keySet()) {
                 // go over all the entities from the sama category
-                    Iterator<EntityInstance> iterator = instanceManager.getInstancesByName(currEntityName).iterator();
+                Iterator<EntityInstance> iterator = instanceManager.getInstancesByName(currEntityName).iterator();
 
-                    while (iterator.hasNext()) {
-                        EntityInstance currInstance = iterator.next();
-                        if (currInstance.isShouldKill()) {
-                            iterator.remove(); // Safely remove the current instance
-                            instanceManager.killEntity(currInstance);
-                        }
+                while (iterator.hasNext()) {
+                    EntityInstance currInstance = iterator.next();
+                    if (currInstance.isShouldKill()) {
+                        iterator.remove(); // Safely remove the current instance
+                        instanceManager.killEntity(currInstance);
+                        // decrease the number in population
+                        instanceManager.setCurrPopulationNumber(instanceManager.getCurrPopulationNumber() - 1);
                     }
+                }
             }
 
             // check if termination coditions are met
@@ -298,7 +310,7 @@ public class World {
     public Dto createDto() {
         Dto dto = new Dto();
         for(EntityStructure entityStructure : entityStructures.values()) {
-            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation());
+            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), entityStructure.getPopulationHistoryList());
             for(PropertyStructure propertyStructure : entityStructure.getEntityPropMap().values()) {
                 if(propertyStructure.getRange() != null) {
                     dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),

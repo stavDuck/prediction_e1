@@ -3,6 +3,7 @@ package dto;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
 import dto.grid.DtoGrid;
+import dto.property.DtoProperty;
 import dto.range.DtoRange;
 import dto.rule.Action.*;
 import dto.rule.DtoRule;
@@ -11,6 +12,7 @@ import dto.termination.DtoTermination;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Dto {
@@ -42,8 +44,8 @@ public class Dto {
     public Map<String, DtoEnv> getEnvs(){return envs;}
     public DtoTermination getTermination(){return termination;}
 
-    public void addEntity(String entityName, int entityPopulation) {
-        entities.put(entityName, new DtoEntity(entityName, entityPopulation));
+    public void addEntity(String entityName, int entityPopulation, List<Integer> populationHistoryList) {
+        entities.put(entityName, new DtoEntity(entityName, entityPopulation, populationHistoryList));
     }
 
     public void addPropertyToEntity(String entityName, String propertyName, String propertyType, float rangeTo, float rangeFrom, boolean isInitRandom) {

@@ -265,7 +265,7 @@ public class ExecutionComponentController {
                             else {
                                 if(((TextField) innerNode).getText().isEmpty()) {
                                     //checkbox is not checked, and there's no user input --> generate value
-                                    if(type.equalsIgnoreCase("float") || type.equalsIgnoreCase("decimal")){
+                                    if(type.contains("float") || type.contains("decimal")){
                                         generateFloat(envName);
                                     }
                                     else if(type.equalsIgnoreCase("string")) {

@@ -25,11 +25,11 @@
             <VBox styleClass="border-pane-left" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="112.0" styleClass="simulation-label-bottom" text="Select Simulation" textAlignment="CENTER" />
-                  <VBox fx:id="simulationDetails" prefWidth="112.0">
+                  <VBox fx:id="simulationDetails" onMouseClicked="#clickOnSimulation" prefWidth="112.0">
                      <children>
                         <HBox fx:id="singleSimulationDetails" spacing="10.0">
                            <children>
-                              <Label fx:id="simulationID" onMouseClicked="#viewSimulationDetails" />
+                              <Label fx:id="simulationID" />
                               <!--<ImageView fx:id="progressImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />-->
                            </children>
                            <padding>
@@ -127,12 +127,12 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <LineChart fx:id="popultionGraph">
+                              <LineChart fx:id="popultionGraph" title="Population Per Ticks">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
+                                  <NumberAxis fx:id="entityNameCategory" side="BOTTOM" />
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis fx:id="numberAxis" side="LEFT" />
+                                  <NumberAxis fx:id="ticksNumberCategory" side="LEFT" />
                                 </yAxis>
                               </LineChart>
                               <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">

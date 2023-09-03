@@ -9,14 +9,17 @@ import java.util.stream.IntStream;
 public class EntityInstanceManager {
     private int count;
     private Map<String, List<EntityInstance>> instances; //key = smoker, value = list of all smoker instances
+    private int currPopulationNumber; // the number of entities living in the world
 
     public EntityInstanceManager() {
         count = 0;
         instances = new HashMap<>();
+        currPopulationNumber =0;
     }
 
     public EntityInstance create(EntityStructure entityStructure, Grid grid) {
         count++;
+        currPopulationNumber++;
         // generate positions
         Position freePos = grid.getRandomFreePoseInGrid();
         EntityInstance newEntityInstance = new EntityInstance(entityStructure.getEntityName(), count, freePos);
@@ -36,6 +39,7 @@ public class EntityInstanceManager {
 
      public EntityInstance createByDerived(EntityStructure entityStructure, EntityInstance sourceEntity, Grid grid){
          count++;
+         currPopulationNumber++;
          // generate positions
          Position freePos = grid.getRandomFreePoseInGrid();
          EntityInstance newEntityInstance = new EntityInstance(entityStructure.getEntityName(), count, freePos);
@@ -53,6 +57,9 @@ public class EntityInstanceManager {
          return newEntityInstance;
      }
 
+    public int getCurrPopulationNumber() {
+        return currPopulationNumber;
+    }
 
     public Map<String, List<EntityInstance>> getAllInstances() {
         return instances;
@@ -65,5 +72,9 @@ public class EntityInstanceManager {
     public void killEntity(EntityInstance entityInstance) {
         // go to the value of entity name and remove from list the recived instance in the list
         getInstancesByName(entityInstance.getEntityName()).remove(entityInstance);
+    }
+
+    public void setCurrPopulationNumber(int currPopulationNumber) {
+        this.currPopulationNumber = currPopulationNumber;
     }
 }

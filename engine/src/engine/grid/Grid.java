@@ -23,6 +23,7 @@ public class Grid {
         this.rows = rows;
         this.columns = columns;
         gridBoard = new EntityInstance[rows][columns];
+        this.freeSpots = rows*columns;
     }
 
     //getters
@@ -50,6 +51,11 @@ public class Grid {
     }
     public void setPositionInGridBoard(EntityInstance val, int x, int y){
         gridBoard[x][y] = val;
+
+        if(val == null)
+            freeSpots++;
+        else
+            freeSpots--;
     }
     public void setFreeSpots(int freeSpots) {
         this.freeSpots = freeSpots;
@@ -57,6 +63,8 @@ public class Grid {
 
     public void initGridBoard(){
         gridBoard = new EntityInstance[rows][columns]; // default values are false for free cells
+        this.freeSpots = rows*columns;
+
     }
 
 

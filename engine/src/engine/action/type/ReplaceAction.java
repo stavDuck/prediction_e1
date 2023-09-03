@@ -25,19 +25,24 @@ public class ReplaceAction extends AbstractAction {
     }
     @Override
     public void invoke(Context context) {
-        switch (mode){
-            case SCRATCH:
-                scratchFunction(context);
-                break;
-            case DERIVED:
-                derivedFunction(context);
-                break;
-        }
+//        //check if the population is full - add only if have room
+//        if((context.getGrid().getRows() * context.getGrid().getColumns()) >
+//                context.getEntityInstanceManager().getCurrPopulationNumber()) {
 
-        // mark the entity for delete
-        context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(),context.getPrimaryEntityInstance().getPosY());
-        context.getPrimaryEntityInstance().setShouldKill(true);
-    }
+            switch (mode) {
+                case SCRATCH:
+                    scratchFunction(context);
+                    break;
+                case DERIVED:
+                    derivedFunction(context);
+                    break;
+            }
+
+            // mark the entity for delete
+            context.getGrid().setPositionInGridBoard(null, context.getPrimaryEntityInstance().getPosX(), context.getPrimaryEntityInstance().getPosY());
+            context.getPrimaryEntityInstance().setShouldKill(true);
+        }
+//    }
 
     public void scratchFunction(Context context){
        context.getEntityInstanceManager().create(context.getEntityStructures().get(createEntity),context.getGrid());

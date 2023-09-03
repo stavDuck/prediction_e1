@@ -37,8 +37,6 @@ X
 (engine/src/engine/property/Property.java,e\2\e25dc4531fb6c8ee023aa7eac38c9a128be07e43
 a
 1engine/src/engine/property/PropertyStructure.java,3\e\3e7b40ce33921e5fa991acea6e285868e593344a
-]
--engine/src/engine/entity/EntityStructure.java,5\2\52c0095b80cb63a71043e7531b5278d705ecf883
 `
 0engine/src/engine/property/PropertyInstance.java,e\5\e5f2717a1e888689adf1fddc468684286512ee5b
 u
