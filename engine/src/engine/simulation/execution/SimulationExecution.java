@@ -1,45 +1,28 @@
-package engine.simulation;
+package engine.simulation.execution;
 
+import engine.simulation.copyhandler.CopyHandler;
+import engine.validation.WorldValidator;
+import engine.validation.exceptions.XmlValidationException;
+import engine.world.World;
+import generated.PRDWorld;
 
-import engine.simulation.execution.SimulationExecution;
-import engine.simulation.execution.manager.SimultionExecutionManager;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
-public class Simulation {
-    private SimultionExecutionManager simulationManager;
-
-    public Simulation() {
-        this.simulationManager = new SimultionExecutionManager();
-    }
-
-    public int createSimulation(String fileName) throws RuntimeException{
-      int simulationId =  simulationManager.addSimulationExecution(fileName);
-      return simulationId;
-    }
-
-    public SimulationExecution getSimulationById(int id){
-        return simulationManager.getSimulationById(id);
-    }
-
-    public void execute(int id){
-        simulationManager.execute(id);
-    }
-
-
-    /*
+public class SimulationExecution {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
-    private  int simulationID;
-    */
+    private  int id;
+    private Status simulationStatus;
 
 
-
-  /*  public void setWorld(World world) {
-
-    }*/
-
-    // private ExecutorService executorService;
-
-    /*public Simulation(String fileName) throws RuntimeException{
+    // set World information
+    public SimulationExecution(String fileName) throws RuntimeException{
         try {
             //String absolutePath = new File(fileName).getAbsolutePath();
             InputStream inputStream = new FileInputStream(new File(fileName));
@@ -54,6 +37,8 @@ public class Simulation {
             world = new World();
             CopyHandler copy = new CopyHandler();
             copy.copyData(prdWorld, world);
+
+            simulationStatus = Status.CREATED;
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException("File " + fileName + " was not found");
@@ -70,15 +55,10 @@ public class Simulation {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
         return (PRDWorld) u.unmarshal(in);
-    }*/
-
-   /* public World getWorld(){
-        return world;
     }
-    public int getSimulationID(){return simulationID;}
-    public void setSimulationID(int i){simulationID = i;}*/
 
-    /*public void run() {
+    // function 3 run simulation
+    public void run() {
         // create all instances
         world.createEntitiesInstances();
         try {
@@ -86,5 +66,27 @@ public class Simulation {
             world.invokeRules();
         }
         catch (IllegalArgumentException e) {}
-    }*/
+    }
+
+    // getters
+    public World getWorld() {
+        return world;
+    }
+    public int getId() {
+        return id;
+    }
+    public Status getSimulationStatus() {
+        return simulationStatus;
+    }
+
+    // setters
+    public void setWorld(World world) {
+        this.world = world;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setSimulationStatus(Status simulationStatus) {
+        this.simulationStatus = simulationStatus;
+    }
 }

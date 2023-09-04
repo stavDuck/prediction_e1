@@ -21,8 +21,9 @@ public class Menu {
     final static char OPTION_FOUR = '4';
     final static char OPTION_FIVE = '5';
     private static int idGenerator = 1;
+
     public void startMenu() {
-        Scanner scanner = new Scanner(System.in);
+      /*  Scanner scanner = new Scanner(System.in);
         boolean isStop = false;
         boolean isFileHasValue = false;
         boolean isSimulationDone = false;
@@ -51,7 +52,7 @@ public class Menu {
                     if (tempFile != null) {
                         try {
                             tempSimlate = loadFileXML(tempFile);
-                            tempSimlate.setSimulationID(idGenerator);
+                           // tempSimlate.setSimulationID(idGenerator);
                             idGenerator++;
 
                             // if all went good - file name and file load
@@ -85,8 +86,9 @@ public class Menu {
                         try {
                             // simulation already ran need to create a new one
                             if(simulation.getWorld().getTermination().isStop() == true){
+
                                 simulation = loadFileXML(fileName);
-                                simulation.setSimulationID(idGenerator);
+                              //  simulation.setSimulationID(idGenerator);
                                 idGenerator++;
                             }
 
@@ -97,13 +99,13 @@ public class Menu {
                             currentDate = LocalDate.now();
                             currentTime = LocalTime.now();
                             // set startSimulation in simulation history
-                            simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
+                           // simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
                                     currentDate.format(dateFormatter), currentTime.format(timeFormatter)));
                             isSimulateHistoryNotEmpty = true;
 
                             // run simulation
-                            simulation.run();
-                            System.out.println("Simulation id: " + simulation.getSimulationID() + "!!!!");
+                           // simulation.run();
+                           // System.out.println("Simulation id: " + simulation.getSimulationID() + "!!!!");
 
                             isSimulationDone = true;
                             // set the end simulation after run is done
@@ -674,5 +676,6 @@ public class Menu {
         for (Map.Entry<Object, Long> entry : sortedEntries) {
             System.out.println( entry.getValue() + ":" + entry.getKey());
         }
+    }*/
     }
 }

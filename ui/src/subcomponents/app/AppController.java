@@ -50,7 +50,6 @@ public class AppController {
     private Tab executionTabComponent;
     @FXML
     private Tab resultTabComponent;
-
     private Stage primaryStage;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
@@ -67,8 +66,6 @@ public class AppController {
         isFileSelected = new SimpleBooleanProperty(false);
         selectedFileName.textProperty().bind(selectedFileProperty);
     }
-
-
 
     public void setModel(Model model) {
         this.model = model;
@@ -149,10 +146,11 @@ public class AppController {
     }
     public void moveToResultsTab() {
         tabPane.getSelectionModel().select(resultTabComponent);
-        resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
+       // resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
+        resultTabController.addSimulation(model.getCurrSimulationId(), false);
     }
 
     public void runSimulation() {
-        resultTabController.runSimulation();
+        resultTabController.runSimulation(selectedFileProperty.get());
     }
 }

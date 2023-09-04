@@ -155,8 +155,8 @@ public class ResultsComponentController {
     }
 
 
-    public void runSimulation() {
-        mainController.getModel().runSimulation();
+    public void runSimulation(String fileName) {
+        mainController.getModel().runSimulation(fileName);
     }
 
 
