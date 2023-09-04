@@ -135,5 +135,9 @@ public class Model {
     public int getCurrSimulationId() {
         return currSimulationId;
     }
+
+    public void setCurrSimulationId(int currSimulationId) {
+        this.currSimulationId = currSimulationId;
+    }
 }
 

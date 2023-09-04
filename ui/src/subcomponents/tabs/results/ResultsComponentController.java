@@ -4,6 +4,8 @@ import dto.Dto;
 import dto.entity.DtoEntity;
 import engine.entity.EntityStructure;
 import engine.simulation.Simulation;
+import engine.simulation.execution.SimulationExecution;
+import engine.simulation.execution.Status;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.EventHandler;
@@ -141,9 +143,9 @@ public class ResultsComponentController {
 
     }
 
-    public void entityPopulation(Simulation simulation) {
+   /* public void entityPopulation(Simulation simulation) {
         int rowIndex = 0;
-        List<DtoEntity> entityList = simulation.getSimulationById(mainController.getModel().getCurrSimulationId()).getWorld()
+        List<DtoEntity> entityList = simulation.
         //for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
         for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
             Label name = new Label(entity.getEntityName());
@@ -155,7 +157,7 @@ public class ResultsComponentController {
             rowIndex++;
         }
 
-    }
+    }*/
 
 
     public void runSimulation(String fileName) {
@@ -163,9 +165,9 @@ public class ResultsComponentController {
     }
 
 
-    public void setPropertyLineChart(){
-
-        if(mainController.getModel().getSimulationDone()) {
+    public void setPropertyLineChart(int indexSelectedSimulation){
+        SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
+        if(simulationExecution.getSimulationStatus() == Status.FINISH) {
             // Clear the chart by removing all data series
             popultionGraph.getData().clear();
             Dto dto = mainController.getModel().getDtoWorld();
@@ -187,8 +189,10 @@ public class ResultsComponentController {
 
     @FXML
     void clickOnSimulation(MouseEvent event) {
-        setPropertyLineChart();
-
+        Label clickedLabel = (Label)(event.getSource());
+        int index = simulationDetails.getChildren().indexOf(clickedLabel);
+        mainController.getModel().setCurrSimulationId(index);
+        setPropertyLineChart(index);
     }
 
 }
