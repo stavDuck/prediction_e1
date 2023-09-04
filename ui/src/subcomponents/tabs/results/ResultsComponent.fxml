@@ -47,7 +47,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                      <content>
-                        <VBox>
+                        <VBox fx:id="simulationProgressDetails">
                            <children>
                               <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                  <children>
@@ -82,22 +82,13 @@
                                  </children>
                               </GridPane>
                               <Separator prefWidth="200.0" />
-                              <GridPane>
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.3333740234375" minWidth="10.0" prefWidth="91.33331298828125" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.66668701171875" />
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="234.66668701171875" minWidth="10.0" prefWidth="143.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="109.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                    <Label fx:id="entityNameStaticLabel" maxWidth="1.7976931348623157E308" text="Entity Name:" />
-                                    <Label fx:id="populationStaticLabel" maxWidth="1.7976931348623157E308" text="Current Population:" GridPane.columnIndex="2" />
-                                    <Label fx:id="entityNameLabel" GridPane.columnIndex="1" />
-                                    <Label fx:id="populationLabel" GridPane.columnIndex="3" />
-                                 </children>
+                              <GridPane prefHeight="108.0" prefWidth="409.0" VBox.vgrow="ALWAYS">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
                               </GridPane>
                            </children>
                         </VBox>
