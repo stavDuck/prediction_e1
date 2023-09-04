@@ -18,7 +18,8 @@ public class TaskSimulationRunningDetails {
     private VBox simulationDetails;
     private Timeline timeline;
 
-    public TaskSimulationRunningDetails(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick, Timeline timeline) {
+    public TaskSimulationRunningDetails(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick,
+                                        Timeline timeline,VBox simulationDetails) {
         this.simulationId = simulationId;
         this.simulation = simulation;
         this.propertyCurrTick = propertyCurrTick;
@@ -48,25 +49,16 @@ public class TaskSimulationRunningDetails {
                 // Handle the InterruptedException if needed
             }
         }
-        while (status!= Status.FINISH &&  status != Status.PAUSE);
+        while (status == Status.IN_PROGRESS);
 
         timeline.stop();
-        /*while(currSimulation.getSimulationStatus()!= Status.FINISH &&  currSimulation.getSimulationStatus() != Status.PAUSE){
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                // Handle the InterruptedException if needed
-            }
 
-            Dto dto = currSimulation.getWorld().createDto();
+        if(simulation.getSimulationById(simulationId).getSimulationStatus() == Status.FINISH){
             Platform.runLater(() -> {
-                propertyCurrTick.set(dto.getCurrTicks());
-            });
-}*/
-        if(currSimulation.getSimulationStatus() == Status.FINISH){
-            Platform.runLater(() -> {
-                ((Label) ((HBox)simulationDetails.getChildren().get(simulationId-1))
-                        .getChildren().get(1)).setText(" Finish");
+                Label temp = ((Label) ((HBox)simulationDetails.getChildren().get(simulationId-1))
+                        .getChildren().get(1));
+                temp.setText(" Finish");
+                temp.setStyle("-fx-text-fill:GREEN");
             });
         }
 

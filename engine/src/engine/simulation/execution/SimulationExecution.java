@@ -114,19 +114,16 @@ public class SimulationExecution {
     }
 
     public void stopSimulation() {
-        if (simulationStatus == Status.PAUSE || simulationStatus == Status.IN_PROGRESS) {
-            if (simulationStatus == Status.PAUSE) {
-                world.resume();
-            }
-            simulationStatus = Status.FINISH;
-            world.stopByUser();
-        }
-    }
-
-    public void resume() {
-        if(simulationStatus == Status.PAUSE) {
-            simulationStatus = Status.IN_PROGRESS;
+        if (simulationStatus == Status.PAUSE) {
             world.resume();
         }
+        simulationStatus = Status.STOP;
+        world.stopByUser();
+    }
+
+
+    public void resume() {
+            simulationStatus = Status.IN_PROGRESS;
+            world.resume();
     }
 }

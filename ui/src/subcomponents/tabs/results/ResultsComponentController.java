@@ -167,7 +167,7 @@ public class ResultsComponentController {
         runningTime.play();
         simulationProgressDetails.getChildren().add(addEntityToTable());
         new Thread(()->{
-            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick, runningTime);
+            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick, runningTime, simulationDetails);
             task.runTask();
 
         }).start();
@@ -183,7 +183,7 @@ public class ResultsComponentController {
     @FXML
     void resumeOnclick(ActionEvent event) {
         new Thread(new TaskSimulationResume(
-                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick, simulationDetails
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick, runningTime,simulationDetails
         )).start();
     }
 
