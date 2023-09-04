@@ -45,7 +45,7 @@ public class Model {
         }
 
         // loaded sucessfuly
-        return "";
+        return "File loaded successfully";
     }
 
     public Simulation createSimulationFromFile(String fileName) throws RuntimeException {
@@ -60,4 +60,50 @@ public class Model {
     public Simulation getSimulation() {
         return simulation;
     }
+
+    public void runSimulation() {
+        try {
+            LocalDate currentDate;
+            LocalTime currentTime;
+            // simulation already ran need to create a new one
+            /*if(simulation.getWorld().getTermination().isStop() == true){
+                simulation = loadFileXML(fileName);
+                simulation.setSimulationID(idGenerator);
+                idGenerator++;
+            }*/
+
+            // set env values
+            //setSimulationEnvValues(simulation);
+            // Print all env names + values
+            //printEnvLivsNamesAndValues(simulation);
+            currentDate = LocalDate.now();
+            currentTime = LocalTime.now();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH.mm.ss");
+
+            // set startSimulation in simulation history
+            simulationHistory.add(new SimulationHistory(simulation, simulation.getSimulationID(),
+                    currentDate.format(dateFormatter), currentTime.format(timeFormatter)));
+            isSimulateHistoryNotEmpty = true;
+
+            // run simulation
+            simulation.run();
+
+            isSimulationDone = true;
+            // set the end simulation after run is done
+            simulationHistory.get(simulationHistory.size() - 1).setEndSimulation(simulation);
+        }
+        catch (RuntimeException e) {
+            //System.out.println("Simulation failed with an error: " + e.getMessage());
+        }
+    }
+
+    public boolean getSimulationDone() {
+        return isSimulationDone;
+    }
+
+    public Simulation getSimulationById(int id) {
+        return simulationHistory.get(id).getStartSimulation();
+    }
 }
+

@@ -1,3 +1,20 @@
 #title-view{
 
 }
+.tree-cell {
+    -fx-background-color: transparent; /* Transparent background for unselected cells */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+}
+.tree-cell:selected {
+    -fx-background-color: #4781d5;
+    -fx-text-fill: white;
+}
+
+.title-information {
+    -fx-font-weight: bold; /* Bold text */
+    -fx-text-fill: #0073e6; /* Blue text color */
+    -fx-underline: true; /* Underline text */
+    -fx-font-size: 25px;
+}

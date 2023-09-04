@@ -1,10 +1,7 @@
 package engine.action.type.condition;
 
 import engine.action.AbstractAction;
-import engine.action.type.DecreaseAction;
-import engine.action.type.IncreaseAction;
-import engine.action.type.KillAction;
-import engine.action.type.SetAction;
+import engine.action.type.*;
 import engine.action.type.calculation.Calculation;
 import engine.execution.context.Context;
 import java.util.ArrayList;
@@ -24,14 +21,24 @@ public class Condition extends AbstractAction {
         elseCondition = new ArrayList<>();
     }
 
+    // ctor for secondary
+    public Condition(String entityName, String actionType, conditionSingularityApi whenCondition, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
+        this.whenCondition = whenCondition;
+        thenCondition = new ArrayList<>();
+        elseCondition = new ArrayList<>();
+    }
     @Override
     public void invoke(Context context) {
         // init results for rule condition
         initWhenCondition(whenCondition);
 
        boolean check = invokeWhenCondition(context);
+
        // if check == true -> run thenCondition
-       if(check){
+        // addition check if the condition is part of secondary- only have when
+        // if not in secondary - xml validation check then is mandatory and neccessery
+       if(check && thenCondition.size() != 0){
            invokeAbstractActions(context, thenCondition);
        }
        else if(elseCondition.size() != 0){
@@ -97,6 +104,12 @@ public class Condition extends AbstractAction {
                 case KILL:
                     ((KillAction)action).invoke(context);
                     //context.getPrimaryEntityInstance().setShouldKill(true);
+                    break;
+                case PROXIMITY:
+                    ((ProximityAction)action).invoke(context);
+                    break;
+                case REPLACE:
+                    ((ReplaceAction)action).invoke(context);
                     break;
             }
         }

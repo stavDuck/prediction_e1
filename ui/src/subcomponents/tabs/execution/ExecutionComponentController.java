@@ -1,6 +1,7 @@
 package subcomponents.tabs.execution;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
+import dto.range.DtoRange;
 import engine.entity.EntityStructure;
 import engine.property.PropertyInstance;
 import engine.value.generator.ValueGeneratorFactory;
@@ -80,7 +81,7 @@ public class ExecutionComponentController {
 
     public void populateEnvVariables() {
         for(DtoEnv env : mainController.getDtoWorld().getEnvs().values()) {
-            envVariablesVbox.getChildren().add(createEnvVariableVbox(env.getEnvName(), env.getEnvType(), VALUE_PROMPT_TEXT));
+            envVariablesVbox.getChildren().add(createEnvVariableVbox(env.getEnvName(), env.getEnvType(), VALUE_PROMPT_TEXT, env.getEnvRange()));
         }
 
     }
@@ -95,11 +96,18 @@ public class ExecutionComponentController {
         return dynamicVBox;
     }
 
-    public VBox createEnvVariableVbox(String checkBoxLabelText, String typeLabel, String textFieldPrompt) {
+    public VBox createEnvVariableVbox(String checkBoxLabelText, String typeLabel, String textFieldPrompt, DtoRange range) {
         VBox dynamicBox;
+        Label label;
         CheckBox checkBox = new CheckBox(checkBoxLabelText);
         checkBox.setPadding(new Insets(5, 0, 0, 0));
-        Label label = new Label("Type: " + typeLabel.toLowerCase());
+        if((typeLabel.equalsIgnoreCase("float")) && range != null) {
+            label = new Label("Type: " + typeLabel.toLowerCase()
+                    + ", Range: " + range.getFrom() + "-" + range.getTo());
+        }
+        else {
+            label = new Label("Type: " + typeLabel.toLowerCase());
+        }
         Label errorLabel = new Label();
         if(typeLabel.equalsIgnoreCase("boolean")) {
             RadioButton trueButton = new RadioButton(TRUE_RADIO_BUTTON);
@@ -162,21 +170,33 @@ public class ExecutionComponentController {
 
     @FXML
     void startButtonAction(ActionEvent event) {
-        validateEntityPopulation();
-        verifyEnvVariable();
+        boolean entityVal, envVal;
+        entityVal = validateEntityPopulation();
+        envVal = verifyEnvVariable();
+        if(entityVal && envVal) {
+            mainController.moveToResultsTab();
+        }
+        mainController.runSimulation();
     }
 
-    public void validateEntityPopulation() {
+    public boolean validateEntityPopulation() {
+        boolean res = true;
+        int sum = 0;
+        int population;
+        int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
                 for (Node innerNode : vBox.getChildren()) {
                     if (innerNode instanceof TextField) {
                         try {
-                            verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
+                            population = verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, "", true);
+                            res = true;
+                            sum += population;
                         }
                         catch (NumberFormatException e) {
+                            res = false;
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, e.getMessage(), false);
                         }
                     }
@@ -184,26 +204,32 @@ public class ExecutionComponentController {
             }
         }
 
+        if(sum > limit) {
+            res = false;
+            mainController.showPopup("Population sum cannot exceed the limit of " + limit);
+        }
+        return res;
     }
 
-    public void verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
+    public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
-            //NEED TO ADD VALIDATION FOR GRID!!!
             int pop = Integer.parseInt(population);
             mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, pop);
+            return pop;
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
-                throw new NumberFormatException("This field is mandatory");
-
+                mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, 0);
+                return 0;
             }
             else {
-                throw new NumberFormatException("Population value should be numeric");
+                throw new NumberFormatException("Population value should be numeric and an integer");
             }
         }
     }
 
-    public void verifyEnvVariable() {
+    public boolean verifyEnvVariable() {
+        boolean valid = true;
         boolean checked = false;
         String type = "";
         String envName = "";
@@ -225,21 +251,21 @@ public class ExecutionComponentController {
                         try {
                             //if the checkbox is checked and value should be numeric
                             if (checked) {
-                                if((type.equalsIgnoreCase("float") || type.equalsIgnoreCase("decimal"))) {
+                                if((type.contains("float") || type.contains("decimal"))) {
                                     //remove decimal
                                     verifyEnvVariableIsNumber(envName, ((TextField) innerNode).getText());
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                 }
-                                else if(type.equalsIgnoreCase("string")) {
+                                else if(type.contains("string")) {
                                     mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, ((TextField) innerNode).getText());
                                 }
-
+                                valid = true;
                             }
                             //checkbox is not checked
                             else {
                                 if(((TextField) innerNode).getText().isEmpty()) {
                                     //checkbox is not checked, and there's no user input --> generate value
-                                    if(type.equalsIgnoreCase("float") || type.equalsIgnoreCase("decimal")){
+                                    if(type.contains("float") || type.contains("decimal")){
                                         generateFloat(envName);
                                     }
                                     else if(type.equalsIgnoreCase("string")) {
@@ -247,13 +273,16 @@ public class ExecutionComponentController {
                                     }
                                     //delete error message, because value is not set anymore
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
+                                    valid = true;
                                 }
                                 //there is a value in the text field
                                 else {
+                                    valid = false;
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "Please check the checkbox if you want to set a value", false);
                                 }
                             }
                         } catch (NumberFormatException e) {
+                            valid = false;
                             setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, e.getMessage(), false);
 
                         }
@@ -264,11 +293,14 @@ public class ExecutionComponentController {
                             if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected()) {
                                 mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, TRUE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
+                                valid = true;
 
                             } else if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected()) {
                                 mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, FALSE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
+                                valid = true;
                             } else {//in case user didn't select any button
+                                valid = false;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "checkbox is checked, please choose a value.", false);
                             }
 
@@ -279,10 +311,12 @@ public class ExecutionComponentController {
                                 //checkbox is not checked, and there's no user input --> generate value
                                 generateBoolean(envName);
                                 //delete error message, because value is not set anymore
+                                valid = true;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                             }
                             //there is a value in the text field
                             else {
+                                valid = false;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "Please check the checkbox if you want to set a value", false);
 
                             }
@@ -293,6 +327,11 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
+        for(PropertyInstance propertyInstance :  mainController.getModel().getSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+            System.out.println(mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
+
+        }
+        return valid;
     }
 
     public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {

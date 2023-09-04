@@ -2,12 +2,13 @@ package engine.action.type;
 
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
 
 public class IncreaseAction extends AbstractAction {
-    private final String property;
+    private String property;
     private String byExpression;
 
     public IncreaseAction(String entityName, String property, String actionType, String byExpression) {
@@ -15,12 +16,22 @@ public class IncreaseAction extends AbstractAction {
         this.property = property;
         this.byExpression = byExpression;
     }
-
+    //ctor for secondary
+    public IncreaseAction(String entityName, String property, String actionType, String byExpression, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
+        this.property = property;
+        this.byExpression = byExpression;
+    }
     @Override
     public void invoke(Context context) throws RuntimeException{
         try {
             Object value = FunctionHelper.getValueToInvoke(byExpression, context, property);
-            increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value);
+            if(context.getSecondaryEntityInstance() != null && entityName.equalsIgnoreCase(context.getSecondaryEntityInstance().getEntityName())) {
+                increasePropertyValWithVal(context.getSecondaryEntityInstance().getPropertyInstanceByName(property), value, context);
+            }
+            else {
+                increasePropertyValWithVal(context.getPrimaryEntityInstance().getPropertyInstanceByName(property), value, context);
+            }
         }
         catch (RuntimeException e){
             throw new RuntimeException("Increase action on Entity: " + entityName + " on property: " + property +  " failed \n"
@@ -28,7 +39,7 @@ public class IncreaseAction extends AbstractAction {
         }
     }
 
-    private void increasePropertyValWithVal(PropertyInstance prop, Object increaseVal){
+    private void increasePropertyValWithVal(PropertyInstance prop, Object increaseVal, Context context){
         Type propType = prop.getType();
         Object propVal = prop.getVal();
         Float float2;
@@ -53,5 +64,14 @@ public class IncreaseAction extends AbstractAction {
                     prop.setVal( float1 + float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public String getByExpression() {
+        return byExpression;
     }
 }

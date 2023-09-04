@@ -1,18 +1,28 @@
 package engine.world;
 
 import dto.Dto;
+import dto.grid.DtoGrid;
+import dto.rule.DtoRule;
+import engine.Position;
 import engine.action.AbstractAction;
+import engine.action.type.*;
+import engine.action.type.calculation.Calculation;
+import engine.action.type.condition.Condition;
+import engine.action.type.condition.ConditionMultiple;
+import engine.action.type.condition.ConditionSingle;
+import engine.entity.EntityInstance;
 import engine.entity.EntityInstanceManager;
 import engine.entity.EntityStructure;
 import engine.environment.Environment;
+import engine.grid.Grid;
 import engine.property.PropertyInstance;
 import engine.property.PropertyStructure;
 import engine.rule.Rule;
 import engine.termination.Termination;
 import engine.value.generator.ValueGeneratorFactory;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class World {
@@ -21,6 +31,9 @@ public class World {
     private Map<String, EntityStructure> entityStructures; //key = smoker, value = structure
     private Termination termination;
     private Map<String, Rule> rules; //key = rule name, value = rule
+    private Grid grid;
+    private int threadCount;
+    public int currTick;
 
     public World() {
         this.environment = new Environment();
@@ -28,6 +41,9 @@ public class World {
         this.entityStructures = new HashMap<>();
         this.rules = new LinkedHashMap<>();
         this.termination = new Termination();
+        this.grid = new Grid();
+        this.threadCount = 0;
+        this.currTick = 0;
     }
 
     // getters
@@ -48,8 +64,40 @@ public class World {
         return termination;
     }
 
+    public Grid getGrid() {
+        return grid;
+    }
+    public int getGridRows(){
+        return grid.getRows();
+    }
+    public int getGridCols(){
+        return grid.getColumns();
+    }
+    public int getMaxEntityInstancesAmount(){
+        return (getGridRows() * getGridCols());
+    }
+    public EntityInstance getPositionInGridBoard(int x, int y){
+        return grid.getPositionInGridBoard(x, y);
+    }
+    public int getThreadCount() {
+        return threadCount;
+    }
 
     // setters
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
+    public void setGridPosition(EntityInstance val, int x, int y){
+        grid.setPositionInGridBoard(val, x, y);
+    }
+
+    public void setInitGrid(int rows, int cols){
+        grid.setRows(rows);
+        grid.setColumns(cols);
+        grid.initGridBoard();
+    }
+
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
@@ -64,6 +112,9 @@ public class World {
     public void setRules(Map<String, Rule> rules) {
         this.rules = rules;
     }
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
+    }
     public void setTermination(Termination termination) {
         this.termination = termination;
     }
@@ -76,7 +127,7 @@ public class World {
         this.entityStructures.put(entityName, entityStructure);
     }
     public void addEntityInstance(String entityName){
-        instanceManager.create(entityStructures.get(entityName));
+        instanceManager.create(entityStructures.get(entityName), grid);
     }
     public void addRule(String ruleName, Rule newRule){
         rules.put(ruleName, newRule);
@@ -85,26 +136,154 @@ public class World {
     public void createEntitiesInstances(){
         for(EntityStructure currStructure : entityStructures.values()){
             IntStream.range(0, currStructure.getPopulation())
-                    .forEach(i -> instanceManager.create(currStructure));
+                    .forEach(i -> instanceManager.create(currStructure, grid));
         }
     }
 
     public void invokeRules() {
-        int tick = 0;
+        final int[] tick = {0};
+
+        // get list of valid rules according to tick
+        // run on all entities -> invoke all rules
+            // before invoking rule check if have secondery - if true create list of secondary
+
         // save the start time in seconds
         long startTimeSeconds = System.currentTimeMillis() / 1000;
+
+        while (!termination.isStop()) {
+
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            // Move all instances on the grid
+            moveAllInstancesInGrid(instanceManager);
+
+            // save the population of all entities
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over every entity and save the curr population
+                entityStructures.get(currEntityName).addToPopulationHistoryList(
+                        instanceManager.getAllInstances().get(currEntityName).size());
+            }
+
+
+            List<Rule> ActiveRules = rules.values()
+                    .stream()
+                    .filter(obj -> isRuleActive(obj, tick[0])) // Replace filterFunction with your actual filter function
+                    .collect(Collectors.toList());
+
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
+                    // on every entity run all the active rules
+                    for (Rule currRule : ActiveRules) {
+                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
+                    }
+                }
+            }
+
+
+            tick[0]++;
+            this.currTick = tick[0];
+            // go over all the entities and delete the unwanted instances
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                Iterator<EntityInstance> iterator = instanceManager.getInstancesByName(currEntityName).iterator();
+
+                while (iterator.hasNext()) {
+                    EntityInstance currInstance = iterator.next();
+                    if (currInstance.isShouldKill()) {
+                        iterator.remove(); // Safely remove the current instance
+                        instanceManager.killEntity(currInstance);
+                        // decrease the number in population
+                        instanceManager.setCurrPopulationNumber(instanceManager.getCurrPopulationNumber() - 1);
+                    }
+                }
+            }
+
+            // check if termination coditions are met
+            isSimulationTerminated(tick[0], startTimeSeconds);
+        }
+
+
+
+        // save the start time in seconds
+        /*long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()){
             // run on the rules
             for(Rule currRule : rules.values()){
                 // if rule is active
                 if(isRuleActive(currRule, tick)) {
-                    currRule.inokeRule(instanceManager, environment);
+                    currRule.inokeRule(instanceManager, environment, tick);
                 }
             }
-            tick ++;
+            tick++;
             // check if termination coditions are met
             isSimulationTerminated(tick, startTimeSeconds);
+        }*/
+    }
+
+    private void moveAllInstancesInGrid(EntityInstanceManager instanceManager) {
+       int increaseX;
+       int decreaseX;
+       int increaseY;
+       int decreaseY;
+
+
+        if (grid.getFreeSpots() != 0) {
+            for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+                // go over all the entities from the sama category
+                for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
+                    Position currEntityPos = currEntity.getPos();
+                    // to support infinity movement in the grid
+                    increaseX = (currEntityPos.getX() + 1) % grid.getRows();
+                    decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
+                    increaseY = (currEntityPos.getY() + 1) % grid.getColumns();
+                    decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+
+                    // move right
+                    if (grid.getPositionInGridBoard(currEntityPos.getX(), increaseY) == null) {
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+
+                        // set a new pos in entity and in grid
+                        currEntityPos.setY(increaseY);
+                        grid.setPositionInGridBoard(currEntity, currEntityPos.getX(), increaseY);
+                    }
+
+                    // move left
+                    else if(grid.getPositionInGridBoard(currEntityPos.getX(), decreaseY) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+
+                        // set a new pos in entity and in grid
+                        currEntityPos.setY(decreaseY);
+                        grid.setPositionInGridBoard(currEntity, currEntityPos.getX(), decreaseY);
+
+                    }
+
+                    // move up
+                    else if(grid.getPositionInGridBoard(decreaseX, currEntityPos.getY()) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+                        // set a new pos in entity and in grid
+                        currEntityPos.setX(decreaseX);
+                        grid.setPositionInGridBoard(currEntity, decreaseX, currEntityPos.getY());
+                    }
+
+                    // move down
+                    else if(grid.getPositionInGridBoard(increaseX, currEntityPos.getY()) == null){
+                        // free curr entity pos in grid
+                        grid.setPositionInGridBoard(null, currEntityPos.getX(), currEntityPos.getY());
+                        // set a new pos in entity and in grid
+                        currEntityPos.setX(increaseX);
+                        grid.setPositionInGridBoard(currEntity, increaseX, currEntityPos.getY());
+
+                    }
+                }
+            }
         }
     }
 
@@ -137,7 +316,7 @@ public class World {
     public Dto createDto() {
         Dto dto = new Dto();
         for(EntityStructure entityStructure : entityStructures.values()) {
-            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation());
+            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), entityStructure.getPopulationHistoryList());
             for(PropertyStructure propertyStructure : entityStructure.getEntityPropMap().values()) {
                 if(propertyStructure.getRange() != null) {
                     dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),
@@ -155,7 +334,8 @@ public class World {
         for(Rule rule : rules.values()) {
             dto.addRule(rule.getName(), rule.getActivation().getTick(), rule.getActivation().getProbability(), rule.getActionsSize());
             for(AbstractAction action : rule.getActions()) {
-                dto.addActionToRule(rule.getName(), action.getActionType().name());
+                // add rule action by it's type
+                addActionToRuleDto(dto,rule.getName(),action);
             }
         }
 
@@ -169,8 +349,67 @@ public class World {
         }
 
         dto.addTermination(termination.getByTick(), termination.getBySec());
+        dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
 
         return dto;
+    }
+
+    public void addActionToRuleDto(Dto dto, String ruleName, AbstractAction action){
+        // add new dto rule's action according to the action type
+        switch (action.getActionType().name().toLowerCase()){
+            case "increase":
+                IncreaseAction tempActionIncrease = (IncreaseAction) action;
+                dto.addIncreaseAction(ruleName, tempActionIncrease.getProperty(), tempActionIncrease.getByExpression(), "increase",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "decrease":
+                DecreaseAction tempActionDecrease = (DecreaseAction) action;
+                dto.addDecreaseAction(ruleName, tempActionDecrease.getProperty(),tempActionDecrease.getByExpression(), "decrease",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "calculation":
+                Calculation tempActionCalculation = (Calculation) action;
+                dto.addCalculationAction(ruleName, tempActionCalculation.getOperatorType(), tempActionCalculation.getResultProp(),
+                       tempActionCalculation.getArg1(),tempActionCalculation.getArg2(), "calculation",
+                        action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "condition":
+                Condition tempActionCondition = (Condition) action;
+
+                if(tempActionCondition.getWhenCondition().getSingularity().equals("single")){
+                    ConditionSingle tempSingle = (ConditionSingle)tempActionCondition.getWhenCondition();
+
+                    dto.addSingelConditionAction(ruleName, "condition",action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                            tempSingle.getPropertyToInvoke(), tempSingle.getOp().name().toLowerCase(), tempSingle.getValue(),
+                            tempActionCondition.getThenCondition().size(), tempActionCondition.getElseCondition().size());
+                }
+                else{
+                    ConditionMultiple tempMulti = (ConditionMultiple)tempActionCondition.getWhenCondition();
+
+                    dto.addMultipleConditionAction(ruleName, "condition", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                            tempMulti.getLogical(), tempMulti.getConditionLst().size(), tempActionCondition.getThenCondition().size(), tempActionCondition.getElseCondition().size());
+                }
+                break;
+            case "set":
+                SetAction tempActionSet = (SetAction) action;
+                dto.addSetAction(ruleName, "set",action.getEntityName(),
+                        action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionSet.getProperty(),tempActionSet.getNewValue());
+                break;
+            case "kill":
+                dto.addKillAction(ruleName, "kill", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName());
+                break;
+            case "replace":
+                ReplaceAction tempActionReplace = (ReplaceAction) action;
+                dto.addReplaceAction(ruleName, "replace",action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionReplace.getCreateEntity(), tempActionReplace.getMode());
+                break;
+            case "proximity":
+                ProximityAction tempActionProximity = (ProximityAction) action;
+                dto.addProximityAction(ruleName, "proximity", action.getEntityName(), action.getSecondaryInfo().isExistSecondary(),action.getSecondaryInfo().getSecondaryEntityName(),
+                        tempActionProximity.getTargetEntity(), tempActionProximity.getEnvDepthOf());
+                break;
+        }
     }
 
     public void setPopulationForEntity(String entityName, int population) {

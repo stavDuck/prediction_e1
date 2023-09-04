@@ -12,7 +12,7 @@ public class EnvValidator extends ValidationCommonFunctions {
     // function go over all the property list of env prop and return if valid or not
     public void validateEnvData(PRDWorld prdWorld) throws XmlValidationException {
         boolean res;
-        List<PRDEnvProperty> prdList = prdWorld.getPRDEvironment().getPRDEnvProperty();
+        List<PRDEnvProperty> prdList = prdWorld.getPRDEnvironment().getPRDEnvProperty();
         Map<String, Integer> prdNameList = new HashMap<>(); // this map will be for validating all names are uniques
         String trimmedName;
         // go over every property and check if valid
@@ -29,8 +29,8 @@ public class EnvValidator extends ValidationCommonFunctions {
                         " type is not valid, only type decimal, float, string or boolean allowed");
             }
             if (!isRangeLegalWithDecimalOrFloat(property.getType(), property.getPRDRange())) {
-                throw new XmlValidationException("Environment property:: " + property.getPRDName() +
-                        " is not valid, if type is not decimal or float range should not appear");
+                throw new XmlValidationException("Environment property: " + property.getPRDName() +
+                        " is not valid, if type is not decimal or float, range should not appear");
             }
             if ((property.getPRDRange() != null) && !isRangeFiledsValid(property.getPRDRange())) {
                 throw new XmlValidationException("Environment property: " + property.getPRDName() +

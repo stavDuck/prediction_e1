@@ -2,9 +2,13 @@ package engine.action.type.condition;
 import engine.action.AbstractAction;
 import engine.action.ActionType;
 import engine.action.FunctionHelper;
-import engine.entity.EntityInstance;
 import engine.execution.context.Context;
 import engine.property.type.Type;
+import engine.validation.exceptions.XmlValidationException;
+import generated.PRDEntities;
+import generated.PRDEntity;
+import generated.PRDEnvironment;
+import generated.PRDProperty;
 
 public class ConditionSingle extends AbstractAction implements conditionSingularityApi {
     private static final String EQUALS = "=";
@@ -38,7 +42,26 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
         this.value = value;
         result = true;
     }
+    // ctors for secondary
+    public ConditionSingle(String entityName, String actionType, String entityToInvoke,
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll){
+        super(entityName, actionType, secondaryAmount,secondaryEntityName, condition, isSelectedAll);
+        this.entityToInvoke = entityToInvoke;
+        this.propertyToInvoke = propertyToInvoke;
+        setOperatorFromString(operator);
+        this.value = value;
+        result = true;
+    }
 
+    public ConditionSingle(String entityName, ActionType actionType, String entityToInvoke,
+                           String propertyToInvoke,String operator, String value, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll){
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
+        this.entityToInvoke = entityToInvoke;
+        this.propertyToInvoke = propertyToInvoke;
+        setOperatorFromString(operator);
+        this.value = value;
+        result = true;
+    }
     // getters
     public String getEntityToInvoke() {
         return entityToInvoke;
@@ -96,11 +119,16 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
 
     @Override
     public void invoke(Context context) throws RuntimeException{
-       Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
-       Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
+      // addition to task 2
+        // get property value in Ojbect form - actual type behind
+        // get value for condition by prop type
+        Object propVal = FunctionHelper.getPropertyExpression(propertyToInvoke, context);
+        Type propType = getValueOfConditionExpressionValue(propVal);
+       //Object propVal = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getVal();
+       //Type propType = context.getPrimaryEntityInstance().getPropertyInstanceByName(propertyToInvoke).getType();
 
       // Object valueForCondition = parseByTypeAndString(propType, value);
-        Object valueForCondition = FunctionHelper.getValueToInvoke(value, context, propertyToInvoke);
+        Object valueForCondition = FunctionHelper.getValueToInvokeFromType(value, context, propType);
         result = evaluateCondition(propType, propVal,  valueForCondition);
     }
 
@@ -164,7 +192,8 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
                 return false;
         }
     }
-    public boolean evaluateBt(Type type, Object propVal, Object valueForCondition){
+    public boolean evaluateBt(Type type, Object propVal, Object valueForCondition) {
+
         switch (type){
             case DECIMAL:
                 return ((Integer)propVal > (Integer)valueForCondition);
@@ -175,6 +204,7 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
         }
     }
     public boolean evaluateLt(Type type, Object propVal, Object valueForCondition){
+
         switch (type){
             case DECIMAL:
                 return ((Integer)propVal < (Integer)valueForCondition);
@@ -183,5 +213,23 @@ public class ConditionSingle extends AbstractAction implements conditionSingular
             default:
                 return false;
         }
+    }
+
+    public Type getValueOfConditionExpressionValue(Object conditionValue) {
+        if(conditionValue instanceof Integer) {
+            return Type.DECIMAL;
+        }
+        if(conditionValue instanceof Float) {
+           return Type.FLOAT;
+       }
+       else if(conditionValue instanceof Boolean) {
+           return Type.BOOLEAN;
+       }
+       else if(conditionValue instanceof String) {
+           return Type.STRING;
+       }
+       else {
+           throw new RuntimeException("Value of condition expression: " + conditionValue + " has an invalid type.");
+       }
     }
 }

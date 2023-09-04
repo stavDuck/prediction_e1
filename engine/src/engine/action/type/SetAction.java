@@ -2,6 +2,7 @@ package engine.action.type;
 
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 
@@ -17,13 +18,23 @@ public class SetAction extends AbstractAction {
         this.newValue = newValue;
     }
 
+    // ctor for action with secondary
+    public SetAction(String entityName, String property, String actionType, String newValue, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType,secondaryAmount, secondaryEntityName, condition, isSelectedAll);
+        this.property = property;
+        this.newValue = newValue;
+    }
+
     @Override
     public void invoke(Context context) {
         Object value = FunctionHelper.getValueToInvoke(newValue, context, property);
-
-        PropertyInstance prop = context.getPrimaryEntityInstance()
-                .getPropertyInstanceByName(property);
-
+        PropertyInstance prop;
+        if(context.getSecondaryEntityInstance() != null && entityName.equalsIgnoreCase(context.getSecondaryEntityInstance().getEntityName())) {
+            prop = context.getSecondaryEntityInstance().getPropertyInstanceByName(property);
+        }
+        else {
+            prop = context.getPrimaryEntityInstance().getPropertyInstanceByName(property);
+        }
         if (prop.getRange() != null) {
             // check if out of range for decimal
             if (prop.getType().name().toLowerCase().equals("decimal")) {
@@ -48,7 +59,16 @@ public class SetAction extends AbstractAction {
         }
 
         if (value != null) {
-            context.getPrimaryEntityInstance().getPropertyInstanceByName(property).setVal(value);
+            prop.setVal(value);
+            prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
         }
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public String getNewValue() {
+        return newValue;
     }
 }

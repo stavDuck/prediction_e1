@@ -10,7 +10,14 @@ public class DtoEntity {
     private String entityName;
     private int population;
     private List<DtoProperty> propertyList;
+    private List<Integer> populationHistoryList;
 
+    public DtoEntity(String entityName, int population, List<Integer> populationHistoryList) {
+        this.entityName = entityName;
+        this.population = population;
+        this.propertyList = new ArrayList<>();
+        this.populationHistoryList = populationHistoryList;
+    }
 
     public String getEntityName() {
         return entityName;
@@ -22,12 +29,6 @@ public class DtoEntity {
 
     public List<DtoProperty> getPropertyList() {
         return propertyList;
-    }
-
-    public DtoEntity(String entityName, int population) {
-        this.entityName = entityName;
-        this.population = population;
-        this.propertyList = new ArrayList<>();
     }
 
     public void printEntityStructure(){
@@ -48,6 +49,13 @@ public class DtoEntity {
 
     public void addPropertyToEntity(String propertyName, String propertyType, DtoRange range, boolean isInitRandom) {
         propertyList.add(new DtoProperty(propertyName, propertyType, range, isInitRandom));
+    }
 
+    public List<Integer> getPopulationHistoryList() {
+        return populationHistoryList;
+    }
+
+    public void setPopulationHistoryList(List<Integer> populationHistoryList) {
+        this.populationHistoryList = populationHistoryList;
     }
 }

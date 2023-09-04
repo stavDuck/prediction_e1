@@ -23,15 +23,22 @@ public class ValidationCommonFunctions {
 
     // validate range has values only if property type is decimal/float
     public static boolean isRangeLegalWithDecimalOrFloat(String type, PRDRange range){
-        if(type.equals("decimal") || type.equals("float")) {
+        //CHANGE - range is optional
+        /*if(type.equals("decimal") || type.equals("float")) {
             if (range != null)
                 return true;
         }
-        else if (type.equals("string") || type.equals("boolean")) {
+        if (type.equals("string") || type.equals("boolean")) {
             if (range == null)
                 return true;
         }
-        return false;
+        return false;*/
+        if (type.equals("string") || type.equals("boolean")) {
+            if (range != null)
+                return false;
+        }
+        return true;
+
     }
 
     // validate from is smaller value from to

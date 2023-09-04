@@ -33,6 +33,8 @@ public class AppController {
     @FXML private ResultsComponentController resultTabController;
 
     @FXML
+    private TabPane tabPane;
+    @FXML
     private Label titlePrediction;
     @FXML
     private Button openFileButton;
@@ -93,10 +95,10 @@ public class AppController {
         executionTabController.populateTab();
     }
 
-    private void showPopup(String message) {
+    public void showPopup(String message) {
         Popup popup = new Popup();
 
-        Label popupLabel = new Label(message.isEmpty() ? "File loaded successfully" : message);
+        Label popupLabel = new Label(message);
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(event -> popup.hide());
@@ -140,5 +142,17 @@ public class AppController {
 
     public void startExecutionTab() {
         executionTabController.populateTab();
+    }
+
+    public TabPane getTabPane() {
+        return tabPane;
+    }
+    public void moveToResultsTab() {
+        tabPane.getSelectionModel().select(resultTabComponent);
+        resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
+    }
+
+    public void runSimulation() {
+        resultTabController.runSimulation();
     }
 }

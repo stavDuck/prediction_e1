@@ -1,5 +1,6 @@
 package dto.rule;
 
+import dto.rule.Action.*;
 import dto.rule.activation.DtoActivation;
 
 import java.util.ArrayList;
@@ -9,25 +10,26 @@ public class DtoRule {
     private String name;
     private int actionNumber;
     private DtoActivation activation;
-    private List<String> actionNames;
+    private List<DtoAbstractAction> dtoActions;
 
     public DtoRule(String name, DtoActivation activation, int actionNumber) {
         this.name = name;
         this.activation = activation;
         this.actionNumber = actionNumber;
-        this.actionNames = new ArrayList<>();
+        this.dtoActions = new ArrayList<>();
     }
 
-    public void addAction(String actionName) {
-        actionNames.add(actionName);
+    public void addAction(DtoAbstractAction action){
+        dtoActions.add(action);
     }
+
 
     public void printRule() {
         System.out.println("Rule name: " + name);
         System.out.println("Rule action number: " + actionNumber);
         System.out.println("Rule actions: ");
         System.out.println("------------------------------");
-        actionNames.forEach(value -> System.out.println(value.toLowerCase()));
+        dtoActions.forEach(value -> System.out.println(value.getType()));
         System.out.println("Rule activation: ");
         System.out.println("----------------");
         activation.printActivation();
@@ -46,7 +48,7 @@ public class DtoRule {
         return activation;
     }
 
-    public List<String> getActionNames() {
-        return actionNames;
+    public List<DtoAbstractAction> getAction() {
+        return dtoActions;
     }
 }

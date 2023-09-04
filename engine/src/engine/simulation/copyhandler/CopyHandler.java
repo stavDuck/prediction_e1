@@ -1,9 +1,7 @@
 package engine.simulation.copyhandler;
 import engine.action.AbstractAction;
-import engine.action.type.DecreaseAction;
-import engine.action.type.IncreaseAction;
-import engine.action.type.KillAction;
-import engine.action.type.SetAction;
+import engine.action.SecondaryInfo;
+import engine.action.type.*;
 import engine.action.type.calculation.Calculation;
 import engine.action.type.condition.Condition;
 import engine.action.type.condition.ConditionMultiple;
@@ -11,6 +9,7 @@ import engine.action.type.condition.ConditionSingle;
 import engine.action.type.condition.conditionSingularityApi;
 import engine.activation.Activation;
 import engine.entity.EntityStructure;
+import engine.grid.Grid;
 import engine.range.Range;
 import engine.rule.Rule;
 import engine.termination.Termination;
@@ -25,17 +24,19 @@ public class CopyHandler {
     private static final String CONDITION = "condition";
     private static final String SET = "set";
     private static final String KILL = "kill";
-
+    private static final String REPLACE = "replace";
+    private static final String PROXIMITY = "proximity";
     public void copyData(PRDWorld prdWorld, World world) {
         copyEnvironmentProperties(prdWorld, world);
         copyEntityStructure(prdWorld, world);
         copyRules(prdWorld, world);
         copyTermination(prdWorld, world);
-
+        copyGrid(prdWorld, world);
+        copyTreadCount(prdWorld.getPRDThreadCount(),world);
     }
 
     public void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
-        List<PRDEnvProperty> prdList = prdWorld.getPRDEvironment().getPRDEnvProperty();
+        List<PRDEnvProperty> prdList = prdWorld.getPRDEnvironment().getPRDEnvProperty();
         for(PRDEnvProperty property : prdList) {
 
             // if range in null (when type is not decimal/ float) set range in our world as null
@@ -51,7 +52,8 @@ public class CopyHandler {
         List<PRDEntity> prdEntityListList = prdWorld.getPRDEntities().getPRDEntity();
         for(PRDEntity entity : prdEntityListList) {
             //adding a new entity to the world's entityStructure map
-            world.addEntityStructure(entity.getName(), new EntityStructure(entity.getPRDPopulation(), entity.getName()));
+            //the population is received by the user, so the initial value is 0
+            world.addEntityStructure(entity.getName(), new EntityStructure(0, entity.getName()));
 
             List<PRDProperty> prdPropertyList = entity.getPRDProperties().getPRDProperty();
             for(PRDProperty property : prdPropertyList) {
@@ -100,22 +102,75 @@ public class CopyHandler {
              probability = rule.getPRDActivation().getProbability() != null ? rule.getPRDActivation().getProbability() : 1;
              newTicks = rule.getPRDActivation().getTicks() != null ? rule.getPRDActivation().getTicks() : 1;
          }
-         return  new Activation(newTicks, probability);
+         return new Activation(newTicks, probability);
      }
 
      private AbstractAction copyActionFromPRDRule(PRDAction action){
+         AbstractAction res;
+
          switch (action.getType()){
-             case (DECREASE): return createNewDecrease(action);
-             case (INCREASE): return createNewIncrease(action);
-             case (CALCULATION): return createNewCalculation(action);
-             case (CONDITION): return createNewCondition(action);
-             case (SET): return createNewSet(action);
-             case (KILL): return createNewKill(action);
-             default: return null;
+             case (DECREASE):
+                 res = createNewDecrease(action);
+                 break;
+             case (INCREASE):
+                 res = createNewIncrease(action);
+                 break;
+             case (CALCULATION):
+                 res = createNewCalculation(action);
+                 break;
+             case (CONDITION):
+                 res = createNewCondition(action);
+                 break;
+             case (SET):
+                 res = createNewSet(action);
+                 break;
+             case (KILL):
+                 res = createNewKill(action);
+                 break;
+             case (REPLACE):
+                 res = createNewReplace(action);
+                 break;
+             case (PROXIMITY):
+                 res = createNewProximity(action);
+                 break;
+             default:
+                 res = null;
+                 break;
          }
+
+         // create secondary if needed
+         if(action.getPRDSecondaryEntity() != null){
+             SecondaryInfo newSecInfo = copySecondary(action.getPRDSecondaryEntity());
+             res.setSecondaryInfo(newSecInfo);
+             }
+         return  res;
      }
 
-     public DecreaseAction createNewDecrease(PRDAction action){
+     // supporting adding secondary information to action if needed
+    private SecondaryInfo copySecondary(PRDAction.PRDSecondaryEntity prdSecondaryEntity) {
+        // if need to get all entities - no need of amount entities
+        if (prdSecondaryEntity.getPRDSelection().getCount().equals("ALL")) {
+            return new SecondaryInfo(0, prdSecondaryEntity.getEntity(), null, true);
+        }
+
+        // if not all- need to set how many and create condition if has condition
+        else {
+            Condition newCondition = null;
+            int count = Integer.parseInt(prdSecondaryEntity.getPRDSelection().getCount());
+
+            if (prdSecondaryEntity.getPRDSelection().getPRDCondition() != null) {
+                // secondaty has only when condition- no then no else
+                conditionSingularityApi newWhenCondition = createNewWhen(prdSecondaryEntity.getPRDSelection().getPRDCondition(),
+                        prdSecondaryEntity.getEntity(), "condition");
+
+                newCondition = new Condition(prdSecondaryEntity.getEntity(), "condition", newWhenCondition);
+            }
+
+            return new SecondaryInfo(count, prdSecondaryEntity.getEntity(), newCondition, false);
+        }
+    }
+
+    public DecreaseAction createNewDecrease(PRDAction action){
         return new DecreaseAction(action.getEntity(), action.getProperty(), action.getType(), action.getBy());
      }
     public IncreaseAction createNewIncrease(PRDAction action){
@@ -216,19 +271,40 @@ public class CopyHandler {
             return new KillAction(action.getEntity(), action.getType());
     }
 
+    public ReplaceAction createNewReplace(PRDAction action) { return new ReplaceAction(action.getKill(), action.getType(), action.getCreate(), action.getMode());}
+    public ProximityAction createNewProximity(PRDAction action) {
+        ProximityAction proximityAction =  new ProximityAction(action.getPRDBetween().getSourceEntity(), action.getType(), action.getPRDBetween().getTargetEntity(), action.getPRDEnvDepth().getOf());
+        for(PRDAction currAction : action.getPRDActions().getPRDAction()) {
+            proximityAction.addAction(copyActionFromPRDRule(currAction));
+        }
+        return proximityAction;
+    }
     public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
-        for (Object curr : prdWorld.getPRDTermination().getPRDByTicksOrPRDBySecond()){
-            if(curr instanceof PRDByTicks){
-                ticks = (PRDByTicks) curr;
+        //or by user or tick/ seconds
+        if (prdWorld.getPRDTermination().getPRDByUser() != null) {
+            world.setTermination(new Termination(null, null));
+        } else {
+            for (Object curr : prdWorld.getPRDTermination().getPRDBySecondOrPRDByTicks()) {
+                if (curr instanceof PRDByTicks) {
+                    ticks = (PRDByTicks) curr;
+                } else if (curr instanceof PRDBySecond) {
+                    seconds = (PRDBySecond) curr;
+                }
             }
-            else if(curr instanceof PRDBySecond){
-                seconds = (PRDBySecond) curr;
-            }
-        }
+
         // supporting one of them is null of both has values
         world.setTermination(new Termination(seconds != null ? seconds.getCount() : null,
-                ticks != null ? ticks.getCount(): null));
+                ticks != null ? ticks.getCount() : null));
+        }
+    }
+
+    public void copyGrid(PRDWorld prdWorld, World world) {
+        world.setGrid(new Grid(prdWorld.getPRDGrid().getRows(), prdWorld.getPRDGrid().getColumns()));
+    }
+
+    public void copyTreadCount(int count, World world){
+        world.setThreadCount(count);
     }
 }

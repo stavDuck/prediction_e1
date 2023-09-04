@@ -1,13 +1,14 @@
 package engine.action.type.calculation;
 import engine.action.AbstractAction;
 import engine.action.FunctionHelper;
+import engine.action.type.condition.Condition;
 import engine.execution.context.Context;
 import engine.property.PropertyInstance;
 import engine.property.type.Type;
 
 public class Calculation extends AbstractAction {
-    final static String MULTIPLY = "multiply";
-    final static String DIVIDE = "divide";
+    protected final static String MULTIPLY = "multiply";
+    protected final static String DIVIDE = "divide";
 
     private String resultProp;
     private String arg1;
@@ -23,6 +24,15 @@ public class Calculation extends AbstractAction {
         this.arg2 = arg2;
     }
 
+    // ctor for secondary
+    public Calculation(String entityName, String actionType, String operatorType,
+                       String resultProp, String arg1, String arg2, int secondaryAmount, String secondaryEntityName, Condition condition, boolean isSelectedAll) {
+        super(entityName, actionType, secondaryAmount, secondaryEntityName, condition, isSelectedAll);
+        this.operatorType = operatorType;
+        this.resultProp = resultProp;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+    }
     @Override
     public void invoke(Context context) {
         Object val1 = FunctionHelper.getValueToInvoke(arg1, context, resultProp);
@@ -31,11 +41,11 @@ public class Calculation extends AbstractAction {
         // send the actual values in object format and the res-prop to set the new value into
         switch (operatorType){
             case MULTIPLY:
-                multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                multiplyFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2, context);
                 break;
             case DIVIDE:
                 try {
-                    divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2);
+                    divideFunction(context.getPrimaryEntityInstance().getPropertyInstanceByName(resultProp), val1, val2, context);
                 }
                 catch (ArithmeticException e){
                     throw new RuntimeException("Division failed with an error: " + e.getMessage());
@@ -44,7 +54,7 @@ public class Calculation extends AbstractAction {
         }
     }
 
-    private void divideFunction(PropertyInstance prop, Object val1, Object val2){
+    private void divideFunction(PropertyInstance prop, Object val1, Object val2, Context context){
         // check the operation needed
         Type entityType = prop.getType();
         Float float1, float2;
@@ -82,9 +92,11 @@ public class Calculation extends AbstractAction {
                 prop.setVal( float1 / float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+
     }
 
-    private void multiplyFunction(PropertyInstance prop, Object val1, Object val2){
+    private void multiplyFunction(PropertyInstance prop, Object val1, Object val2, Context context){
         // check the operation needed
         Type entityType = prop.getType();
         Float float2, float1;
@@ -114,5 +126,22 @@ public class Calculation extends AbstractAction {
                     prop.setVal( float1 * float2);
                 break;
         }
+        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+    }
+
+    public String getResultProp() {
+        return resultProp;
+    }
+
+    public String getArg1() {
+        return arg1;
+    }
+
+    public String getArg2() {
+        return arg2;
+    }
+
+    public String getOperatorType() {
+        return operatorType;
     }
 }

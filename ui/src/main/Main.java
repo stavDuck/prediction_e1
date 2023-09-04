@@ -1,4 +1,5 @@
 package main;
+import menu.Menu;
 import subcomponents.app.AppController;
 import subcomponents.common.ResourcesConstants;
 import javafx.application.Application;
@@ -13,11 +14,13 @@ import java.net.URL;
 
 
 public class Main extends Application {
+//public class Main {
    /* public static void main(String[] args) {
         Menu menu = new Menu();
         menu.startMenu();
     }*/
 
+    //the new UI --> in comment for testing
     private Model model;
 
     @Override

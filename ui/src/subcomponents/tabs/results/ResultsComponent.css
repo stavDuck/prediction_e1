@@ -1,0 +1,46 @@
+.panel-border{
+    -fx-border-color: BLACK;
+}
+
+.border-pane-left {
+    -fx-border-color: white black white white;
+}
+
+.simulation-label-bottom {
+    -fx-border-color: white white black white ;
+}
+
+#paus-button{
+-fx-background-color: #468d2e;
+    -fx-background-color: linear-gradient(to bottom, #d3bb0e, #c5af09);
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}
+#resume-button{
+-fx-background-color: #468d2e;
+    -fx-background-color: linear-gradient(to bottom, #6B8E23, #4F7522);
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}
+#stop-button{
+-fx-background-color: #468d2e;
+    -fx-background-color: linear-gradient(to bottom, rgba(183, 14, 14, 0.87), #980404);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}
+#rerun-button{
+    -fx-background-color: #468d2e;
+    -fx-background-color: linear-gradient(to bottom, rgba(73, 73, 73, 0.87), #383737);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}

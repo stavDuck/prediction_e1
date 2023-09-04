@@ -19,9 +19,9 @@ public class EntityValidator extends ValidationCommonFunctions {
             throw new XmlValidationException("Entity name: " + trimmedName + " is not valid. The name should not have spaces");
         }
 
-        if(prdEntity.getPRDPopulation() < 0) {
+        /*if(prdEntity.getPRDPopulation() < 0) {
             throw new XmlValidationException("Entity: " + trimmedName + " has a negative population. Population should have a positive value.");
-        }
+        }*/
         // go over every property and check if valid
         for(PRDProperty property : prdList) {
             trimmedPropName = property.getPRDName().trim();

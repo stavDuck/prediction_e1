@@ -14,4 +14,11 @@ public class DtoActivation {
         System.out.println("Activation probability: " + probability);
     }
 
+    public int getTicks() {
+        return ticks;
+    }
+
+    public double getProbability() {
+        return probability;
+    }
 }

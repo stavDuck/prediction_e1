@@ -30,7 +30,27 @@
     -fx-text-fill: black;
 }
 
+.tab-pane .tab-header-area .tab:selected {
+    -fx-background-color: #0073e6; /* Blue color for selected tab */
+    -fx-border-color: #005bb5; /* Darker blue for tab border */
+    -fx-border-insets: 0 0 -1 0; /* Remove the bottom border to overlap content area */
+    -fx-border-width: 0 0 3 0; /* Bottom border width */
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+}
 
+/* Customize the background color for the tabs */
+.tab-pane .tab-header-area .tab {
+    -fx-background-color: #005bb5; /* Darker blue for unselected tabs */
+}
 
-
-
+/* Customize the text color for the tabs */
+.tab-pane .tab-header-area .tab .tab-label {
+    -fx-text-fill: white; /* White text color for tabs */
+    -fx-font-weight: bold;
+}
+/* Hover effect for tabs */
+.tab-pane .tab-header-area .tab:hover {
+    -fx-background-color: #0094ff; /* Lighter blue on hover */
+    -fx-border-color: #0073e6; /* Blue border on hover */
+}

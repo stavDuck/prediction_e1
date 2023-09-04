@@ -1,0 +1,8 @@
+.border-color-info{
+    -fx-border-color: #ff7e2e;
+    -fx-border-width: 2px;
+}
+.out-line-txt {
+    -fx-font-weight: bold;
+    -fx-text-fill: #ce680f;
+}
