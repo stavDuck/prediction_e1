@@ -1,5 +1,6 @@
 package engine.simulation.execution;
 
+import engine.property.PropertyInstance;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
 import engine.validation.exceptions.XmlValidationException;
@@ -88,5 +89,17 @@ public class SimulationExecution {
     }
     public void setSimulationStatus(Status simulationStatus) {
         this.simulationStatus = simulationStatus;
+    }
+
+    public void setPopulationForEntity(String entityName, int population) {
+        world.setPopulationForEntity(entityName, population);
+    }
+
+    public void setEnvVariable(String envVariableName, String value) throws NumberFormatException {
+        world.setEnvValueByName(envVariableName, value);
+    }
+
+    public PropertyInstance getEnvPropertyInstance(String envPropName) {
+        return world.getEnvironment().getEnvProperty(envPropName);
     }
 }
