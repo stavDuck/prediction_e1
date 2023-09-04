@@ -251,12 +251,12 @@ public class ExecutionComponentController {
                         try {
                             //if the checkbox is checked and value should be numeric
                             if (checked) {
-                                if((type.equalsIgnoreCase("float") || type.equalsIgnoreCase("decimal"))) {
+                                if((type.contains("float") || type.contains("decimal"))) {
                                     //remove decimal
                                     verifyEnvVariableIsNumber(envName, ((TextField) innerNode).getText());
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                 }
-                                else if(type.equalsIgnoreCase("string")) {
+                                else if(type.contains("string")) {
                                     mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, ((TextField) innerNode).getText());
                                 }
                                 valid = true;

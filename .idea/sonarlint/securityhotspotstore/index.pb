@@ -37,8 +37,6 @@ X
 (engine/src/engine/property/Property.java,e\2\e25dc4531fb6c8ee023aa7eac38c9a128be07e43
 a
 1engine/src/engine/property/PropertyStructure.java,3\e\3e7b40ce33921e5fa991acea6e285868e593344a
-`
-0engine/src/engine/property/PropertyInstance.java,e\5\e5f2717a1e888689adf1fddc468684286512ee5b
 u
 Eengine/src/engine/validation/entitiesValidator/EntitiesValidator.java,4\b\4bdacf0c8eb51e84730c449d56782a881402eef7
 s
@@ -47,8 +45,6 @@ k
 ;engine/src/engine/validation/ValidationCommonFunctions.java,d\e\de47fe4baac7b1ae6a1cc9c0e8473b65b25f9b6b
 s
 Cengine/src/engine/validation/actionsValidator/ActionsValidator.java,f\f\fffebdb353431725b9a820e2c468f1f8f7daa033
-`
-0engine/src/engine/validation/WorldValidator.java,3\a\3a708df6f957e5457bdec71e1b99940654ef781a
 Y
 )engine/src/engine/property/type/Type.java,0\c\0c387c0e88800acf7f6a09537d04bd8a93ac48e6
 k

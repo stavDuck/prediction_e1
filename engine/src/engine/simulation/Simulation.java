@@ -12,11 +12,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
 
 public class Simulation {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
     private  int simulationID;
+
+
+
+    public void setWorld(World world) {
+
+    }
+
+    private ExecutorService executorService;
 
     public Simulation(String fileName) throws RuntimeException{
         try {

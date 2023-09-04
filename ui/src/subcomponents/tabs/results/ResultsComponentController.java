@@ -86,6 +86,7 @@ public class ResultsComponentController {
         runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTime));
         entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
+        populationLabel.textProperty().bind(Bindings.format("%,d", population));
     }
    /* @FXML
     void viewSimulationDetails(MouseEvent event) {

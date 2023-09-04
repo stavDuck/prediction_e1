@@ -19,6 +19,7 @@ public class BusinessLogic {
 
     public void collectSimulationMetadata(Consumer<Long> currTickDelegate, Consumer<Long> runningTimeDelegate, Runnable onFinish) {
 
+
         /*Consumer<Long> currTickConsumer = ct -> {
             this.currTick = ct;
             currTickDelegate.accept(ct);

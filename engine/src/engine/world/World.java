@@ -151,6 +151,12 @@ public class World {
         long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()) {
+
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             // Move all instances on the grid
             moveAllInstancesInGrid(instanceManager);
 
