@@ -48,4 +48,17 @@ public class SimultionExecutionManager {
             executorService.execute(runSimulation);
         }
     }
+
+    public void pauseById(int id) {
+        if(simulations.get(id) != null && simulations.get(id).getSimulationStatus() == Status.IN_PROGRESS){
+            simulations.get(id).pauseSimulation();
+        }
+    }
+    public void resumeById(int id){
+        simulations.get(id).resume();
+    }
+    public void stopById(int id) {
+        simulations.get(id).stopSimulation();
+    }
+
 }

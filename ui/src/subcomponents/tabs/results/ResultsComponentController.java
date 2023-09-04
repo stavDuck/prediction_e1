@@ -5,6 +5,7 @@ import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -18,7 +19,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import subcomponents.app.AppController;
+import subcomponents.tabs.results.logic.task.TaskSimulationPause;
+import subcomponents.tabs.results.logic.task.TaskSimulationResume;
 import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
+import subcomponents.tabs.results.logic.task.TaskSimulationStop;
 
 public class ResultsComponentController {
     @FXML
@@ -113,7 +117,7 @@ public class ResultsComponentController {
     public HBox createSimulationHbox(String text) {
         Image image;
         Label labelSimulationId = new Label(text);
-        Label labelSimulationStatus = new Label("Process");
+        Label labelSimulationStatus = new Label(" Process");
         HBox dynamicVBox = new HBox();
         dynamicVBox.getChildren().addAll(labelSimulationId,labelSimulationStatus);
 
@@ -152,11 +156,30 @@ public class ResultsComponentController {
     public void runSimulation() {
         mainController.getModel().runSimulation();
         new Thread(()->{
-            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick);
+            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick, simulationDetails);
             task.runTask();
         }).start();
+    }
 
+    @FXML
+    void pauseOnclick(ActionEvent event) {
+        new Thread(new TaskSimulationPause(
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails
+        )).start();
+    }
 
+    @FXML
+    void resumeOnclick(ActionEvent event) {
+        new Thread(new TaskSimulationResume(
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick, simulationDetails
+        )).start();
+    }
+
+    @FXML
+    void stopOnClick(ActionEvent event) {
+        new Thread(new TaskSimulationStop(
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails
+        )).start();
     }
 
 

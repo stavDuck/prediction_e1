@@ -34,6 +34,9 @@ public class World {
     private Grid grid;
     private int threadCount;
     public int currTick;
+    private boolean isPaused;
+    private Object pauseObject;
+
 
     public World() {
         this.environment = new Environment();
@@ -44,6 +47,8 @@ public class World {
         this.grid = new Grid();
         this.threadCount = 0;
         this.currTick = 0;
+        isPaused = false;
+        pauseObject = new Object();
     }
 
     // getters
@@ -151,12 +156,17 @@ public class World {
         long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()) {
+            // if simulation is pause
+            synchronized (pauseObject) {
+                if (isPaused) {
+                    try {
+                        pauseObject.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
 
-          //  try {
-               // this.wait();
-          //  } catch (InterruptedException e) {
-            ///    throw new RuntimeException(e);
-           // }
             // Move all instances on the grid
             moveAllInstancesInGrid(instanceManager);
 
@@ -205,24 +215,6 @@ public class World {
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
         }
-
-
-
-        // save the start time in seconds
-        /*long startTimeSeconds = System.currentTimeMillis() / 1000;
-
-        while (!termination.isStop()){
-            // run on the rules
-            for(Rule currRule : rules.values()){
-                // if rule is active
-                if(isRuleActive(currRule, tick)) {
-                    currRule.inokeRule(instanceManager, environment, tick);
-                }
-            }
-            tick++;
-            // check if termination coditions are met
-            isSimulationTerminated(tick, startTimeSeconds);
-        }*/
     }
 
     private void moveAllInstancesInGrid(EntityInstanceManager instanceManager) {
@@ -239,9 +231,21 @@ public class World {
                     Position currEntityPos = currEntity.getPos();
                     // to support infinity movement in the grid
                     increaseX = (currEntityPos.getX() + 1) % grid.getRows();
-                    decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
                     increaseY = (currEntityPos.getY() + 1) % grid.getColumns();
-                    decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+
+                    if(currEntityPos.getX()!=0) {
+                        decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
+                    }
+                    else{
+                        decreaseX = grid.getRows()-1;
+                    }
+
+                   if(currEntityPos.getY()!=0) {
+                       decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+                   }
+                   else{
+                       decreaseY = grid.getColumns()-1;
+                   }
 
                     // move right
                     if (grid.getPositionInGridBoard(currEntityPos.getX(), increaseY) == null) {
@@ -298,6 +302,12 @@ public class World {
             termination.setStop(true);
             System.out.println("Simulation is Over !!! , you reached the max seconds");
         }
+        else if(termination.isStoppedByUser()){
+            termination.setStop(true);
+            System.out.println("Simulation is Over !!! , Stopped by user");
+
+        }
+
     }
 
     public boolean isRuleActive(Rule currRule, int tick){
@@ -415,5 +425,17 @@ public class World {
 
     public void setPopulationForEntity(String entityName, int population) {
         entityStructures.get(entityName).setPopulation(population);
+    }
+    public void pause() {
+        isPaused = true;
+    }
+    public void resume(){
+        isPaused = false;
+        synchronized (pauseObject) {
+            pauseObject.notifyAll();
+        }
+    }
+    public void stopByUser(){
+        termination.setStoppedByUser(true);
     }
 }

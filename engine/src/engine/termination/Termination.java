@@ -36,4 +36,11 @@ public class Termination {
         isStop = stop;
     }
 
+    public boolean isStoppedByUser() {
+        return stoppedByUser;
+    }
+
+    public void setStoppedByUser(boolean stoppedByUser) {
+        this.stoppedByUser = stoppedByUser;
+    }
 }

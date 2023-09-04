@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -52,9 +51,9 @@
                            <children>
                               <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                  <children>
-                                    <Button id="paus-button" fx:id="pauseButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Pause" />
-                                    <Button id="resume-button" fx:id="resumeButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Resume" />
-                                    <Button id="stop-button" fx:id="stopButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Stop" />
+                                    <Button id="paus-button" fx:id="pauseButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseOnclick" prefHeight="25.0" prefWidth="62.0" text="Pause" />
+                                    <Button id="resume-button" fx:id="resumeButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#resumeOnclick" prefHeight="25.0" prefWidth="62.0" text="Resume" />
+                                    <Button id="stop-button" fx:id="stopButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopOnClick" prefHeight="25.0" prefWidth="62.0" text="Stop" />
                                     <Button id="rerun-button" fx:id="rerunButton" alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Rerun" />
                                  </children>
                                  <padding>

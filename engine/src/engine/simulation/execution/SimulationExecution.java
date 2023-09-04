@@ -102,4 +102,26 @@ public class SimulationExecution {
     public PropertyInstance getEnvPropertyInstance(String envPropName) {
         return world.getEnvironment().getEnvProperty(envPropName);
     }
+
+    public void pauseSimulation(){
+        simulationStatus = Status.PAUSE;
+        world.pause();
+    }
+
+    public void stopSimulation() {
+        if (simulationStatus == Status.PAUSE || simulationStatus == Status.IN_PROGRESS) {
+            if (simulationStatus == Status.PAUSE) {
+                world.resume();
+            }
+            simulationStatus = Status.FINISH;
+            world.stopByUser();
+        }
+    }
+
+    public void resume() {
+        if(simulationStatus == Status.PAUSE) {
+            simulationStatus = Status.IN_PROGRESS;
+            world.resume();
+        }
+    }
 }
