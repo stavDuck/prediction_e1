@@ -1,6 +1,7 @@
 package engine.simulation;
 
 
+import dto.Dto;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.manager.SimultionExecutionManager;
 
@@ -19,11 +20,9 @@ public class Simulation {
     public SimulationExecution getSimulationById(int id){
         return simulationManager.getSimulationById(id);
     }
-
     public void execute(int id){
         simulationManager.execute(id);
     }
-
 
     /*
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";

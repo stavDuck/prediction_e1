@@ -226,10 +226,10 @@ public class World {
     }
 
     private void moveAllInstancesInGrid(EntityInstanceManager instanceManager) {
-       int increaseX;
-       int decreaseX;
-       int increaseY;
-       int decreaseY;
+        int increaseX;
+        int decreaseX;
+        int increaseY;
+        int decreaseY;
 
 
         if (grid.getFreeSpots() != 0) {
@@ -239,9 +239,21 @@ public class World {
                     Position currEntityPos = currEntity.getPos();
                     // to support infinity movement in the grid
                     increaseX = (currEntityPos.getX() + 1) % grid.getRows();
-                    decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
                     increaseY = (currEntityPos.getY() + 1) % grid.getColumns();
-                    decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+
+                    if(currEntityPos.getX()!=0) {
+                        decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
+                    }
+                    else{
+                        decreaseX = grid.getRows()-1;
+                    }
+
+                    if(currEntityPos.getY()!=0) {
+                        decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+                    }
+                    else{
+                        decreaseY = grid.getColumns()-1;
+                    }
 
                     // move right
                     if (grid.getPositionInGridBoard(currEntityPos.getX(), increaseY) == null) {

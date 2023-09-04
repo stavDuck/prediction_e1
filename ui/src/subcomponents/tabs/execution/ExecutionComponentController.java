@@ -70,6 +70,8 @@ public class ExecutionComponentController {
     }
 
     public void populateTab() {
+        entitiesVbox.getChildren().clear();
+        envVariablesVbox.getChildren().clear();
         populateEntityNames();
         populateEnvVariables();
     }

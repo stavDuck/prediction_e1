@@ -3,26 +3,34 @@ package subcomponents.tabs.results;
 import dto.Dto;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import subcomponents.app.AppController;
 import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
+import subcomponents.tabs.results.logic.task.population.FillPopulation;
 
 public class ResultsComponentController {
     @FXML
     private VBox simulationDetails;
+    @FXML
+    private VBox simulationProgressDetails;
     @FXML
     private HBox singleSimulationDetails;
     @FXML
@@ -43,10 +51,6 @@ public class ResultsComponentController {
     private Label currTickLabel;
     @FXML
     private Label runningTimeLabel;
-    @FXML
-    private Label entityNameLabel;
-    @FXML
-    private Label populationLabel;
     @FXML
     private LineChart<?,?> popultionGraph;
     //@FXML
@@ -70,9 +74,12 @@ public class ResultsComponentController {
     @FXML
     private Label populationStaticLabel;
     private SimpleLongProperty propertyCurrTick;
-    private SimpleLongProperty runningTime;
+    private SimpleLongProperty runningTimeProperty;
     private SimpleLongProperty population;
     private AppController mainController;
+    private Timeline runningTime;
+    private Integer secondsCount = 1;
+
 
     public ResultsComponentController(){
         propertyCurrTick = new SimpleLongProperty();
@@ -80,10 +87,10 @@ public class ResultsComponentController {
     @FXML
     void initialize() {
         currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
-        runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTime));
+        //runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
         entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
-        populationLabel.textProperty().bind(Bindings.format("%,d", population));
+        //populationLabel.textProperty().bind(Bindings.format("%,d", population));
     }
    /* @FXML
     void viewSimulationDetails(MouseEvent event) {
@@ -108,12 +115,13 @@ public class ResultsComponentController {
     public void addSimulation(int simulationID, boolean isFinished) {
         String text = "Simulation no. " + simulationID;
         simulationDetails.getChildren().add(createSimulationHbox(text));
+
     }
 
     public HBox createSimulationHbox(String text) {
         Image image;
         Label labelSimulationId = new Label(text);
-        Label labelSimulationStatus = new Label("Process");
+        Label labelSimulationStatus = new Label(" Process");
         HBox dynamicVBox = new HBox();
         dynamicVBox.getChildren().addAll(labelSimulationId,labelSimulationStatus);
 
@@ -122,7 +130,7 @@ public class ResultsComponentController {
             int index = simulationDetails.getChildren().indexOf(clicked);
             // set curr simulation on the currect simulation
             mainController.getModel().setCurrSimulationId(index+1);
-
+            //addEntityToTable();
             setPropertyLineChart();
             System.out.println("Label clicked: " + ((Label)clicked.getChildren().get(0)).getText() );
         };
@@ -151,12 +159,15 @@ public class ResultsComponentController {
 
     public void runSimulation() {
         mainController.getModel().runSimulation();
+        runningTime = createTimer();
+        runningTime.setCycleCount(Timeline.INDEFINITE);
+        runningTime.play();
+        simulationProgressDetails.getChildren().add(addEntityToTable());
         new Thread(()->{
-            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick);
+            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick, runningTime);
             task.runTask();
+
         }).start();
-
-
     }
 
 
@@ -180,6 +191,29 @@ public class ResultsComponentController {
                 popultionGraph.getData().add(series);
             }
         }
+    }
+
+    private Timeline createTimer() {
+        EventHandler<ActionEvent> eventHandler = event -> {
+            secondsCount++;
+            runningTimeLabel.setText(secondsCount.toString());
+        };
+
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), eventHandler);
+        return new Timeline(keyFrame);
+    }
+
+    public TableView<FillPopulation> addEntityToTable() {
+        TableView<FillPopulation> tableView = new TableView<>();
+        //entityTable = new TableView<FillPopulation>();
+        TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
+        entityName.setCellValueFactory(new PropertyValueFactory<>("entityName"));
+        TableColumn population = new TableColumn<FillPopulation, Integer>("Current Population");
+        population.setCellValueFactory(new PropertyValueFactory<>("population"));
+        tableView.getColumns().add(entityName);
+        tableView.getColumns().add(population);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        return tableView;
     }
 
 }

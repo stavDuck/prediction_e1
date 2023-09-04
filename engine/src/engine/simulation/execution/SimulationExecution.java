@@ -1,5 +1,6 @@
 package engine.simulation.execution;
 
+import dto.Dto;
 import engine.property.PropertyInstance;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
@@ -101,5 +102,9 @@ public class SimulationExecution {
 
     public PropertyInstance getEnvPropertyInstance(String envPropName) {
         return world.getEnvironment().getEnvProperty(envPropName);
+    }
+
+    public Dto createWorldDto() {
+        return world.createDto();
     }
 }
