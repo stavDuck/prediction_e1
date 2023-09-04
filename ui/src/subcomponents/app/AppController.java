@@ -151,6 +151,10 @@ public class AppController {
     }
 
     public void runSimulation() {
-        resultTabController.runSimulation(selectedFileProperty.get());
+        resultTabController.runSimulation();
+    }
+
+    public String getCurrLoadedFileName(){
+        return selectedFileProperty.get();
     }
 }

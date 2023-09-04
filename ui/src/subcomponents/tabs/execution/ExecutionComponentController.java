@@ -4,6 +4,7 @@ import dto.env.DtoEnv;
 import dto.range.DtoRange;
 import engine.entity.EntityStructure;
 import engine.property.PropertyInstance;
+import engine.simulation.execution.Status;
 import engine.value.generator.ValueGeneratorFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -171,12 +172,31 @@ public class ExecutionComponentController {
     @FXML
     void startButtonAction(ActionEvent event) {
         boolean entityVal, envVal;
-        entityVal = validateEntityPopulation();
-        envVal = verifyEnvVariable();
-        if(entityVal && envVal) {
-            mainController.moveToResultsTab();
+        boolean isNewSimulationFailed = false;
+
+        // Option 1 - click start after loading new file from window 1 - no need to create new simulation
+
+        // Option 2 - click start after been in window 3 and already running simulations
+        // in this case we need to add new simulation in the manager and update the current ID to new simulation
+        try {
+            if (mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.IN_PROGRESS ||
+                    mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.FINISH) {
+                int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
+                mainController.getModel().setCurrSimulationId(currID);
+            }
         }
-        mainController.runSimulation();
+        catch (RuntimeException e){
+            isNewSimulationFailed = true;
+        }
+
+        if(!isNewSimulationFailed) {
+            entityVal = validateEntityPopulation();
+            envVal = verifyEnvVariable();
+            if (entityVal && envVal) {
+                mainController.moveToResultsTab();
+            }
+            mainController.runSimulation();
+        }
     }
 
     public boolean validateEntityPopulation() {

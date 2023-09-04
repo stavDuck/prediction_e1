@@ -1,17 +1,12 @@
 package subcomponents.tabs.results;
 
 import dto.Dto;
-import dto.entity.DtoEntity;
-import engine.entity.EntityStructure;
-import engine.simulation.Simulation;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -22,12 +17,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.omg.CosNaming.BindingIterator;
 import subcomponents.app.AppController;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
 
 public class ResultsComponentController {
     @FXML
@@ -78,14 +69,17 @@ public class ResultsComponentController {
     private Label entityNameStaticLabel;
     @FXML
     private Label populationStaticLabel;
-    private SimpleLongProperty currTick;
+    private SimpleLongProperty propertyCurrTick;
     private SimpleLongProperty runningTime;
     private SimpleLongProperty population;
     private AppController mainController;
 
+    public ResultsComponentController(){
+        propertyCurrTick = new SimpleLongProperty();
+    }
     @FXML
     void initialize() {
-        currTickLabel.textProperty().bind(Bindings.format("%,d", currTick));
+        currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
         runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTime));
         entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
@@ -112,33 +106,28 @@ public class ResultsComponentController {
     }
 
     public void addSimulation(int simulationID, boolean isFinished) {
-        String text = simulationID + ". " + simulationID;
-        simulationDetails.getChildren().add(createSimulationHbox(text, isFinished));
+        String text = "Simulation no. " + simulationID;
+        simulationDetails.getChildren().add(createSimulationHbox(text));
     }
 
-    public HBox createSimulationHbox(String text, boolean isFinished) {
+    public HBox createSimulationHbox(String text) {
         Image image;
-        Label label = new Label(text);
-       /* label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                // Handle the click event here
-                viewSimulationDetails(event);
-            }
-        });
-        if(isFinished) {
-            image = new Image("file:C:\\Users\\USER\\IdeaProjects\\prediction_e1\\ui\\src\\subcomponents\\tabs\\results\\similationFinished.png");
-        }
-        else {
-            image = new Image("file:C:\\Users\\USER\\IdeaProjects\\prediction_e1\\ui\\src\\subcomponents\\tabs\\results\\inProgress.png");
-        }
-        ImageView progressImage = new ImageView(image);
-        progressImage.setFitWidth(30);
-        progressImage.setFitHeight(30);*/
+        Label labelSimulationId = new Label(text);
+        Label labelSimulationStatus = new Label("Process");
         HBox dynamicVBox = new HBox();
-        //dynamicVBox.getChildren().addAll(label, progressImage);
-        dynamicVBox.getChildren().addAll(label);
-        //dynamicVBox.setPadding(new Insets(5, 5, 5, 5));
+        dynamicVBox.getChildren().addAll(labelSimulationId,labelSimulationStatus);
+
+        EventHandler<MouseEvent> HBoxClickHandler = event -> {
+            HBox clicked = (HBox) event.getSource();
+            int index = simulationDetails.getChildren().indexOf(clicked);
+            // set curr simulation on the currect simulation
+            mainController.getModel().setCurrSimulationId(index+1);
+
+            setPropertyLineChart();
+            System.out.println("Label clicked: " + ((Label)clicked.getChildren().get(0)).getText() );
+        };
+        dynamicVBox.setOnMouseClicked(HBoxClickHandler);
+
         return dynamicVBox;
 
     }
@@ -160,12 +149,18 @@ public class ResultsComponentController {
     }*/
 
 
-    public void runSimulation(String fileName) {
-        mainController.getModel().runSimulation(fileName);
+    public void runSimulation() {
+        mainController.getModel().runSimulation();
+        new Thread(()->{
+            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick);
+            task.runTask();
+        }).start();
+
+
     }
 
 
-    public void setPropertyLineChart(int indexSelectedSimulation){
+    public void setPropertyLineChart(){
         SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
         if(simulationExecution.getSimulationStatus() == Status.FINISH) {
             // Clear the chart by removing all data series
@@ -185,14 +180,6 @@ public class ResultsComponentController {
                 popultionGraph.getData().add(series);
             }
         }
-    }
-
-    @FXML
-    void clickOnSimulation(MouseEvent event) {
-        Label clickedLabel = (Label)(event.getSource());
-        int index = simulationDetails.getChildren().indexOf(clickedLabel);
-        mainController.getModel().setCurrSimulationId(index);
-        setPropertyLineChart(index);
     }
 
 }

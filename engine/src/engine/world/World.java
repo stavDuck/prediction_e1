@@ -152,11 +152,11 @@ public class World {
 
         while (!termination.isStop()) {
 
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+          //  try {
+               // this.wait();
+          //  } catch (InterruptedException e) {
+            ///    throw new RuntimeException(e);
+           // }
             // Move all instances on the grid
             moveAllInstancesInGrid(instanceManager);
 
@@ -350,6 +350,7 @@ public class World {
 
         dto.addTermination(termination.getByTick(), termination.getBySec());
         dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
+        dto.setCurrTicks(currTick);
 
         return dto;
     }

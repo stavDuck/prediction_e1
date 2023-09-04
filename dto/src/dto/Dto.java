@@ -21,6 +21,7 @@ public class Dto {
     private DtoTermination termination;
     private Map<String, DtoEnv> envs;
     private DtoGrid grid;
+    private int currTicks;
 
     public Dto() {
         this.entities = new HashMap<>();
@@ -137,7 +138,12 @@ public class Dto {
         termination.printTermination();
     }
 
+    public int getCurrTicks() {
+        return currTicks;
+    }
 
-
+    public void setCurrTicks(int currTicks) {
+        this.currTicks = currTicks;
+    }
 }
 

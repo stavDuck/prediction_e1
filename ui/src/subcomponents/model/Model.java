@@ -67,22 +67,8 @@ public class Model {
         return simulation;
     }
 
-    public void runSimulation(String fileName) {
+    public void runSimulation() {
         try {
-
-            // Option 1 - click start after loading new file from window 1
-           // if(simulation.getSimulationById(currSimulationId).getSimulationStatus() == Status.CREATED){
-
-            //}
-
-            // Option 2 - click start after been in window 3 and already running simulations
-            // in this case we need to add new simulation in the manager and update the current ID to new simulation
-            if(simulation.getSimulationById(currSimulationId).getSimulationStatus() == Status.IN_PROGRESS ||
-                    simulation.getSimulationById(currSimulationId).getSimulationStatus() == Status.FINISH){
-                    int currID = simulation.createSimulation(fileName);
-                    currSimulationId = currID;
-            }
-
             LocalDate currentDate;
             LocalTime currentTime;
             // simulation already ran need to create a new one
