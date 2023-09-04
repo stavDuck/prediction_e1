@@ -183,7 +183,7 @@ public class ExecutionComponentController {
         boolean res = true;
         int sum = 0;
         int population;
-        int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
+        int limit = mainController.getModel().getDtoWorld().getGrid().getCols() * mainController.getModel().getDtoWorld().getGrid().getRows();
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
@@ -214,12 +214,12 @@ public class ExecutionComponentController {
     public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
             int pop = Integer.parseInt(population);
-            mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, pop);
+            mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, pop);
             return pop;
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
-                mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, 0);
+                mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, 0);
                 return 0;
             }
             else {
@@ -257,7 +257,7 @@ public class ExecutionComponentController {
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                 }
                                 else if(type.contains("string")) {
-                                    mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, ((TextField) innerNode).getText());
+                                    mainController.getModel().getCurrSimulation().setEnvVariable(envName, ((TextField) innerNode).getText());
                                 }
                                 valid = true;
                             }
@@ -291,12 +291,12 @@ public class ExecutionComponentController {
                         //if the checkbox is checked and value should be chosen in the radio button
                         if (checked && type.equalsIgnoreCase("boolean")) {
                             if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected()) {
-                                mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, TRUE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, TRUE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
 
                             } else if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected()) {
-                                mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, FALSE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, FALSE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
                             } else {//in case user didn't select any button
@@ -327,8 +327,8 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
-        for(PropertyInstance propertyInstance :  mainController.getModel().getSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
-            System.out.println(mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
+        for(PropertyInstance propertyInstance :  mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+            System.out.println(mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
 
         }
         return valid;
@@ -336,7 +336,8 @@ public class ExecutionComponentController {
 
     public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
         try {
-            mainController.getModel().getSimulation().getWorld().setEnvValueByName(envVarName, value);
+            mainController.getModel().getCurrSimulation().setEnvVariable(envVarName, value);
+            //mainController.getModel().getSimulation().getWorld().setEnvValueByName(envVarName, value);
         }
         catch (NumberFormatException e) {
             if(value.isEmpty()) {
@@ -360,7 +361,7 @@ public class ExecutionComponentController {
 
 
     public void generateFloat(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         if (currProp.getRange() != null) {
             currProp.setVal(ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
                     currProp.getRange().getTo()).generateValue());
@@ -371,12 +372,14 @@ public class ExecutionComponentController {
     }
 
     public void generateBoolean(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
+        //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
     }
 
     public void generateString(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
+        //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
 
     }
