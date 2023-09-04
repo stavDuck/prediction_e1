@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import org.omg.CosNaming.BindingIterator;
 import subcomponents.app.AppController;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,6 +143,8 @@ public class ResultsComponentController {
 
     public void entityPopulation(Simulation simulation) {
         int rowIndex = 0;
+        List<DtoEntity> entityList = simulation.getSimulationById(mainController.getModel().getCurrSimulationId()).getWorld()
+        //for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
         for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
             Label name = new Label(entity.getEntityName());
             entityGrid.add(entityNameStaticLabel, 0, rowIndex);

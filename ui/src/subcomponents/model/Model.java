@@ -128,6 +128,10 @@ public class Model {
         //return simulationHistory.get(id).getStartSimulation();
     }
 
+    public SimulationExecution getCurrSimulation(){
+        return simulation.getSimulationById(currSimulationId);
+    }
+
     public int getCurrSimulationId() {
         return currSimulationId;
     }
