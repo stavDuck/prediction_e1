@@ -4,26 +4,36 @@ import engine.simulation.Simulation;
 import engine.simulation.execution.Status;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import subcomponents.tabs.results.logic.task.population.FillPopulation;
+
+import java.util.Map;
 
 public class TaskSimulationResume implements Runnable{
     private int simulationId;
     private Simulation simulation;
     private SimpleLongProperty propertyCurrTick;
     private VBox simulationDetails;
-    private Timeline timeline;
+    private SimpleLongProperty runningTime;
+
+    private TableView<FillPopulation> entityPopulation;
+    private Map<String, SimpleIntegerProperty> propertyMap;
 
 
     public TaskSimulationResume(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick,
-                                Timeline timeline,VBox simulationDetails) {
+                                SimpleLongProperty runningTime,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String, SimpleIntegerProperty> propertyMap) {
         this.simulationId = simulationId;
         this.simulation = simulation;
         this.propertyCurrTick = propertyCurrTick;
-        this.timeline = timeline;
+        this.runningTime = runningTime;
         this.simulationDetails = simulationDetails;
+        this.entityPopulation = entityPopulation;
+        this.propertyMap = propertyMap;
     }
 
     @Override
@@ -43,7 +53,8 @@ public class TaskSimulationResume implements Runnable{
 
             // create new thread for continue updates
             new Thread(() -> {
-                TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(simulationId, simulation, propertyCurrTick, timeline, simulationDetails);
+                TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(simulationId, simulation, propertyCurrTick, runningTime,
+                        simulationDetails, entityPopulation, propertyMap);
                 task.runTask();
             }).start();
         }

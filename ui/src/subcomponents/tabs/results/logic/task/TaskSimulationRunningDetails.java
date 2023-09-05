@@ -1,30 +1,42 @@
 package subcomponents.tabs.results.logic.task;
 
 import dto.Dto;
+import dto.entity.DtoEntity;
 import engine.simulation.Simulation;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.TableView;
+import subcomponents.tabs.results.logic.task.population.FillPopulation;
+
+import java.util.Map;
 
 public class TaskSimulationRunningDetails {
     private int simulationId;
     private Simulation simulation;
     private SimpleLongProperty propertyCurrTick;
     private VBox simulationDetails;
-    private Timeline timeline;
+    //private Timeline timeline;
+    private SimpleLongProperty runningSeconds;
+    private TableView<FillPopulation> entityPopulation;
+    private Map<String, SimpleIntegerProperty> propertyMap;
+
 
     public TaskSimulationRunningDetails(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick,
-                                        Timeline timeline,VBox simulationDetails) {
+                                        SimpleLongProperty runningSeconds,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String, SimpleIntegerProperty> propertyMap) {
         this.simulationId = simulationId;
         this.simulation = simulation;
         this.propertyCurrTick = propertyCurrTick;
-        this.timeline = timeline;
+        this.runningSeconds = runningSeconds;
+        this.entityPopulation = entityPopulation;
         this.simulationDetails = simulationDetails;
+        this.propertyMap = propertyMap;
     }
 
     public void runTask(){
@@ -41,7 +53,16 @@ public class TaskSimulationRunningDetails {
 
             // function in Simulation.getDtoDetailByID
             Platform.runLater(() -> {
+                runningSeconds.set(simulation.getSimulationById(simulationId).getRunningSeconds());
                 propertyCurrTick.set(dto.getCurrTicks());
+
+                for(FillPopulation row : entityPopulation.getItems()) {
+                    int listSize = dto.getEntities().get(row.getEntityName()).getPopulationHistoryList().size();
+                    if(listSize > 0) {
+                        Integer newPopulaion = dto.getEntities().get(row.getEntityName()).getPopulationHistoryList().get(listSize - 1);
+                        propertyMap.get(row.getEntityName()).setValue(newPopulaion);
+                    }
+                }
             });
             try {
                 Thread.sleep(200);
@@ -51,7 +72,7 @@ public class TaskSimulationRunningDetails {
         }
         while (status == Status.IN_PROGRESS);
 
-        timeline.stop();
+        //timeline.stop();
 
         if(simulation.getSimulationById(simulationId).getSimulationStatus() == Status.FINISH){
             Platform.runLater(() -> {

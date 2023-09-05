@@ -1,11 +1,13 @@
 package subcomponents.tabs.results;
 
 import dto.Dto;
+import dto.entity.DtoEntity;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,6 +30,9 @@ import subcomponents.tabs.results.logic.task.TaskSimulationResume;
 import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
 import subcomponents.tabs.results.logic.task.TaskSimulationStop;
 import subcomponents.tabs.results.logic.task.population.FillPopulation;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResultsComponentController {
     @FXML
@@ -82,15 +87,21 @@ public class ResultsComponentController {
     private AppController mainController;
     private Timeline runningTime;
     private Integer secondsCount = 1;
+    private Map<String, SimpleIntegerProperty> propertyMap;
+    private TableView<FillPopulation> populationTableView;
+    private TaskSimulationRunningDetails task;
 
 
     public ResultsComponentController(){
         propertyCurrTick = new SimpleLongProperty();
+        propertyMap = new HashMap<>();
+        runningTimeProperty = new SimpleLongProperty();
+        populationTableView = new TableView<>();
     }
     @FXML
     void initialize() {
         currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
-        //runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
+        runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
         entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
         //populationLabel.textProperty().bind(Bindings.format("%,d", population));
@@ -133,7 +144,9 @@ public class ResultsComponentController {
             int index = simulationDetails.getChildren().indexOf(clicked);
             // set curr simulation on the currect simulation
             mainController.getModel().setCurrSimulationId(index+1);
-            //addEntityToTable();
+            this.populationTableView = addEntityToTable();
+            simulationProgressDetails.getChildren().add(populationTableView);
+            task.runTask();
             setPropertyLineChart();
             System.out.println("Label clicked: " + ((Label)clicked.getChildren().get(0)).getText() );
         };
@@ -162,13 +175,12 @@ public class ResultsComponentController {
 
     public void runSimulation() {
         mainController.getModel().runSimulation();
-        runningTime = createTimer();
-        runningTime.setCycleCount(Timeline.INDEFINITE);
-        runningTime.play();
-        simulationProgressDetails.getChildren().add(addEntityToTable());
+//        runningTime = createTimer();
+//        runningTime.setCycleCount(Timeline.INDEFINITE);
+//        runningTime.play();
         new Thread(()->{
-            TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), propertyCurrTick, runningTime, simulationDetails);
-            task.runTask();
+            this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
+                    propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
 
         }).start();
     }
@@ -183,14 +195,15 @@ public class ResultsComponentController {
     @FXML
     void resumeOnclick(ActionEvent event) {
         new Thread(new TaskSimulationResume(
-                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick, runningTime,simulationDetails
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick,
+                runningTimeProperty,simulationDetails, populationTableView, propertyMap
         )).start();
     }
 
     @FXML
     void stopOnClick(ActionEvent event) {
         new Thread(new TaskSimulationStop(
-                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails
+                mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails, populationTableView, propertyMap
         )).start();
     }
 
@@ -228,15 +241,30 @@ public class ResultsComponentController {
     }
 
     public TableView<FillPopulation> addEntityToTable() {
-        TableView<FillPopulation> tableView = new TableView<>();
-        //entityTable = new TableView<FillPopulation>();
-        TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
-        entityName.setCellValueFactory(new PropertyValueFactory<>("entityName"));
-        TableColumn population = new TableColumn<FillPopulation, Integer>("Current Population");
-        population.setCellValueFactory(new PropertyValueFactory<>("population"));
-        tableView.getColumns().add(entityName);
-        tableView.getColumns().add(population);
-        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TableView<FillPopulation> tableView;
+        if(this.populationTableView.getItems().isEmpty()) {
+            tableView = new TableView<>();
+            //entityTable = new TableView<FillPopulation>();
+            TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
+            entityName.setCellValueFactory(new PropertyValueFactory<>("entityName"));
+            TableColumn population = new TableColumn<FillPopulation, Integer>("Current Population");
+            population.setCellValueFactory(new PropertyValueFactory<>("population"));
+            tableView.getColumns().add(entityName);
+            tableView.getColumns().add(population);
+            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+        else {
+            tableView = this.populationTableView;
+            tableView.getItems().clear();
+        }
+        for(DtoEntity currEntityName : mainController.getDtoWorld().getEntities().values()) {
+            FillPopulation row = new FillPopulation(currEntityName.getEntityName());
+            propertyMap.put(currEntityName.getEntityName(), new SimpleIntegerProperty());
+            row.populationProperty().bind(propertyMap.get(currEntityName.getEntityName()));
+            tableView.getItems().add(row);
+
+
+        }
         return tableView;
     }
 

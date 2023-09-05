@@ -36,6 +36,7 @@ public class World {
     public int currTick;
     private boolean isPaused;
     private Object pauseObject;
+    private long runningTime;
 
 
     public World() {
@@ -145,7 +146,7 @@ public class World {
         }
     }
 
-    public void invokeRules() {
+    public void invokeRules() throws InterruptedException {
         final int[] tick = {0};
 
         // get list of valid rules according to tick
@@ -154,8 +155,8 @@ public class World {
 
         // save the start time in seconds
         long startTimeSeconds = System.currentTimeMillis() / 1000;
-
         while (!termination.isStop()) {
+            this.runningTime = System.currentTimeMillis() / 1000 - startTimeSeconds;
             // if simulation is pause
             synchronized (pauseObject) {
                 while (isPaused) {
@@ -214,6 +215,7 @@ public class World {
 
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
+            Thread.sleep(1000);
         }
     }
 
@@ -437,5 +439,9 @@ public class World {
     }
     public void stopByUser(){
         termination.setStoppedByUser(true);
+    }
+
+    public long getRunningTime() {
+        return runningTime;
     }
 }

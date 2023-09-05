@@ -67,7 +67,10 @@ public class SimulationExecution {
             // run all rules
             world.invokeRules();
         }
-        catch (IllegalArgumentException e) {}
+        catch (IllegalArgumentException e) {} catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     // getters
@@ -125,5 +128,9 @@ public class SimulationExecution {
     public void resume() {
             simulationStatus = Status.IN_PROGRESS;
             world.resume();
+    }
+
+    public long getRunningSeconds() {
+        return world.getRunningTime();
     }
 }

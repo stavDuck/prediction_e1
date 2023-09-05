@@ -1,13 +1,15 @@
 package subcomponents.tabs.results.logic.task.population;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class FillPopulation {
     private String entityName;
-    private int population;
+    private SimpleIntegerProperty population;
 
 
-    public FillPopulation(String entityName, int population) {
+    public FillPopulation(String entityName) {
         this.entityName = entityName;
-        this.population = population;
+        this.population = new SimpleIntegerProperty();
     }
 
     public String getEntityName() {
@@ -19,10 +21,14 @@ public class FillPopulation {
     }
 
     public int getPopulation() {
+        return population.get();
+    }
+
+    public SimpleIntegerProperty populationProperty() {
         return population;
     }
 
     public void setPopulation(int population) {
-        this.population = population;
+        this.population.set(population);
     }
 }
