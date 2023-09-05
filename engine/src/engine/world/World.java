@@ -158,7 +158,7 @@ public class World {
         while (!termination.isStop()) {
             // if simulation is pause
             synchronized (pauseObject) {
-                if (isPaused) {
+                while (isPaused) {
                     try {
                         pauseObject.wait();
                     } catch (InterruptedException e) {
