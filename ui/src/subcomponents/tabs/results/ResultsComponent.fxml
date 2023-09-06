@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TreeView?>
@@ -81,7 +80,7 @@
                                     <Label fx:id="runningTimeLabel" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
-                              <Separator prefWidth="200.0" />
+                              <!--<Separator prefWidth="200.0" />-->
                               <GridPane prefHeight="108.0" prefWidth="409.0" VBox.vgrow="ALWAYS">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -120,9 +119,18 @@
                                  <center>
                                     <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                       <tabs>
-                                        <Tab fx:id="populationHistogramTab" text="Population Histogram" />
-                                        <Tab fx:id="consistencyTab" text="Consistency" />
-                                          <Tab fx:id="averageValueTab" text="Average Value" />
+                                        <Tab fx:id="populationHistogramTabComponent" text="Population Histogram">
+                                             <content>
+                                                <fx:include source="histogram/population/PopulationHistogramComponent.fxml" />
+                                             </content></Tab>
+                                        <Tab fx:id="consistencyTabComponent" text="Consistency">
+                                             <content>
+                                                <fx:include source="histogram/consistency/ConsistencyComponent.fxml" />
+                                             </content></Tab>
+                                          <Tab fx:id="averageValueTabComponent" text="Average Value">
+                                             <content>
+                                                <fx:include source="histogram/average/AverageValueComponent.fxml" />
+                                             </content></Tab>
                                       </tabs>
                                     </TabPane>
                                  </center>

@@ -70,7 +70,7 @@ public class TaskSimulationRunningDetails {
                 // Handle the InterruptedException if needed
             }
         }
-        while (status == Status.IN_PROGRESS);
+        while (status == Status.IN_PROGRESS && simulation.getSimulationById(simulationId).isSimulationSelected());
 
         //timeline.stop();
 
