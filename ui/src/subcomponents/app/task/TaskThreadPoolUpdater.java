@@ -1,32 +1,29 @@
 package subcomponents.app.task;
 
 import engine.simulation.Simulation;
-import engine.simulation.execution.Status;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleLongProperty;
+import subcomponents.app.StopTaskObject;
 
 public class TaskThreadPoolUpdater implements Runnable{
-    private boolean isKeepUpdateThreadPoolInfo;
     private final Simulation simulation;
     private final SimpleLongProperty propertyWaitingThreadPool;
     private final SimpleLongProperty propertyRunningThreadPool;
     private final SimpleLongProperty propertyCompletedThreadPool;
+    private StopTaskObject stopThread;
 
-    public TaskThreadPoolUpdater(boolean isKeepUpdateThreadPoolInfo, Simulation simulation,
-                                 SimpleLongProperty propertyWaitingThreadPool,SimpleLongProperty propertyRunningThreadPool,SimpleLongProperty propertyCompletedThreadPool) {
-        this.isKeepUpdateThreadPoolInfo = isKeepUpdateThreadPoolInfo;
+    public TaskThreadPoolUpdater(Simulation simulation, SimpleLongProperty propertyWaitingThreadPool,SimpleLongProperty propertyRunningThreadPool,
+                                 SimpleLongProperty propertyCompletedThreadPool, StopTaskObject stopThread ) {
         this.simulation = simulation;
         this.propertyWaitingThreadPool = propertyWaitingThreadPool;
         this.propertyRunningThreadPool = propertyRunningThreadPool;
         this.propertyCompletedThreadPool = propertyCompletedThreadPool;
-    }
-
-    public void setKeepUpdateThreadPoolInfo(boolean keepUpdateThreadPoolInfo) {
-        isKeepUpdateThreadPoolInfo = keepUpdateThreadPoolInfo;
+        this.stopThread = stopThread;
     }
 
     @Override
     public void run() {
+        System.out.println("TaskThreadPoolUpdater START");
         do{
             int waitingThreads = simulation.getWaitingTreadsNumber();
             int runningThreads = simulation.getRunningThreadsNumber();
@@ -38,13 +35,16 @@ public class TaskThreadPoolUpdater implements Runnable{
                 propertyCompletedThreadPool.set(completedThreads);
             });
 
+            System.out.println(stopThread.isStop());
+
             try {
-                Thread.sleep(400);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 // Handle the InterruptedException if needed
             }
         }
-        while (isKeepUpdateThreadPoolInfo);
-    }
+        while(stopThread.isStop());
 
+        System.out.println("TaskThreadPoolUpdater END");
+    }
 }

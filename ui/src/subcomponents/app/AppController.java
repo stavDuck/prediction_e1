@@ -28,7 +28,7 @@ import java.io.File;
 
 public class AppController {
     private Model model;
-    private boolean isKeepUpdateThreadPoolInfo;
+
     @FXML private ScrollPane detailsTab;
     @FXML private DetailsComponentController detailsTabController;
     @FXML private ScrollPane executionTab;
@@ -68,8 +68,10 @@ public class AppController {
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
 
+    private StopTaskObject stopThreadPool;
+
     public AppController() {
-        isKeepUpdateThreadPoolInfo = false;
+        stopThreadPool = new StopTaskObject();
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
         propertyWaitingThreadPool = new SimpleLongProperty();
@@ -103,8 +105,8 @@ public class AppController {
     @FXML
     void openFileButtonAction(ActionEvent event) {
         // reset value in threadpool - if boolean is true thread pool has already ran
-        if(isKeepUpdateThreadPoolInfo){
-            isKeepUpdateThreadPoolInfo = false;
+        if(stopThreadPool.isStop()){
+            stopThreadPool.setStop(false);
             propertyWaitingThreadPool.set(0);
             propertyRunningThreadPool.set(0);
             propertyCompletedThreadPool.set(0);
@@ -131,9 +133,9 @@ public class AppController {
 
     public void runTaskThreadPool(){
         // create task to update the thread pool information
-        isKeepUpdateThreadPoolInfo = true;
-        new Thread(new TaskThreadPoolUpdater(isKeepUpdateThreadPoolInfo, model.getSimulation(),
-                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool)).start();
+        stopThreadPool.setStop(true);
+        new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
+                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
     }
 
     public void showPopup(String message) {
@@ -152,14 +154,6 @@ public class AppController {
         //need to place the popup
         buttonContainer.setAlignment(Pos.TOP_CENTER);
         popupContent.getChildren().add(buttonContainer); // Add the button container to the VBox
-
-
-        /*HBox popupContent = new HBox(10);
-        popupContent.setStyle("-fx-background-color: white" + ";-fx-border-color: #007bff" + "; -fx-padding: 10;");
-        popupContent.getChildren().addAll(popupLabel, closeButton);
-
-        popup.setAutoHide(true); // Close popup when clicking outside
-        */
         popup.getContent().add(popupContent);
 
         popup.show(primaryStage);

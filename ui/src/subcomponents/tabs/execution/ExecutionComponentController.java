@@ -175,19 +175,19 @@ public class ExecutionComponentController {
     void startButtonAction(ActionEvent event) {
         boolean entityVal, envVal;
         boolean isNewSimulationFailed = false;
+        // if the first time starting simulation with new xml - start thread
+       if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
+           mainController.runTaskThreadPool();
+       }
 
         // Option 1 - click start after loading new file from window 1 - no need to create new simulation
 
         // Option 2 - click start after been in window 3 and already running simulations
         // in this case we need to add new simulation in the manager and update the current ID to new simulation
         try {
-            //if (mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.IN_PROGRESS ||
-            //  mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.FINISH) {
             if (mainController.getModel().getCurrSimulation().getSimulationStatus() != Status.CREATED) {
                 int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
                 mainController.getModel().setCurrSimulationId(currID);
-                mainController.runTaskThreadPool();
-
             }
         }
         catch (RuntimeException e){

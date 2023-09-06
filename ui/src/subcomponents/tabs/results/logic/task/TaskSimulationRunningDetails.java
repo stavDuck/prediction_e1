@@ -47,7 +47,6 @@ public class TaskSimulationRunningDetails {
         //SimulationExecution currSimulation = simulation.getSimulationById(simulationId);
         // get status
         do{
-
             status = simulation.getSimulationById(simulationId).getSimulationStatus();
             Dto dto = simulation.getSimulationById(simulationId).createWorldDto();
 
