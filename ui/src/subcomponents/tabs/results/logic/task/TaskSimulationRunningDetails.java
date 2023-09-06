@@ -41,15 +41,16 @@ public class TaskSimulationRunningDetails {
 
     public void runTask(){
         System.out.println("TaskSimulationDetails START");
-
         Status status;
+        boolean isSelected;
         // Do while + change to funcition that return DTO in Simulation by ID
         //SimulationExecution currSimulation = simulation.getSimulationById(simulationId);
         // get status
         do{
             status = simulation.getSimulationById(simulationId).getSimulationStatus();
             Dto dto = simulation.getSimulationById(simulationId).createWorldDto();
-
+            isSelected = simulation.getSimulationById(simulationId).isSimulationSelected();
+            System.out.println(simulationId + " " + isSelected);
             System.out.println("TaskSimulationDetails> id: " + simulationId);
             System.out.println("TaskSimulationDetails> " + simulation.getSimulationById(simulationId).isSimulationSelected());
 
@@ -73,7 +74,7 @@ public class TaskSimulationRunningDetails {
                 // Handle the InterruptedException if needed
             }
         }
-        while (status == Status.IN_PROGRESS && simulation.getSimulationById(simulationId).isSimulationSelected());
+        while (status == Status.IN_PROGRESS && isSelected);
 
         //timeline.stop();
 

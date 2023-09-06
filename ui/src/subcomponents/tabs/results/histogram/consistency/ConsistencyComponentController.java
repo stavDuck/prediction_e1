@@ -12,5 +12,6 @@ public class ConsistencyComponentController {
     public void presentConsistency(SimulationExecution simulationExecution, String entityName, String propertyName) {
         String text = "Consistency average: \n";
 
+
     }
 }

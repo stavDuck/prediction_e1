@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import subcomponents.app.AppController;
+import subcomponents.app.StopTaskObject;
 import subcomponents.tabs.results.histogram.average.AverageValueComponentController;
 import subcomponents.tabs.results.histogram.consistency.ConsistencyComponentController;
 import subcomponents.tabs.results.histogram.population.PopulationHistogramComponentController;
@@ -98,8 +99,6 @@ public class ResultsComponentController {
     private Map<String, SimpleIntegerProperty> propertyMap;
     private TableView<FillPopulation> populationTableView;
     private TaskSimulationRunningDetails task;
-
-
     public ResultsComponentController(){
         propertyCurrTick = new SimpleLongProperty();
         propertyMap = new HashMap<>();
@@ -163,7 +162,6 @@ public class ResultsComponentController {
                 this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
                         propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
                 task.runTask();
-
 
             }).start();
 

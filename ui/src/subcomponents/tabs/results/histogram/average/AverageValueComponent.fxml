@@ -8,7 +8,7 @@
    <content>
       <BorderPane>
          <center>
-            <TextArea BorderPane.alignment="CENTER" />
+            <TextArea fx:id="averageText" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </content>
