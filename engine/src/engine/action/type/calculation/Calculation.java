@@ -89,7 +89,6 @@ public class Calculation extends AbstractAction {
                 }
                 if((float1 / float2) >= prop.getRange().getFrom() && (float1 / float2) <= prop.getRange().getTo())
                     prop.setVal( float1 / float2);
-                prop.setVal( float1 / float2);
                 break;
         }
         prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());

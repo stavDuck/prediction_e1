@@ -12,6 +12,8 @@ public class SingleSimulationRunner implements Runnable{
     @Override
     public void run() {
         currSimulation.run();
-        currSimulation.setSimulationStatus(Status.FINISH);
+        if(currSimulation.getSimulationStatus() != Status.STOP) {
+            currSimulation.setSimulationStatus(Status.FINISH);
+        }
     }
 }

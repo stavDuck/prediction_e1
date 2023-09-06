@@ -1,7 +1,9 @@
 package subcomponents.app;
 
 import dto.Dto;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import subcomponents.app.task.TaskThreadPoolUpdater;
 import subcomponents.model.Model;
 import subcomponents.tabs.details.DetailsComponentController;
 import subcomponents.tabs.execution.ExecutionComponentController;
@@ -25,6 +28,7 @@ import java.io.File;
 
 public class AppController {
     private Model model;
+    private boolean isKeepUpdateThreadPoolInfo;
     @FXML private ScrollPane detailsTab;
     @FXML private DetailsComponentController detailsTabController;
     @FXML private ScrollPane executionTab;
@@ -43,6 +47,16 @@ public class AppController {
     @FXML
     private Label messageToUser;
     @FXML
+    private Label waitingThreadPoolLabel;
+    private SimpleLongProperty propertyWaitingThreadPool;
+    @FXML
+    private Label runningThreadPoolLabel;
+    private SimpleLongProperty propertyRunningThreadPool;
+    @FXML
+    private Label completedThreadPoolLabel;
+    private SimpleLongProperty propertyCompletedThreadPool;
+
+    @FXML
     private GridPane gridPanelThreadsPool;
     @FXML
     private Tab detailsTabComponent;
@@ -54,6 +68,17 @@ public class AppController {
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
 
+    public AppController() {
+        isKeepUpdateThreadPoolInfo = false;
+        selectedFileProperty = new SimpleStringProperty();
+        isFileSelected = new SimpleBooleanProperty(false);
+        propertyWaitingThreadPool = new SimpleLongProperty();
+        propertyRunningThreadPool = new SimpleLongProperty();
+        propertyCompletedThreadPool = new SimpleLongProperty();
+
+
+    }
+
     @FXML
     public void initialize() {
         if (detailsTabController != null && executionTabController != null && resultTabController != null) {
@@ -62,9 +87,13 @@ public class AppController {
             resultTabController.setMainController(this);
         }
 
-        selectedFileProperty = new SimpleStringProperty();
-        isFileSelected = new SimpleBooleanProperty(false);
         selectedFileName.textProperty().bind(selectedFileProperty);
+        waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
+        runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
+        completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
+        propertyWaitingThreadPool.set(0);
+        propertyRunningThreadPool.set(0);
+        propertyCompletedThreadPool.set(0);
     }
 
     public void setModel(Model model) {
@@ -73,6 +102,14 @@ public class AppController {
 
     @FXML
     void openFileButtonAction(ActionEvent event) {
+        // reset value in threadpool - if boolean is true thread pool has already ran
+        if(isKeepUpdateThreadPoolInfo){
+            isKeepUpdateThreadPoolInfo = false;
+            propertyWaitingThreadPool.set(0);
+            propertyRunningThreadPool.set(0);
+            propertyCompletedThreadPool.set(0);
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select XML file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file", "*.xml"));
@@ -90,6 +127,13 @@ public class AppController {
         showPopup(res);
         detailsTabController.loadDetailsView();
         executionTabController.populateTab();
+    }
+
+    public void runTaskThreadPool(){
+        // create task to update the thread pool information
+        isKeepUpdateThreadPoolInfo = true;
+        new Thread(new TaskThreadPoolUpdater(isKeepUpdateThreadPoolInfo, model.getSimulation(),
+                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool)).start();
     }
 
     public void showPopup(String message) {

@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class SimultionExecutionManager {
     private static int idGenerator = 1; // generate id for every new simulation
     private Map<Integer, SimulationExecution> simulations;
     private ExecutorService executorService;
+    //private ThreadPoolExecutor executorService;
     private int currRunningThreads;
     private boolean isManagerMapEmpty;
 
@@ -59,4 +61,13 @@ public class SimultionExecutionManager {
         simulations.get(id).stopSimulation();
     }
 
+    public int getRunningThreadsNumber(){
+        return ((ThreadPoolExecutor)executorService).getActiveCount();
+    }
+    public int getWaitingTreadsNumber(){
+        return (int)((ThreadPoolExecutor) executorService).getQueue().size();
+    }
+    public int getCompletedThreadsNumber(){
+        return (int)((ThreadPoolExecutor)executorService).getCompletedTaskCount();
+    }
 }

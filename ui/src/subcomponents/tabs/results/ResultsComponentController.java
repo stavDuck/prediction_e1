@@ -101,9 +101,9 @@ public class ResultsComponentController {
     @FXML
     void initialize() {
         currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
+        //runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
+       // entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
-        entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
-        entityNameCategory.setLowerBound(0);
         //populationLabel.textProperty().bind(Bindings.format("%,d", population));
     }
    /* @FXML
@@ -153,7 +153,6 @@ public class ResultsComponentController {
         dynamicVBox.setOnMouseClicked(HBoxClickHandler);
 
         return dynamicVBox;
-
     }
 
    /* public void entityPopulation(Simulation simulation) {
@@ -207,13 +206,17 @@ public class ResultsComponentController {
         )).start();
     }
 
-
     public void setPropertyLineChart(){
         SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
-        if(simulationExecution.getSimulationStatus() == Status.FINISH) {
+        if(simulationExecution.getSimulationStatus() == Status.FINISH || simulationExecution.getSimulationStatus() == Status.STOP) {
             // Clear the chart by removing all data series
             popultionGraph.getData().clear();
             Dto dto = mainController.getModel().getDtoWorld();
+            int maxNumOfPopulationValues = getMaxPopulationListSize(dto.getEntities());
+            int maxNumOfTicks = dto.getCurrTicks();
+
+            entityNameCategory.setTickUnit(maxNumOfPopulationValues/20);
+            ticksNumberCategory.setTickUnit(maxNumOfTicks/20);
 
             for (String entityName : dto.getEntities().keySet()) {
                 //XYChart.Series<Integer, Integer> series = new XYChart.Series<>();
@@ -228,6 +231,17 @@ public class ResultsComponentController {
                 popultionGraph.getData().add(series);
             }
         }
+    }
+
+    private int getMaxPopulationListSize(Map<String, DtoEntity> entities) {
+        int max = -1; // population always above or equal 0
+
+        for(DtoEntity currEntity : entities.values()){
+            if(currEntity.getPopulationHistoryList().size() > max){
+                max = currEntity.getPopulationHistoryList().size();
+            }
+        }
+        return max;
     }
 
     private Timeline createTimer() {
@@ -262,10 +276,7 @@ public class ResultsComponentController {
             propertyMap.put(currEntityName.getEntityName(), new SimpleIntegerProperty());
             row.populationProperty().bind(propertyMap.get(currEntityName.getEntityName()));
             tableView.getItems().add(row);
-
-
         }
         return tableView;
     }
-
 }

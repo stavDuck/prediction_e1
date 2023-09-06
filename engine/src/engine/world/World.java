@@ -215,7 +215,7 @@ public class World {
 
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
-            Thread.sleep(1000);
+            //Thread.sleep(1000);
         }
     }
 

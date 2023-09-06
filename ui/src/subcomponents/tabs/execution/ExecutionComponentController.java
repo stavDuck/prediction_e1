@@ -181,10 +181,13 @@ public class ExecutionComponentController {
         // Option 2 - click start after been in window 3 and already running simulations
         // in this case we need to add new simulation in the manager and update the current ID to new simulation
         try {
-            if (mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.IN_PROGRESS ||
-                    mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.FINISH) {
+            //if (mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.IN_PROGRESS ||
+            //  mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.FINISH) {
+            if (mainController.getModel().getCurrSimulation().getSimulationStatus() != Status.CREATED) {
                 int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
                 mainController.getModel().setCurrSimulationId(currID);
+                mainController.runTaskThreadPool();
+
             }
         }
         catch (RuntimeException e){

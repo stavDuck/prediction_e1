@@ -32,4 +32,13 @@ public class Simulation {
     public void stopSimulationById(int id){
         simulationManager.stopById(id);
     }
+    public int getRunningThreadsNumber(){
+        return simulationManager.getRunningThreadsNumber();
+    }
+    public int getWaitingTreadsNumber(){
+        return simulationManager.getWaitingTreadsNumber();
+    }
+    public int getCompletedThreadsNumber(){
+        return simulationManager.getCompletedThreadsNumber();
+    }
 }
