@@ -6,6 +6,7 @@ import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -25,6 +26,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import subcomponents.app.AppController;
+import subcomponents.tabs.results.histogram.average.AverageValueComponentController;
+import subcomponents.tabs.results.histogram.consistency.ConsistencyComponentController;
+import subcomponents.tabs.results.histogram.population.PopulationHistogramComponentController;
 import subcomponents.tabs.results.logic.task.TaskSimulationPause;
 import subcomponents.tabs.results.logic.task.TaskSimulationResume;
 import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
@@ -72,11 +76,15 @@ public class ResultsComponentController {
     @FXML
     private TreeView<?> histoeamEntityTree;
     @FXML
-    private Tab populationHistogramTab;
+    private ScrollPane populationHistogramComponent;
+    private PopulationHistogramComponentController populationHistogramComponentController;
     @FXML
-    private Tab consistencyTab;
+    private ScrollPane consistencyComponent;
+    private ConsistencyComponentController consistencyComponentController;
+
     @FXML
-    private Tab averageValueTab;
+    private ScrollPane averageValueComponent;
+    private AverageValueComponentController averageValueComponentController;
     @FXML
     private Label entityNameStaticLabel;
     @FXML
@@ -143,10 +151,22 @@ public class ResultsComponentController {
             HBox clicked = (HBox) event.getSource();
             int index = simulationDetails.getChildren().indexOf(clicked);
             // set curr simulation on the currect simulation
+            mainController.getModel().getCurrSimulation().setSimulationSelected(false);
             mainController.getModel().setCurrSimulationId(index+1);
-            this.populationTableView = addEntityToTable();
-            simulationProgressDetails.getChildren().add(populationTableView);
-            task.runTask();
+            mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+            addEntityToTable();
+//            this.populationTableView = addEntityToTable();
+//            if(!(simulationProgressDetails.getChildren().contains(populationTableView))) {
+//                simulationProgressDetails.getChildren().add(populationTableView);
+//            }
+            new Thread(()->{
+                this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
+                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
+                task.runTask();
+
+
+            }).start();
+
             setPropertyLineChart();
             System.out.println("Label clicked: " + ((Label)clicked.getChildren().get(0)).getText() );
         };
@@ -178,11 +198,17 @@ public class ResultsComponentController {
 //        runningTime = createTimer();
 //        runningTime.setCycleCount(Timeline.INDEFINITE);
 //        runningTime.play();
+        mainController.getModel().getCurrSimulation().setSimulationSelected(true);
         new Thread(()->{
-            this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
-                    propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
+                this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
+                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
+            Platform.runLater(() -> {
+                addEntityToTable(); // Update the UI component in the JavaFX Application Thread
+            });
+                task.runTask();
 
-        }).start();
+
+            }).start();
     }
 
     @FXML
@@ -230,42 +256,34 @@ public class ResultsComponentController {
         }
     }
 
-    private Timeline createTimer() {
-        EventHandler<ActionEvent> eventHandler = event -> {
-            secondsCount++;
-            runningTimeLabel.setText(secondsCount.toString());
-        };
-
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), eventHandler);
-        return new Timeline(keyFrame);
-    }
-
-    public TableView<FillPopulation> addEntityToTable() {
-        TableView<FillPopulation> tableView;
+    public void addEntityToTable() {
+        //TableView<FillPopulation> tableView;
         if(this.populationTableView.getItems().isEmpty()) {
-            tableView = new TableView<>();
+            //tableView = new TableView<>();
             //entityTable = new TableView<FillPopulation>();
             TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
             entityName.setCellValueFactory(new PropertyValueFactory<>("entityName"));
             TableColumn population = new TableColumn<FillPopulation, Integer>("Current Population");
             population.setCellValueFactory(new PropertyValueFactory<>("population"));
-            tableView.getColumns().add(entityName);
-            tableView.getColumns().add(population);
-            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            this.populationTableView.getColumns().add(entityName);
+            this.populationTableView.getColumns().add(population);
+            this.populationTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            simulationProgressDetails.getChildren().add(populationTableView);
+
         }
         else {
-            tableView = this.populationTableView;
-            tableView.getItems().clear();
+            //tableView = this.populationTableView;
+            this.populationTableView.getItems().clear();
         }
         for(DtoEntity currEntityName : mainController.getDtoWorld().getEntities().values()) {
             FillPopulation row = new FillPopulation(currEntityName.getEntityName());
             propertyMap.put(currEntityName.getEntityName(), new SimpleIntegerProperty());
             row.populationProperty().bind(propertyMap.get(currEntityName.getEntityName()));
-            tableView.getItems().add(row);
+            this.populationTableView.getItems().add(row);
 
 
         }
-        return tableView;
+        //return tableView;
     }
 
 }

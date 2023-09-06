@@ -21,10 +21,13 @@ public class SimulationExecution {
     private World world;
     private  int id;
     private Status simulationStatus;
+    private boolean isSimulationSelected;
 
 
     // set World information
     public SimulationExecution(String fileName) throws RuntimeException{
+        isSimulationSelected = false;
+
         try {
             //String absolutePath = new File(fileName).getAbsolutePath();
             InputStream inputStream = new FileInputStream(new File(fileName));
@@ -132,5 +135,13 @@ public class SimulationExecution {
 
     public long getRunningSeconds() {
         return world.getRunningTime();
+    }
+
+    public boolean isSimulationSelected() {
+        return isSimulationSelected;
+    }
+
+    public void setSimulationSelected(boolean simulationSelected) {
+        isSimulationSelected = simulationSelected;
     }
 }
