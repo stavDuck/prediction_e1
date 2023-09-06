@@ -35,7 +35,7 @@ public class TaskThreadPoolUpdater implements Runnable{
                 propertyCompletedThreadPool.set(completedThreads);
             });
 
-            System.out.println(stopThread.isStop());
+          //  System.out.println(stopThread.isStop());
 
             try {
                 Thread.sleep(200);

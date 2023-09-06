@@ -50,6 +50,10 @@ public class TaskSimulationRunningDetails {
             status = simulation.getSimulationById(simulationId).getSimulationStatus();
             Dto dto = simulation.getSimulationById(simulationId).createWorldDto();
 
+            System.out.println("TaskSimulationDetails> id: " + simulationId);
+            System.out.println("TaskSimulationDetails> " + simulation.getSimulationById(simulationId).isSimulationSelected());
+
+
             // function in Simulation.getDtoDetailByID
             Platform.runLater(() -> {
                 runningSeconds.set(simulation.getSimulationById(simulationId).getRunningSeconds());

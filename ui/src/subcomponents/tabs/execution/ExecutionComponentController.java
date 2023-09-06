@@ -179,6 +179,9 @@ public class ExecutionComponentController {
        if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
            mainController.runTaskThreadPool();
        }
+       if(mainController.getModel().getCurrSimulation().isSimulationSelected()){
+           mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+       }
 
         // Option 1 - click start after loading new file from window 1 - no need to create new simulation
 
