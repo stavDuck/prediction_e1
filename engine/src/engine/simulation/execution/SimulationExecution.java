@@ -1,7 +1,11 @@
 package engine.simulation.execution;
 
 import dto.Dto;
+import dto.entity.DtoEntity;
+import engine.entity.EntityInstance;
 import engine.property.PropertyInstance;
+import engine.property.tickhistory.TickHistory;
+import engine.property.type.Type;
 import engine.simulation.copyhandler.CopyHandler;
 import engine.validation.WorldValidator;
 import engine.validation.exceptions.XmlValidationException;
@@ -164,5 +168,55 @@ public class SimulationExecution {
 
     public String getErrorStopSimulation(){
         return world.getErrorStopSimulation();
+    }
+
+    public String averageChangesInProperty(String entityName, String propertyName) {
+        double totalSum = 0.0;
+        double tickHistorySum = 0.0;
+        for(EntityInstance entityInstance : world.getInstanceManager().getInstancesByName(entityName)) {
+            PropertyInstance propertyInstance = entityInstance.getPropertyInstanceByName(propertyName);
+            for(TickHistory tickHistory : propertyInstance.getTickHistory()) {
+                tickHistorySum += (tickHistory.getEndTick() - tickHistory.getStartTick());
+            }
+            if(!propertyInstance.getTickHistory().isEmpty())
+                totalSum += (tickHistorySum / propertyInstance.getTickHistory().size());
+            tickHistorySum = 0.0;
+        }
+        if(totalSum == 0.0) {
+            String text = "Property " + propertyName + " value hasn't changed.";
+            return text;
+        }
+
+        else if(!world.getInstanceManager().getInstancesByName(entityName).isEmpty()) {
+            return String.valueOf((totalSum / world.getInstanceManager().getInstancesByName(entityName).size()));
+        }
+        else {
+            String text = "All " + entityName + " entities are dead, no data to present.";
+            return text;
+        }
+    }
+
+    public String averagePropertyValue(String entityName, String propertyName) {
+        Float sum = 0.0f;
+
+        List<EntityInstance> entityInstances = world.getInstanceManager().getInstancesByName(entityName);
+
+        for (EntityInstance entityInstance : entityInstances) {
+            if(entityInstance.getPropertyInstanceByName(propertyName).getType() != Type.FLOAT &&
+                    entityInstance.getPropertyInstanceByName(propertyName).getType() != Type.DECIMAL) {
+                String text = "Property " + propertyName + " Type is not numeric, no data to present.";
+                return text;
+            }
+            sum += (Float) entityInstance.getPropertyInstanceByName(propertyName).getVal();
+        }
+
+        if(entityInstances.isEmpty()) {
+            String text = "All " + entityName + " entities are dead, no data to present.";
+            return text;
+        }
+        else {
+            return String.format("%.2f", sum / entityInstances.size());
+        }
+
     }
 }

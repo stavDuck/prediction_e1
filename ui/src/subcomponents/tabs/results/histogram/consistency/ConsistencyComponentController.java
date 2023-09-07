@@ -12,6 +12,10 @@ public class ConsistencyComponentController {
 
     public void presentConsistency(SimulationExecution simulationExecution, String entityName, String propertyName) {
         String text = "Consistency average: \n";
+
+        String avg = simulationExecution.averageChangesInProperty(entityName, propertyName);
+        text += avg;
+        consistencyText.setText(text);
     }
     public void clearTxt(){
         consistencyText.setText("");
