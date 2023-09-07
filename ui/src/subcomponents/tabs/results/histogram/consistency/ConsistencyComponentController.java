@@ -8,8 +8,8 @@ import javafx.scene.control.TextArea;
 public class ConsistencyComponentController {
 
     @FXML
-    private Label consistencyText;
-
+    //private Label consistencyText;
+    private TextArea consistencyText;
     public void presentConsistency(SimulationExecution simulationExecution, String entityName, String propertyName) {
         String text = "Consistency average: \n";
 

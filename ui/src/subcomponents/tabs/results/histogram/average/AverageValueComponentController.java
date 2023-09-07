@@ -11,7 +11,8 @@ import java.util.List;
 public class AverageValueComponentController {
 
     @FXML
-    private Label averageText;
+    //private Label averageText;
+    private TextArea averageText;
 
     public void presentAveragePropertyValue(SimulationExecution simulationExecution, String entityName, String propertyName) {
 

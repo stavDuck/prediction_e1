@@ -3,6 +3,7 @@ package subcomponents.tabs.results.histogram.entities;
 import engine.simulation.execution.SimulationExecution;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,8 @@ import java.util.Map;
 public class EntitiesHistogramComponentController {
 
     @FXML
-    private Label entitiesText;
-
+    //private Label entitiesText;
+    private TextArea entitiesText;
     public void presentHistogramByEntityAndValue(SimulationExecution simulationExecution, String entityName, String propertyName){
         String text = "";
       /*  Map<Object, Long> countByPropertyValue = simulationExecution.getWorld().getInstanceManager().getInstancesByName(entityName).stream()
