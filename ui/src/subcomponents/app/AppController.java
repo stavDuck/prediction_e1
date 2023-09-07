@@ -189,6 +189,7 @@ public class AppController {
 
         // set view tree with entities
         resultTabController.loadHistoeamEntityTreeView();
+        resultTabController.clearStopInformationError();
     }
 
     public void runSimulation() {

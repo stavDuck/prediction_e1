@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,10 +27,12 @@ public class TaskSimulationRunningDetails {
     private SimpleLongProperty runningSeconds;
     private TableView<FillPopulation> entityPopulation;
     private Map<String, SimpleIntegerProperty> propertyMap;
+    private SimpleStringProperty errorStopSimulation;
 
 
     public TaskSimulationRunningDetails(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick,
-                                        SimpleLongProperty runningSeconds,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String, SimpleIntegerProperty> propertyMap) {
+                                        SimpleLongProperty runningSeconds,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String, SimpleIntegerProperty> propertyMap,
+                                        SimpleStringProperty errorStopSimulation ) {
         this.simulationId = simulationId;
         this.simulation = simulation;
         this.propertyCurrTick = propertyCurrTick;
@@ -37,6 +40,7 @@ public class TaskSimulationRunningDetails {
         this.entityPopulation = entityPopulation;
         this.simulationDetails = simulationDetails;
         this.propertyMap = propertyMap;
+        this.errorStopSimulation = errorStopSimulation;
     }
 
     public void runTask(){
@@ -84,6 +88,12 @@ public class TaskSimulationRunningDetails {
                         .getChildren().get(1));
                 temp.setText(" Finish");
                 temp.setStyle("-fx-text-fill:GREEN");
+            });
+        }
+
+        else if(simulation.getSimulationById(simulationId).getSimulationStatus() == Status.STOP){
+            Platform.runLater(() -> {
+                errorStopSimulation.set(simulation.getSimulationById(simulationId).getErrorStopSimulation());
             });
         }
 

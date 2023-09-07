@@ -22,11 +22,13 @@ public class Dto {
     private Map<String, DtoEnv> envs;
     private DtoGrid grid;
     private int currTicks;
+    private String errorStopSimulation;
 
     public Dto() {
         this.entities = new HashMap<>();
         this.rules = new LinkedHashMap<>();
         this.envs = new HashMap<>();
+        errorStopSimulation = ""; // if no error empty string
     }
 
     //getter
@@ -144,6 +146,14 @@ public class Dto {
 
     public void setCurrTicks(int currTicks) {
         this.currTicks = currTicks;
+    }
+
+    public void setErrorStopSimulation(String errorStopSimulation) {
+        this.errorStopSimulation = errorStopSimulation;
+    }
+
+    public String getErrorStopSimulation() {
+        return errorStopSimulation;
     }
 }
 

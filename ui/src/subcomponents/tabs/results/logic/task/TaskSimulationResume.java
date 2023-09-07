@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -20,13 +21,14 @@ public class TaskSimulationResume implements Runnable{
     private SimpleLongProperty propertyCurrTick;
     private VBox simulationDetails;
     private SimpleLongProperty runningTime;
-
     private TableView<FillPopulation> entityPopulation;
     private Map<String, SimpleIntegerProperty> propertyMap;
+    private SimpleStringProperty errorStopSimulation;
 
 
     public TaskSimulationResume(int simulationId, Simulation simulation, SimpleLongProperty propertyCurrTick,
-                                SimpleLongProperty runningTime,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String, SimpleIntegerProperty> propertyMap) {
+                                SimpleLongProperty runningTime,VBox simulationDetails, TableView<FillPopulation> entityPopulation, Map<String,
+            SimpleIntegerProperty> propertyMap, SimpleStringProperty errorStopSimulation) {
         this.simulationId = simulationId;
         this.simulation = simulation;
         this.propertyCurrTick = propertyCurrTick;
@@ -34,6 +36,7 @@ public class TaskSimulationResume implements Runnable{
         this.simulationDetails = simulationDetails;
         this.entityPopulation = entityPopulation;
         this.propertyMap = propertyMap;
+        this.errorStopSimulation = errorStopSimulation;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class TaskSimulationResume implements Runnable{
             // create new thread for continue updates
             new Thread(() -> {
                 TaskSimulationRunningDetails task = new TaskSimulationRunningDetails(simulationId, simulation, propertyCurrTick, runningTime,
-                        simulationDetails, entityPopulation, propertyMap);
+                        simulationDetails, entityPopulation, propertyMap, errorStopSimulation);
                 task.runTask();
             }).start();
         }

@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -100,8 +101,11 @@ public class ResultsComponentController {
     private Map<String, SimpleIntegerProperty> propertyMap;
     private TableView<FillPopulation> populationTableView;
     private TaskSimulationRunningDetails task;
+    @FXML private Label stopInformationLabel;
+    private SimpleStringProperty propertyStopInformationLabel;
     public ResultsComponentController(){
         propertyCurrTick = new SimpleLongProperty();
+        propertyStopInformationLabel = new SimpleStringProperty();
         propertyMap = new HashMap<>();
         runningTimeProperty = new SimpleLongProperty();
         populationTableView = new TableView<>();
@@ -110,6 +114,7 @@ public class ResultsComponentController {
     void initialize() {
         currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
         runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
+        stopInformationLabel.textProperty().bind(Bindings.format("%s", propertyStopInformationLabel));
         entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
         //populationLabel.textProperty().bind(Bindings.format("%,d", population));
@@ -147,33 +152,37 @@ public class ResultsComponentController {
         HBox dynamicVBox = new HBox();
         dynamicVBox.getChildren().addAll(labelSimulationId,labelSimulationStatus);
 
-        // On click On Simulation
+        ////////////// On click On Simulation //////////////////////
         EventHandler<MouseEvent> HBoxClickHandler = event -> {
             HBox clicked = (HBox) event.getSource();
             int index = simulationDetails.getChildren().indexOf(clicked);
-            // set curr simulation on the currect simulation
-            mainController.getModel().getCurrSimulation().setSimulationSelected(false);
-            mainController.getModel().setCurrSimulationId(index+1);
-            mainController.getModel().getCurrSimulation().setSimulationSelected(true);
-            addEntityToTable();
 
-            // set view tree with entities
-            loadHistoeamEntityTreeView();
+            // if clicked on diffrent simulation show update details
+            if(index + 1 != mainController.getModel().getCurrSimulationId()) {
+                // CLEAR INFORMATION
+                clearAllHistogramTabs();
+                clearStopInformationError();
+                // set curr simulation on the currect simulation
+                mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+                mainController.getModel().setCurrSimulationId(index + 1);
+                mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+                addEntityToTable();
 
-//            this.populationTableView = addEntityToTable();
-//            if(!(simulationProgressDetails.getChildren().contains(populationTableView))) {
-//                simulationProgressDetails.getChildren().add(populationTableView);
-//            }
-            new Thread(()->{
-                this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
-                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
-                task.runTask();
+                // set view tree with entities
+                loadHistoeamEntityTreeView();
 
-            }).start();
+                new Thread(() -> {
+                    this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
+                            propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
+                    task.runTask();
 
-            setPropertyLineChart();
-            System.out.println("Label clicked: " + ((Label)clicked.getChildren().get(0)).getText() );
+                }).start();
+
+                setPropertyLineChart();
+                System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
+            }
         };
+
         dynamicVBox.setOnMouseClicked(HBoxClickHandler);
 
         return dynamicVBox;
@@ -204,7 +213,7 @@ public class ResultsComponentController {
         mainController.getModel().getCurrSimulation().setSimulationSelected(true);
         new Thread(()->{
                 this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
-                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap);
+                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap, propertyStopInformationLabel);
             Platform.runLater(() -> {
                 addEntityToTable(); // Update the UI component in the JavaFX Application Thread
             });
@@ -223,7 +232,7 @@ public class ResultsComponentController {
     void resumeOnclick(ActionEvent event) {
         new Thread(new TaskSimulationResume(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick,
-                runningTimeProperty,simulationDetails, populationTableView, propertyMap
+                runningTimeProperty,simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel
         )).start();
     }
 
@@ -309,9 +318,7 @@ public class ResultsComponentController {
         // clear if tree has iformation
        if(histoeamEntityTree.getRoot() != null && histoeamEntityTree.getRoot().getChildren() != null){
            histoeamEntityTree.getRoot().getChildren().clear();
-           averageValueComponentController.clearTxt();
-           consistencyComponentController.clearTxt();
-           entitiesHistogramComponentController.clearTxt();
+           clearAllHistogramTabs();
        }
 
         // set the tree root
@@ -345,9 +352,7 @@ public class ResultsComponentController {
 
         if(item != null && !item.getValue().equals(ROOT_TITEL)) {
             // Clear the tabs information !!!!!
-            averageValueComponentController.clearTxt();
-            consistencyComponentController.clearTxt();
-            entitiesHistogramComponentController.clearTxt();
+            clearAllHistogramTabs();
 
             // expected to get the title -> ENTITIES_TITLE if click is relevant
             TreeItem<String> ifoType = item.getParent();
@@ -368,5 +373,15 @@ public class ResultsComponentController {
                 System.out.println("Entity: " + entityName + " Property: " + propertyName);
             }
         }
+    }
+
+    public void clearAllHistogramTabs(){
+        averageValueComponentController.clearTxt();
+        consistencyComponentController.clearTxt();
+        entitiesHistogramComponentController.clearTxt();
+    }
+
+    public void clearStopInformationError(){
+        propertyStopInformationLabel.set("");
     }
 }

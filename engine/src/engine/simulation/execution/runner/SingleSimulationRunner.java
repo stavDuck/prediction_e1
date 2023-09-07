@@ -15,5 +15,8 @@ public class SingleSimulationRunner implements Runnable{
         if(currSimulation.getSimulationStatus() != Status.STOP) {
             currSimulation.setSimulationStatus(Status.FINISH);
         }
+        else if(!currSimulation.getErrorStopSimulation().equals("")){
+            currSimulation.setSimulationStatus(Status.STOP);
+        }
     }
 }

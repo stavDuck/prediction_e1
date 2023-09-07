@@ -161,4 +161,8 @@ public class SimulationExecution {
                 .collect(Collectors.toList());
         return sortedEntries;
     }
+
+    public String getErrorStopSimulation(){
+        return world.getErrorStopSimulation();
+    }
 }

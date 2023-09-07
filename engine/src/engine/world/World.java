@@ -37,6 +37,7 @@ public class World {
     private boolean isPaused;
     private Object pauseObject;
     private long runningTime;
+    private String errorStopSimulation;
 
 
     public World() {
@@ -50,6 +51,7 @@ public class World {
         this.currTick = 0;
         isPaused = false;
         pauseObject = new Object();
+        errorStopSimulation = "";
     }
 
     // getters
@@ -155,6 +157,7 @@ public class World {
 
         // save the start time in seconds
         long startTimeSeconds = System.currentTimeMillis() / 1000;
+
         while (!termination.isStop()) {
             this.runningTime = System.currentTimeMillis() / 1000 - startTimeSeconds;
             // if simulation is pause
@@ -189,7 +192,16 @@ public class World {
                 for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
                     // on every entity run all the active rules
                     for (Rule currRule : ActiveRules) {
-                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
+                        try {
+                            currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
+                        }
+                        catch (RuntimeException e){
+                            // set error
+                            errorStopSimulation = "Stopped cause: " + e.getMessage();
+
+                            // stop simulation
+                            termination.setStop(true);
+                        }
                     }
                 }
             }
@@ -307,6 +319,7 @@ public class World {
         else if(termination.isStoppedByUser()){
             termination.setStop(true);
             System.out.println("Simulation is Over !!! , Stopped by user");
+            errorStopSimulation = "Simulation is stopped by user";
 
         }
 
@@ -363,6 +376,7 @@ public class World {
         dto.addTermination(termination.getByTick(), termination.getBySec());
         dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
         dto.setCurrTicks(currTick);
+        dto.setErrorStopSimulation(errorStopSimulation);
 
         return dto;
     }
@@ -443,5 +457,13 @@ public class World {
 
     public long getRunningTime() {
         return runningTime;
+    }
+
+    public String getErrorStopSimulation() {
+        return errorStopSimulation;
+    }
+
+    public void setErrorStopSimulation(String errorStopSimulation) {
+        this.errorStopSimulation = errorStopSimulation;
     }
 }
