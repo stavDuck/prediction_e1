@@ -20,7 +20,7 @@
    <content>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <left>
-            <VBox prefHeight="398.0" prefWidth="182.0" styleClass="border-pane-left" BorderPane.alignment="CENTER">
+            <VBox prefHeight="398.0" prefWidth="165.0" styleClass="border-pane-left" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="112.0" styleClass="simulation-label-bottom" text="Select Simulation" textAlignment="CENTER" />
                   <VBox fx:id="simulationDetails" prefWidth="112.0" />
@@ -114,22 +114,22 @@
                               </LineChart>
                               <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                  <left>
-                                    <TreeView fx:id="histoeamEntityTree" maxWidth="83.0" prefHeight="175.0" prefWidth="83.0" BorderPane.alignment="CENTER" />
+                                    <TreeView fx:id="histoeamEntityTree" maxWidth="95.0" onContextMenuRequested="#selectedEntityProperty" onMouseClicked="#selectedEntityProperty" prefHeight="175.0" prefWidth="95.0" BorderPane.alignment="CENTER" />
                                  </left>
                                  <center>
                                     <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                       <tabs>
-                                        <Tab fx:id="populationHistogramTabComponent" text="Population Histogram">
+                                        <Tab fx:id="entitiesHistogramTab" text="Entities Histogram">
                                              <content>
-                                                <fx:include source="histogram/population/PopulationHistogramComponent.fxml" />
+                                                <fx:include fx:id="entitiesHistogramComponent" source="histogram/entities/EntitiesHistogramComponent.fxml" />
                                              </content></Tab>
-                                        <Tab fx:id="consistencyTabComponent" text="Consistency">
+                                        <Tab fx:id="populationHistogramTab" text="Consistency">
                                              <content>
-                                                <fx:include source="histogram/consistency/ConsistencyComponent.fxml" />
+                                                <fx:include fx:id="consistencyComponent" source="histogram/consistency/ConsistencyComponent.fxml" />
                                              </content></Tab>
-                                          <Tab fx:id="averageValueTabComponent" text="Average Value">
+                                          <Tab fx:id="averageValueComponentTab" text="Average Value">
                                              <content>
-                                                <fx:include source="histogram/average/AverageValueComponent.fxml" />
+                                                <fx:include fx:id="averageValueComponent" source="histogram/average/AverageValueComponent.fxml" />
                                              </content></Tab>
                                       </tabs>
                                     </TabPane>

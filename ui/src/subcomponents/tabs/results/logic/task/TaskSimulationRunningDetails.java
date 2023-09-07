@@ -51,8 +51,8 @@ public class TaskSimulationRunningDetails {
             Dto dto = simulation.getSimulationById(simulationId).createWorldDto();
             isSelected = simulation.getSimulationById(simulationId).isSimulationSelected();
             System.out.println(simulationId + " " + isSelected);
-            System.out.println("TaskSimulationDetails> id: " + simulationId);
-            System.out.println("TaskSimulationDetails> " + simulation.getSimulationById(simulationId).isSimulationSelected());
+          //  System.out.println("TaskSimulationDetails> id: " + simulationId);
+            //System.out.println("TaskSimulationDetails> " + simulation.getSimulationById(simulationId).isSimulationSelected());
 
 
             // function in Simulation.getDtoDetailByID

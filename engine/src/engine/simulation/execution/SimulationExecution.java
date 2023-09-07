@@ -15,6 +15,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SimulationExecution {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
@@ -143,5 +147,18 @@ public class SimulationExecution {
 
     public void setSimulationSelected(boolean simulationSelected) {
         isSimulationSelected = simulationSelected;
+    }
+
+    // used in screen 3 for histogram
+    public List<Map.Entry<Object, Long>> getHistogramByEntityAndValue(String entityName, String propertyName) {
+        Map<Object, Long> countByPropertyValue = world.getInstanceManager().getInstancesByName(entityName).stream()
+                .collect(Collectors.groupingBy(
+                        instance -> instance.getPropertyInstanceByName(propertyName).getVal(),
+                        Collectors.counting()));
+
+        List<Map.Entry<Object, Long>> sortedEntries = countByPropertyValue.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+        return sortedEntries;
     }
 }

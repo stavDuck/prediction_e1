@@ -49,3 +49,16 @@
     -fx-background-color: #4781d5;
     -fx-text-fill: white;
 }
+
+
+.tree-cell {
+    -fx-background-color: transparent; /* Transparent background for unselected cells */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+}
+.tree-cell:selected {
+    -fx-background-color: #4781d5;
+    -fx-text-fill: white;
+}

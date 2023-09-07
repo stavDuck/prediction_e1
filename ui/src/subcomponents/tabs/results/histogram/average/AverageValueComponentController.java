@@ -3,6 +3,7 @@ package subcomponents.tabs.results.histogram.average;
 import engine.entity.EntityInstance;
 import engine.simulation.execution.SimulationExecution;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class AverageValueComponentController {
 
     @FXML
-    private TextArea averageText;
+    private Label averageText;
 
     public void presentAveragePropertyValue(SimulationExecution simulationExecution, String entityName, String propertyName) {
         String text = "Property average value: ";
@@ -29,5 +30,9 @@ public class AverageValueComponentController {
         }
 
         averageText.setText(text);
+    }
+
+    public void clearTxt(){
+        averageText.setText("");
     }
 }

@@ -186,6 +186,9 @@ public class AppController {
         tabPane.getSelectionModel().select(resultTabComponent);
        // resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
         resultTabController.addSimulation(model.getCurrSimulationId(), false);
+
+        // set view tree with entities
+        resultTabController.loadHistoeamEntityTreeView();
     }
 
     public void runSimulation() {

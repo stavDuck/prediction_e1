@@ -2,9 +2,9 @@ package subcomponents.tabs.results;
 
 import dto.Dto;
 import dto.entity.DtoEntity;
+import dto.property.DtoProperty;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -24,22 +24,33 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import subcomponents.app.AppController;
-import subcomponents.app.StopTaskObject;
 import subcomponents.tabs.results.histogram.average.AverageValueComponentController;
 import subcomponents.tabs.results.histogram.consistency.ConsistencyComponentController;
-import subcomponents.tabs.results.histogram.population.PopulationHistogramComponentController;
+import subcomponents.tabs.results.histogram.entities.EntitiesHistogramComponentController;
 import subcomponents.tabs.results.logic.task.TaskSimulationPause;
 import subcomponents.tabs.results.logic.task.TaskSimulationResume;
 import subcomponents.tabs.results.logic.task.TaskSimulationRunningDetails;
 import subcomponents.tabs.results.logic.task.TaskSimulationStop;
 import subcomponents.tabs.results.logic.task.population.FillPopulation;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ResultsComponentController {
+    private final static String ROOT_TITEL = "Choose Entity";
+
+    // tab controllers
+    @FXML private ScrollPane entitiesHistogramComponent;
+    @FXML private EntitiesHistogramComponentController entitiesHistogramComponentController;
+    @FXML private ScrollPane consistencyComponent;
+    @FXML private ConsistencyComponentController consistencyComponentController;
+
+    @FXML private ScrollPane averageValueComponent;
+    @FXML private AverageValueComponentController averageValueComponentController;
+
+
     @FXML
     private VBox simulationDetails;
     @FXML
@@ -75,17 +86,7 @@ public class ResultsComponentController {
     private NumberAxis ticksNumberCategory;
 
     @FXML
-    private TreeView<?> histoeamEntityTree;
-    @FXML
-    private ScrollPane populationHistogramComponent;
-    private PopulationHistogramComponentController populationHistogramComponentController;
-    @FXML
-    private ScrollPane consistencyComponent;
-    private ConsistencyComponentController consistencyComponentController;
-
-    @FXML
-    private ScrollPane averageValueComponent;
-    private AverageValueComponentController averageValueComponentController;
+    private TreeView<String> histoeamEntityTree;
     @FXML
     private Label entityNameStaticLabel;
     @FXML
@@ -146,6 +147,7 @@ public class ResultsComponentController {
         HBox dynamicVBox = new HBox();
         dynamicVBox.getChildren().addAll(labelSimulationId,labelSimulationStatus);
 
+        // On click On Simulation
         EventHandler<MouseEvent> HBoxClickHandler = event -> {
             HBox clicked = (HBox) event.getSource();
             int index = simulationDetails.getChildren().indexOf(clicked);
@@ -154,6 +156,10 @@ public class ResultsComponentController {
             mainController.getModel().setCurrSimulationId(index+1);
             mainController.getModel().getCurrSimulation().setSimulationSelected(true);
             addEntityToTable();
+
+            // set view tree with entities
+            loadHistoeamEntityTreeView();
+
 //            this.populationTableView = addEntityToTable();
 //            if(!(simulationProgressDetails.getChildren().contains(populationTableView))) {
 //                simulationProgressDetails.getChildren().add(populationTableView);
@@ -203,8 +209,6 @@ public class ResultsComponentController {
                 addEntityToTable(); // Update the UI component in the JavaFX Application Thread
             });
                 task.runTask();
-
-
             }).start();
     }
 
@@ -296,5 +300,73 @@ public class ResultsComponentController {
             }
         }
         return max;
+    }
+
+    public void loadHistoeamEntityTreeView(){
+        Dto dto = mainController.getDtoWorld();
+        Collection<DtoEntity> dtoEntityLst = dto.getEntities().values();
+
+        // clear if tree has iformation
+       if(histoeamEntityTree.getRoot() != null && histoeamEntityTree.getRoot().getChildren() != null){
+           histoeamEntityTree.getRoot().getChildren().clear();
+           averageValueComponentController.clearTxt();
+           consistencyComponentController.clearTxt();
+           entitiesHistogramComponentController.clearTxt();
+       }
+
+        // set the tree root
+        TreeItem<String> rootItem = new TreeItem<>(ROOT_TITEL);
+
+        // create view of entities by entities names
+        if(dtoEntityLst!= null && !dtoEntityLst.isEmpty()) {
+            // add leafs by entities names
+            for (DtoEntity curr : dtoEntityLst){
+                TreeItem<String> entityItem = new TreeItem<>(curr.getEntityName());
+
+                // add all properties of the Entity under it
+                for(DtoProperty currProp : curr.getPropertyList()){
+                    entityItem.getChildren().add(new TreeItem<>(currProp.getName()));
+                }
+
+                // add entity to branch entities
+                rootItem.getChildren().add(entityItem);
+            }
+        }
+        // set information in tree
+        histoeamEntityTree.setRoot(rootItem);
+    }
+
+    // for selected tree view
+    @FXML
+    void selectedEntityProperty(MouseEvent event){
+        Dto dto = mainController.getDtoWorld();
+        SimulationExecution currSimulation = mainController.getModel().getCurrSimulation();
+        TreeItem<String> item = histoeamEntityTree.getSelectionModel().getSelectedItem();
+
+        if(item != null && !item.getValue().equals(ROOT_TITEL)) {
+            // Clear the tabs information !!!!!
+            averageValueComponentController.clearTxt();
+            consistencyComponentController.clearTxt();
+            entitiesHistogramComponentController.clearTxt();
+
+            // expected to get the title -> ENTITIES_TITLE if click is relevant
+            TreeItem<String> ifoType = item.getParent();
+
+            // check if click is valid -> only clicking on property
+            if(!ifoType.getValue().equals(ROOT_TITEL) &&
+                    ifoType.getParent().getValue().equals(ROOT_TITEL)){
+                String entityName = item.getParent().getValue();
+                String propertyName = item.getValue();
+
+                // show information only when simulation is finished
+                if(currSimulation.getSimulationStatus() == Status.STOP ||
+                        currSimulation.getSimulationStatus() == Status.FINISH){
+                    entitiesHistogramComponentController.presentHistogramByEntityAndValue(currSimulation, entityName, propertyName);
+                    averageValueComponentController.presentAveragePropertyValue(currSimulation, entityName, propertyName);
+                }
+
+                System.out.println("Entity: " + entityName + " Property: " + propertyName);
+            }
+        }
     }
 }
