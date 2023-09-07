@@ -362,6 +362,7 @@ public class ResultsComponentController {
                 if(currSimulation.getSimulationStatus() == Status.STOP ||
                         currSimulation.getSimulationStatus() == Status.FINISH){
                     entitiesHistogramComponentController.presentHistogramByEntityAndValue(currSimulation, entityName, propertyName);
+                    consistencyComponentController.presentConsistency(currSimulation, entityName, propertyName);
                     averageValueComponentController.presentAveragePropertyValue(currSimulation, entityName, propertyName);
                 }
 

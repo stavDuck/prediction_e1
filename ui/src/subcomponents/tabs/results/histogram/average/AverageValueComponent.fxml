@@ -5,11 +5,11 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.results.histogram.average.AverageValueComponentController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.tabs.results.histogram.average.AverageValueComponentController">
    <content>
       <BorderPane>
          <center>
-            <Label fx:id="averageText" minHeight="100.0" minWidth="100.0" BorderPane.alignment="CENTER">
+            <Label fx:id="averageText" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                <padding>
                   <Insets left="15.0" />
                </padding>

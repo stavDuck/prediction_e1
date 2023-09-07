@@ -117,19 +117,19 @@
                                     <TreeView fx:id="histoeamEntityTree" maxWidth="95.0" onContextMenuRequested="#selectedEntityProperty" onMouseClicked="#selectedEntityProperty" prefHeight="175.0" prefWidth="95.0" BorderPane.alignment="CENTER" />
                                  </left>
                                  <center>
-                                    <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                    <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                       <tabs>
                                         <Tab fx:id="entitiesHistogramTab" text="Entities Histogram">
                                              <content>
-                                                <fx:include fx:id="entitiesHistogramComponent" source="histogram/entities/EntitiesHistogramComponent.fxml" />
+                                                <fx:include fx:id="entitiesHistogramComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="histogram/entities/EntitiesHistogramComponent.fxml" />
                                              </content></Tab>
                                         <Tab fx:id="populationHistogramTab" text="Consistency">
                                              <content>
-                                                <fx:include fx:id="consistencyComponent" source="histogram/consistency/ConsistencyComponent.fxml" />
+                                                <fx:include fx:id="consistencyComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="histogram/consistency/ConsistencyComponent.fxml" />
                                              </content></Tab>
                                           <Tab fx:id="averageValueComponentTab" text="Average Value">
                                              <content>
-                                                <fx:include fx:id="averageValueComponent" source="histogram/average/AverageValueComponent.fxml" />
+                                                <fx:include fx:id="averageValueComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="histogram/average/AverageValueComponent.fxml" />
                                              </content></Tab>
                                       </tabs>
                                     </TabPane>
