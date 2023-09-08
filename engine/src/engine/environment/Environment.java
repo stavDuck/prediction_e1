@@ -24,6 +24,15 @@ public class Environment {
         propertyInstancesMap.get(name).setVal(value);
     }
 
+    public void setEnvOriginalProperty(String name, String value) throws NumberFormatException {
+        propertyInstancesMap.get(name).setOriginalValueFromUser(value);
+    }
+
+    public Object getEnvOriginalProperty(String name, String value) throws NumberFormatException {
+        return propertyInstancesMap.get(name).getOriginalValueFromUser();
+    }
+
+
     public void addEnvProperty(String name, String strType, Range range, String value) {
         propertyInstancesMap.put(name, new PropertyInstance(name, strType, range, value));
     }

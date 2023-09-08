@@ -130,6 +130,10 @@ public class World {
     public void setEnvValueByName(String name, String value) throws NumberFormatException {
         environment.setEnvProperty(name,value);
     }
+    public void setEnvOriginalValueByName(String name, String value) throws NumberFormatException {
+        environment.setEnvOriginalProperty(name,value);
+    }
+
 
     public void addEntityStructure(String entityName, EntityStructure entityStructure) {
         this.entityStructures.put(entityName, entityStructure);
@@ -442,6 +446,10 @@ public class World {
     public void setPopulationForEntity(String entityName, int population) {
         entityStructures.get(entityName).setPopulation(population);
     }
+    public int getPopulationForEntity(String entityName) {
+        return entityStructures.get(entityName).getPopulation();
+    }
+
     public void pause() {
         isPaused = true;
     }

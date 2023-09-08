@@ -385,4 +385,9 @@ public class ResultsComponentController {
     public void clearStopInformationError(){
         propertyStopInformationLabel.set("");
     }
+
+    @FXML
+    public void rerunOnClick(ActionEvent actionEvent) {
+        mainController.moveToExecutionTab();
+    }
 }

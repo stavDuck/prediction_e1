@@ -53,7 +53,7 @@
                                     <Button id="paus-button" fx:id="pauseButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseOnclick" prefHeight="25.0" prefWidth="62.0" text="Pause" />
                                     <Button id="resume-button" fx:id="resumeButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#resumeOnclick" prefHeight="25.0" prefWidth="62.0" text="Resume" />
                                     <Button id="stop-button" fx:id="stopButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopOnClick" prefHeight="25.0" prefWidth="62.0" text="Stop" />
-                                    <Button id="rerun-button" fx:id="rerunButton" alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Rerun" />
+                                    <Button id="rerun-button" fx:id="rerunButton" alignment="CENTER" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#rerunOnClick" prefHeight="25.0" prefWidth="62.0" text="Rerun" />
                                  </children>
                                  <padding>
                                     <Insets right="10.0" />
