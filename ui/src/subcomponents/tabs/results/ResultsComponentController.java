@@ -110,7 +110,8 @@ public class ResultsComponentController {
         propertyStopInformationLabel = new SimpleStringProperty();
         propertyMap = new HashMap<>();
         runningTimeProperty = new SimpleLongProperty();
-        populationTableView = new TableView<>();
+        //simulationProgressDetails = new VBox();
+        //populationTableView = new TableView<>();
     }
     @FXML
     void initialize() {
@@ -119,6 +120,8 @@ public class ResultsComponentController {
         stopInformationLabel.textProperty().bind(Bindings.format("%s", propertyStopInformationLabel));
         //entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
+        initPopulationTable();
+
     }
 
     public void setMainController(AppController mainController) {
@@ -242,7 +245,7 @@ public class ResultsComponentController {
 
     public void addEntityToTable() {
         //TableView<FillPopulation> tableView;
-        if(this.populationTableView.getItems().isEmpty()) {
+        /*if(this.populationTableView.getItems().isEmpty()) {
             //tableView = new TableView<>();
             //entityTable = new TableView<FillPopulation>();
             TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
@@ -257,7 +260,8 @@ public class ResultsComponentController {
         }
         else {
             this.populationTableView.getItems().clear();
-        }
+        }*/
+        this.populationTableView.getItems().clear();
         for(DtoEntity currEntityName : mainController.getDtoWorld().getEntities().values()) {
             FillPopulation row = new FillPopulation(currEntityName.getEntityName());
             propertyMap.put(currEntityName.getEntityName(), new SimpleIntegerProperty());
@@ -350,6 +354,9 @@ public class ResultsComponentController {
         entitiesHistogramComponentController.clearTxt();
     }
 
+    public void clearPopulationList() {
+        this.populationTableView.getItems().clear();
+    }
     public void clearStopInformationError(){
         propertyStopInformationLabel.set("");
     }
@@ -388,5 +395,17 @@ public class ResultsComponentController {
     @FXML
     public void rerunOnClick(ActionEvent actionEvent) {
         mainController.moveToExecutionTab();
+    }
+
+    public void initPopulationTable() {
+        this.populationTableView = new TableView<>();
+        TableColumn entityName = new TableColumn<FillPopulation, String>("Entity Name");
+        entityName.setCellValueFactory(new PropertyValueFactory<>("entityName"));
+        TableColumn population = new TableColumn<FillPopulation, Integer>("Current Population");
+        population.setCellValueFactory(new PropertyValueFactory<>("population"));
+        this.populationTableView.getColumns().add(entityName);
+        this.populationTableView.getColumns().add(population);
+        this.populationTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        simulationProgressDetails.getChildren().add(populationTableView);
     }
 }
