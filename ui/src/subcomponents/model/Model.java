@@ -31,6 +31,8 @@ public class Model {
 
         try {
             tempSimulation = new Simulation();
+            // reset uniq id to 1 every time we laod new xml
+            tempSimulation.resetUniqID();
             tempSimulationID = tempSimulation.createSimulation(fileName);
             isFileLoaded = true;
 

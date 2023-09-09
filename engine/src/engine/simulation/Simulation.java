@@ -41,4 +41,8 @@ public class Simulation {
     public int getCompletedThreadsNumber(){
         return simulationManager.getCompletedThreadsNumber();
     }
+
+    public void resetUniqID(){
+        simulationManager.resetUniqId();
+    }
 }

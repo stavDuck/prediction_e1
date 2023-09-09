@@ -135,6 +135,9 @@ public class AppController {
         resultTabController.clearSelectSimulationList();
         resultTabController.clearPopulationChart();
         resultTabController.setSelectedSimulationId(-1);
+        // NEED TO CLEAR THE TABLE IN SCREEN 3
+
+
 
         showPopup(res);
         detailsTabController.loadDetailsView();
@@ -204,7 +207,7 @@ public class AppController {
         resultTabController.clearSimulationProgressDetails();
         resultTabController.clearTreeViewHistogram();
         resultTabController.clearPopulationChart();
-        resultTabController.clearPopulationTable();
+        //resultTabController.clearPopulationTable();
 
         // set view tree with entities
         resultTabController.loadHistoeamEntityTreeView();

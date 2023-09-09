@@ -70,4 +70,8 @@ public class SimultionExecutionManager {
     public int getCompletedThreadsNumber(){
         return (int)((ThreadPoolExecutor)executorService).getCompletedTaskCount();
     }
+
+    public void resetUniqId(){
+        idGenerator = 1;
+    }
 }
