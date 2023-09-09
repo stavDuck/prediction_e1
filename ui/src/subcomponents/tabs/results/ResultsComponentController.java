@@ -2,6 +2,7 @@ package subcomponents.tabs.results;
 
 import dto.Dto;
 import dto.entity.DtoEntity;
+import dto.entity.Pair;
 import dto.property.DtoProperty;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
@@ -92,6 +93,7 @@ public class ResultsComponentController {
     private Label entityNameStaticLabel;
     @FXML
     private Label populationStaticLabel;
+    @FXML private Label selectedSimulationId;
     private SimpleLongProperty propertyCurrTick;
     private SimpleLongProperty runningTimeProperty;
     private SimpleLongProperty population;
@@ -115,25 +117,9 @@ public class ResultsComponentController {
         currTickLabel.textProperty().bind(Bindings.format("%,d", propertyCurrTick));
         runningTimeLabel.textProperty().bind(Bindings.format("%,d", runningTimeProperty));
         stopInformationLabel.textProperty().bind(Bindings.format("%s", propertyStopInformationLabel));
-        entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
+        //entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
-        //populationLabel.textProperty().bind(Bindings.format("%,d", population));
     }
-   /* @FXML
-    void viewSimulationDetails(MouseEvent event) {
-        Label label = (Label) event.getSource();
-        Pattern pattern = Pattern.compile("\\d+");
-
-        // Create a matcher for the input string
-        Matcher matcher = pattern.matcher(label.getText());
-        // Find the first match
-        if (matcher.find()) {
-            String index = matcher.group(); // Get the matched number as a string
-            int parsedNumber = Integer.parseInt(index); // Convert it to an integer if needed
-            Simulation simulation = mainController.getModel().getSimulationById(parsedNumber);
-            entityPopulation(simulation);
-        }
-    }*/
 
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
@@ -158,13 +144,17 @@ public class ResultsComponentController {
             int index = simulationDetails.getChildren().indexOf(clicked);
 
             // if clicked on diffrent simulation show update details
-            if(index + 1 != mainController.getModel().getCurrSimulationId()) {
+            //if(index + 1 != mainController.getModel().getCurrSimulationId()) {
                 // CLEAR INFORMATION
                 clearAllHistogramTabs();
                 clearStopInformationError();
+                clearSimulationProgressDetails();
+                clearTreeViewHistogram();
+
                 // set curr simulation on the currect simulation
                 mainController.getModel().getCurrSimulation().setSimulationSelected(false);
                 mainController.getModel().setCurrSimulationId(index + 1);
+                setSelectedSimulationId(index+1);
                 mainController.getModel().getCurrSimulation().setSimulationSelected(true);
                 addEntityToTable();
 
@@ -180,7 +170,7 @@ public class ResultsComponentController {
 
                 setPropertyLineChart();
                 System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
-            }
+         //   }
         };
 
         dynamicVBox.setOnMouseClicked(HBoxClickHandler);
@@ -188,28 +178,9 @@ public class ResultsComponentController {
         return dynamicVBox;
     }
 
-   /* public void entityPopulation(Simulation simulation) {
-        int rowIndex = 0;
-        List<DtoEntity> entityList = simulation.
-        //for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
-        for(EntityStructure entity : simulation.getWorld().getEntityStructures().values()) {
-            Label name = new Label(entity.getEntityName());
-            entityGrid.add(entityNameStaticLabel, 0, rowIndex);
-            entityGrid.add(name, 1, rowIndex);
-            entityGrid.add(populationStaticLabel, 2, rowIndex);
-            Label pop = new Label();
-            pop.textProperty().bind(Bindings.format("%,d", population));
-            rowIndex++;
-        }
-
-    }*/
-
 
     public void runSimulation() {
         mainController.getModel().runSimulation();
-//        runningTime = createTimer();
-//        runningTime.setCycleCount(Timeline.INDEFINITE);
-//        runningTime.play();
         mainController.getModel().getCurrSimulation().setSimulationSelected(true);
         new Thread(()->{
                 this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
@@ -249,21 +220,20 @@ public class ResultsComponentController {
             // Clear the chart by removing all data series
             popultionGraph.getData().clear();
             Dto dto = mainController.getModel().getDtoWorld();
-            int maxNumOfPopulationValues = getMaxPopulationListSize(dto.getEntities());
-            int maxNumOfTicks = dto.getCurrTicks();
+           // int maxNumOfPopulationValues = getMaxPopulationListSize(dto.getEntities());
+          //  int maxNumOfTicks = dto.getCurrTicks();
 
-            entityNameCategory.setTickUnit(maxNumOfPopulationValues/20);
-            ticksNumberCategory.setTickUnit(maxNumOfTicks/20);
+           // entityNameCategory.setTickUnit(maxNumOfPopulationValues/20);
+            //ticksNumberCategory.setTickUnit(maxNumOfTicks/20);
 
             for (String entityName : dto.getEntities().keySet()) {
                 //XYChart.Series<Integer, Integer> series = new XYChart.Series<>();
                 XYChart.Series series = new XYChart.Series();
                 series.setName(entityName);
-                int index = 0;
 
-                for (Integer amount : dto.getEntities().get(entityName).getPopulationHistoryList()) {
-                    series.getData().add(new XYChart.Data(index + 1, amount));
-                    index++;
+
+                for (Pair currPair : dto.getEntities().get(entityName).getPopulationHistoryList()) {
+                    series.getData().add(new XYChart.Data(currPair.getTickNum(), currPair.getPopValue()));
                 }
                 popultionGraph.getData().add(series);
             }
@@ -286,7 +256,6 @@ public class ResultsComponentController {
 
         }
         else {
-            //tableView = this.populationTableView;
             this.populationTableView.getItems().clear();
         }
         for(DtoEntity currEntityName : mainController.getDtoWorld().getEntities().values()) {
@@ -297,7 +266,6 @@ public class ResultsComponentController {
 
 
         }
-        //return tableView;
     }
 
     private int getMaxPopulationListSize(Map<String, DtoEntity> entities) {
@@ -384,5 +352,36 @@ public class ResultsComponentController {
 
     public void clearStopInformationError(){
         propertyStopInformationLabel.set("");
+    }
+
+    public void clearSelectSimulationList(){
+        simulationDetails.getChildren().clear();
+    }
+    public void clearSimulationProgressDetails(){
+       propertyCurrTick.setValue(0);
+       runningTimeProperty.setValue(0);
+    }
+    public void clearTreeViewHistogram() {
+        if(histoeamEntityTree.getRoot()!= null &&
+                histoeamEntityTree.getRoot().getChildren() != null) {
+            histoeamEntityTree.getRoot().getChildren().clear();
+        }
+    }
+
+    public void clearPopulationChart(){
+        if(popultionGraph.getData() != null) {
+            popultionGraph.getData().clear();
+        }
+    }
+    public void clearPopulationTable(){
+        this.populationTableView.getItems().clear();
+    }
+    public void setSelectedSimulationId(int index){
+            if(index != -1) {
+                selectedSimulationId.setText("Selected Simulation: " + index);
+            }
+            else{
+                selectedSimulationId.setText("Selected Simulation: ");
+            }
     }
 }

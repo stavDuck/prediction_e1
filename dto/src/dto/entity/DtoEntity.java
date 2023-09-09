@@ -10,9 +10,9 @@ public class DtoEntity {
     private String entityName;
     private int population;
     private List<DtoProperty> propertyList;
-    private List<Integer> populationHistoryList;
+    private List<Pair> populationHistoryList;
 
-    public DtoEntity(String entityName, int population, List<Integer> populationHistoryList) {
+    public DtoEntity(String entityName, int population, List<Pair> populationHistoryList) {
         this.entityName = entityName;
         this.population = population;
         this.propertyList = new ArrayList<>();
@@ -51,11 +51,11 @@ public class DtoEntity {
         propertyList.add(new DtoProperty(propertyName, propertyType, range, isInitRandom));
     }
 
-    public List<Integer> getPopulationHistoryList() {
+    public List<Pair> getPopulationHistoryList() {
         return populationHistoryList;
     }
 
-    public void setPopulationHistoryList(List<Integer> populationHistoryList) {
+    public void setPopulationHistoryList(List<Pair> populationHistoryList) {
         this.populationHistoryList = populationHistoryList;
     }
 }

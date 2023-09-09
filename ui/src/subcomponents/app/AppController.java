@@ -126,6 +126,16 @@ public class AppController {
 
         String res = model.loadXmlFile(absolutePath);
         //messageToUser.setText(res.isEmpty() ? "Successful" : res);
+
+        // clear !!
+        resultTabController.clearAllHistogramTabs();
+        resultTabController.clearStopInformationError();
+        resultTabController.clearSimulationProgressDetails();
+        resultTabController.clearTreeViewHistogram();
+        resultTabController.clearSelectSimulationList();
+        resultTabController.clearPopulationChart();
+        resultTabController.setSelectedSimulationId(-1);
+
         showPopup(res);
         detailsTabController.loadDetailsView();
         executionTabController.populateTab();
@@ -186,6 +196,15 @@ public class AppController {
         tabPane.getSelectionModel().select(resultTabComponent);
        // resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
         resultTabController.addSimulation(model.getCurrSimulationId(), false);
+        resultTabController.setSelectedSimulationId(model.getCurrSimulationId());
+
+        // Clear !!
+        resultTabController.clearAllHistogramTabs();
+        resultTabController.clearStopInformationError();
+        resultTabController.clearSimulationProgressDetails();
+        resultTabController.clearTreeViewHistogram();
+        resultTabController.clearPopulationChart();
+        resultTabController.clearPopulationTable();
 
         // set view tree with entities
         resultTabController.loadHistoeamEntityTreeView();

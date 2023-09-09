@@ -67,7 +67,7 @@ public class TaskSimulationRunningDetails {
                 for(FillPopulation row : entityPopulation.getItems()) {
                     int listSize = dto.getEntities().get(row.getEntityName()).getPopulationHistoryList().size();
                     if(listSize > 0) {
-                        Integer newPopulaion = dto.getEntities().get(row.getEntityName()).getPopulationHistoryList().get(listSize - 1);
+                        Integer newPopulaion = dto.getEntities().get(row.getEntityName()).getPopulationHistoryList().get(listSize - 1).getPopValue();
                         propertyMap.get(row.getEntityName()).setValue(newPopulaion);
                     }
                 }

@@ -1,6 +1,7 @@
 package dto;
 
 import dto.entity.DtoEntity;
+import dto.entity.Pair;
 import dto.env.DtoEnv;
 import dto.grid.DtoGrid;
 import dto.property.DtoProperty;
@@ -47,7 +48,7 @@ public class Dto {
     public Map<String, DtoEnv> getEnvs(){return envs;}
     public DtoTermination getTermination(){return termination;}
 
-    public void addEntity(String entityName, int entityPopulation, List<Integer> populationHistoryList) {
+    public void addEntity(String entityName, int entityPopulation, List<Pair> populationHistoryList) {
         entities.put(entityName, new DtoEntity(entityName, entityPopulation, populationHistoryList));
     }
 

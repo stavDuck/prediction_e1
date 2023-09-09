@@ -1,6 +1,7 @@
 package engine.world;
 
 import dto.Dto;
+import dto.entity.Pair;
 import dto.grid.DtoGrid;
 import dto.rule.DtoRule;
 import engine.Position;
@@ -176,9 +177,15 @@ public class World {
 
             // save the population of all entities
             for (String currEntityName : instanceManager.getAllInstances().keySet()) {
-                // go over every entity and save the curr population
-                entityStructures.get(currEntityName).addToPopulationHistoryList(
-                        instanceManager.getAllInstances().get(currEntityName).size());
+                // go over every entity and save the curr population - if the last value is the same don't add new pair
+                int popHistorySize = entityStructures.get(currEntityName).getPopulationHistoryList().size();
+
+                if(popHistorySize == 0 || entityStructures.get(currEntityName).getPopulationHistoryList().get(popHistorySize-1).getPopValue() !=
+                        instanceManager.getAllInstances().get(currEntityName).size()){
+
+                    entityStructures.get(currEntityName).addToPopulationHistoryList(
+                          currTick, instanceManager.getAllInstances().get(currEntityName).size());
+                }
             }
 
 
@@ -228,6 +235,12 @@ public class World {
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
             //Thread.sleep(1000);
+        }
+
+        // save the last value and the last tick
+        for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+            entityStructures.get(currEntityName).addToPopulationHistoryList(
+                    currTick, instanceManager.getAllInstances().get(currEntityName).size());
         }
     }
 
@@ -341,7 +354,10 @@ public class World {
     public Dto createDto() {
         Dto dto = new Dto();
         for(EntityStructure entityStructure : entityStructures.values()) {
-            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), entityStructure.getPopulationHistoryList());
+            // create populationHistory
+            List<Pair> popHistoryDto = getPopHistoryList(entityStructure.getPopulationHistoryList());
+
+            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), popHistoryDto);
             for(PropertyStructure propertyStructure : entityStructure.getEntityPropMap().values()) {
                 if(propertyStructure.getRange() != null) {
                     dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),
@@ -379,6 +395,14 @@ public class World {
         dto.setErrorStopSimulation(errorStopSimulation);
 
         return dto;
+    }
+
+    private List<Pair> getPopHistoryList(List<engine.entity.Pair> populationHistoryList) {
+        List<Pair> res = new ArrayList<>();
+        for (engine.entity.Pair currPair : populationHistoryList){
+            res.add(new Pair(currPair.getTickNum(), currPair.getPopValue()));
+        }
+        return res;
     }
 
     public void addActionToRuleDto(Dto dto, String ruleName, AbstractAction action){
