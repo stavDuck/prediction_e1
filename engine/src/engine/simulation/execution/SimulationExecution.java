@@ -1,5 +1,6 @@
 package engine.simulation.execution;
 
+import com.sun.corba.se.spi.ior.ObjectKey;
 import dto.Dto;
 import dto.entity.DtoEntity;
 import engine.entity.EntityInstance;
@@ -110,8 +111,17 @@ public class SimulationExecution {
         world.setPopulationForEntity(entityName, population);
     }
 
+    public int getPopulationForEntity(String entityName) {
+        return world.getPopulationForEntity(entityName);
+    }
+
+
     public void setEnvVariable(String envVariableName, String value) throws NumberFormatException {
         world.setEnvValueByName(envVariableName, value);
+    }
+
+    public void setEnvOriginalVariable(String envVariableName, String value) throws NumberFormatException {
+        world.setEnvOriginalValueByName(envVariableName, value);
     }
 
     public PropertyInstance getEnvPropertyInstance(String envPropName) {

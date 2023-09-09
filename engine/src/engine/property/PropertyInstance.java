@@ -8,6 +8,7 @@ import java.util.List;
 
 public class PropertyInstance extends Property {
     private Object val;
+    private Object originalValueFromUser;
     private boolean isUserSetValue;
     private List<TickHistory> tickHistory;
     // doing create new instance for new entity
@@ -32,6 +33,10 @@ public class PropertyInstance extends Property {
     public void setVal(Object value) {
         this.val = value;
     }
+
+    public void setOriginalValueFromUser(Object value) {
+        this.originalValueFromUser = value;
+    }
     public void setVal(String value) throws NumberFormatException {
        try {
            switch (type) {
@@ -51,6 +56,31 @@ public class PropertyInstance extends Property {
        catch (NumberFormatException e) {
            throw new NumberFormatException();
        }
+    }
+
+    public void setOriginalValueFromUser(String value) throws NumberFormatException {
+        try {
+            switch (type) {
+                case DECIMAL:
+                    originalValueFromUser = Integer.parseInt(value);
+                    break;
+                case FLOAT:
+                    originalValueFromUser = Float.parseFloat(value);
+                    break;
+                case BOOLEAN:
+                    originalValueFromUser = Boolean.parseBoolean(value); //maybe need to add exception
+                    break;
+                case STRING:
+                    originalValueFromUser = value;
+            }
+        }
+        catch (NumberFormatException e) {
+            throw new NumberFormatException();
+        }
+    }
+
+    public Object getOriginalValueFromUser() {
+        return originalValueFromUser;
     }
 
     public void printVal(Type type){

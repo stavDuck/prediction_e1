@@ -384,4 +384,9 @@ public class ResultsComponentController {
                 selectedSimulationId.setText("Selected Simulation: ");
             }
     }
+
+    @FXML
+    public void rerunOnClick(ActionEvent actionEvent) {
+        mainController.moveToExecutionTab();
+    }
 }

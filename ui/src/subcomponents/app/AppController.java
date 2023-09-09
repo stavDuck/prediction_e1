@@ -218,4 +218,9 @@ public class AppController {
     public String getCurrLoadedFileName(){
         return selectedFileProperty.get();
     }
+
+    public void moveToExecutionTab() {
+        tabPane.getSelectionModel().select(executionTabComponent);
+        executionTabController.populateTabFromRerunSimulation();
+    }
 }

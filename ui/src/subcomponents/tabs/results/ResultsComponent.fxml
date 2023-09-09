@@ -24,11 +24,7 @@
             <VBox prefHeight="398.0" prefWidth="165.0" styleClass="border-pane-left" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefWidth="112.0" styleClass="simulation-label-bottom" text="Select Simulation" textAlignment="CENTER" />
-                  <VBox id="simulationList" fx:id="simulationDetails" prefWidth="112.0">
-                     <styleClass>
-                        <String fx:value="selected-label" />
-                        <String fx:value="unselected-label" />
-                     </styleClass></VBox>
+                  <VBox fx:id="simulationDetails" prefWidth="112.0" />
                </children>
             </VBox>
          </left>
@@ -59,7 +55,7 @@
                                     <Button id="paus-button" fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pauseOnclick" prefHeight="25.0" prefWidth="62.0" text="Pause" />
                                     <Button id="resume-button" fx:id="resumeButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#resumeOnclick" prefHeight="25.0" prefWidth="62.0" text="Resume" />
                                     <Button id="stop-button" fx:id="stopButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stopOnClick" prefHeight="25.0" prefWidth="62.0" text="Stop" />
-                                    <Button id="rerun-button" fx:id="rerunButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Rerun" />
+                                    <Button id="rerun-button" fx:id="rerunButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#rerunOnClick" prefHeight="25.0" prefWidth="62.0" text="Rerun" />
                                  </children>
                                  <padding>
                                     <Insets right="10.0" />
