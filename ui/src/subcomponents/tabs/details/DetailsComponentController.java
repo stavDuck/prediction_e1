@@ -78,6 +78,17 @@ public class DetailsComponentController {
         Collection<DtoRule> dtoRuleLst = dto.getRules().values();
         DtoTermination dtoTermination = dto.getTermination();
 
+        // clear if already exist in open new file
+        if (treeViewInformation.getRoot() != null &&
+                treeViewInformation.getRoot().getChildren() != null){
+            treeViewInformation.getRoot().getChildren().clear();
+        }
+        if(informationDetailsBody.getChildren() != null){
+            informationDetailsBody.getChildren().clear();
+            informationDetailsTitle.setText("");
+        }
+
+
         // set the tree root
         TreeItem<String> rootItem = new TreeItem<>("Simulation's Information");
 

@@ -1,3 +1,7 @@
+#stop-Information{
+    -fx-text-fill: #5f0202;
+    -fx-font-weight: bold;
+}
 .panel-border{
     -fx-border-color: BLACK;
 }
@@ -44,3 +48,23 @@
     -fx-font-size: 12px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
 }
+
+.simulation-selected:selected {
+    -fx-background-color: #4781d5;
+    -fx-text-fill: white;
+}
+
+
+.tree-cell {
+    -fx-background-color: transparent; /* Transparent background for unselected cells */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+}
+.tree-cell:selected {
+    -fx-background-color: #4781d5;
+    -fx-text-fill: white;
+}
+
+

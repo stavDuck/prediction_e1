@@ -1,9 +1,11 @@
 package subcomponents.tabs.execution;
+import com.sun.corba.se.spi.ior.ObjectKey;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
 import dto.range.DtoRange;
 import engine.entity.EntityStructure;
 import engine.property.PropertyInstance;
+import engine.simulation.execution.Status;
 import engine.value.generator.ValueGeneratorFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -69,6 +71,8 @@ public class ExecutionComponentController {
     }
 
     public void populateTab() {
+        entitiesVbox.getChildren().clear();
+        envVariablesVbox.getChildren().clear();
         populateEntityNames();
         populateEnvVariables();
     }
@@ -171,19 +175,44 @@ public class ExecutionComponentController {
     @FXML
     void startButtonAction(ActionEvent event) {
         boolean entityVal, envVal;
-        entityVal = validateEntityPopulation();
-        envVal = verifyEnvVariable();
-        if(entityVal && envVal) {
-            mainController.moveToResultsTab();
+        boolean isNewSimulationFailed = false;
+        // if the first time starting simulation with new xml - start thread
+       if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
+           mainController.runTaskThreadPool();
+       }
+       if(mainController.getModel().getCurrSimulation().isSimulationSelected()){
+           mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+       }
+
+        // Option 1 - click start after loading new file from window 1 - no need to create new simulation
+
+        // Option 2 - click start after been in window 3 and already running simulations
+        // in this case we need to add new simulation in the manager and update the current ID to new simulation
+        try {
+            if (mainController.getModel().getCurrSimulation().getSimulationStatus() != Status.CREATED) {
+                int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
+                mainController.getModel().setCurrSimulationId(currID);
+            }
         }
-        mainController.runSimulation();
+        catch (RuntimeException e){
+            isNewSimulationFailed = true;
+        }
+
+        if(!isNewSimulationFailed) {
+            entityVal = validateEntityPopulation();
+            envVal = verifyEnvVariable();
+            if (entityVal && envVal) {
+                mainController.moveToResultsTab();
+            }
+            mainController.runSimulation();
+        }
     }
 
     public boolean validateEntityPopulation() {
         boolean res = true;
         int sum = 0;
         int population;
-        int limit = mainController.getModel().getSimulation().getWorld().getGridCols() * mainController.getModel().getSimulation().getWorld().getGridRows();
+        int limit = mainController.getModel().getDtoWorld().getGrid().getCols() * mainController.getModel().getDtoWorld().getGrid().getRows();
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
@@ -214,12 +243,12 @@ public class ExecutionComponentController {
     public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
             int pop = Integer.parseInt(population);
-            mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, pop);
+            mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, pop);
             return pop;
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
-                mainController.getModel().getSimulation().getWorld().setPopulationForEntity(entityName, 0);
+                mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, 0);
                 return 0;
             }
             else {
@@ -257,7 +286,9 @@ public class ExecutionComponentController {
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                 }
                                 else if(type.contains("string")) {
-                                    mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, ((TextField) innerNode).getText());
+                                    mainController.getModel().getCurrSimulation().setEnvVariable(envName, ((TextField) innerNode).getText());
+                                    mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, ((TextField) innerNode).getText());
+
                                 }
                                 valid = true;
                             }
@@ -291,12 +322,16 @@ public class ExecutionComponentController {
                         //if the checkbox is checked and value should be chosen in the radio button
                         if (checked && type.equalsIgnoreCase("boolean")) {
                             if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected()) {
-                                mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, TRUE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, TRUE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, TRUE_RADIO_BUTTON);
+
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
 
                             } else if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected()) {
-                                mainController.getModel().getSimulation().getWorld().setEnvValueByName(envName, FALSE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, FALSE_RADIO_BUTTON);
+                                mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, FALSE_RADIO_BUTTON);
+
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
                             } else {//in case user didn't select any button
@@ -327,8 +362,8 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
-        for(PropertyInstance propertyInstance :  mainController.getModel().getSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
-            System.out.println(mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
+        for(PropertyInstance propertyInstance :  mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+            System.out.println(mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
 
         }
         return valid;
@@ -336,7 +371,10 @@ public class ExecutionComponentController {
 
     public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
         try {
-            mainController.getModel().getSimulation().getWorld().setEnvValueByName(envVarName, value);
+            mainController.getModel().getCurrSimulation().setEnvVariable(envVarName, value);
+            mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envVarName, value);
+
+            //mainController.getModel().getSimulation().getWorld().setEnvValueByName(envVarName, value);
         }
         catch (NumberFormatException e) {
             if(value.isEmpty()) {
@@ -360,24 +398,88 @@ public class ExecutionComponentController {
 
 
     public void generateFloat(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         if (currProp.getRange() != null) {
-            currProp.setVal(ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
-                    currProp.getRange().getTo()).generateValue());
+            Object random = ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
+                    currProp.getRange().getTo()).generateValue();
+//            currProp.setVal(ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
+//                    currProp.getRange().getTo()).generateValue());
+
+            currProp.setVal(random);
+            currProp.setOriginalValueFromUser(random);
+
         }
         else {
-            currProp.setVal(ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f));
+            Object random = ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f);
+            currProp.setVal(random);
+            currProp.setOriginalValueFromUser(random);
         }
     }
 
     public void generateBoolean(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
-        currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
+        //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        Object random = ValueGeneratorFactory.createRandomBoolean().generateValue();
+        //currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
+        currProp.setVal(random);
+        currProp.setOriginalValueFromUser(random);
+
     }
 
     public void generateString(String envPropName) {
-        PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
-        currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
+        PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
+        //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
+        //currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
+        Object random = ValueGeneratorFactory.createRandomString().generateValue();
+        currProp.setVal(random);
+        currProp.setOriginalValueFromUser(random);
 
+    }
+
+    public void populateTabFromRerunSimulation() {
+        setOriginalEntityPopulation();
+        setOriginalEnvVariable();
+    }
+
+    public void setOriginalEntityPopulation() {
+        int population;
+        for (Node node : entitiesVbox.getChildren()) {
+            if (node instanceof VBox) {
+                VBox vBox = (VBox) node;
+                for (Node innerNode : vBox.getChildren()) {
+                    if (innerNode instanceof TextField) {
+                        ((TextField)innerNode).clear();
+                        population = mainController.getModel().getCurrSimulation().getPopulationForEntity(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText());
+                        ((TextField) innerNode).setText(String.valueOf(mainController.getModel().getCurrSimulation().getPopulationForEntity(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText())));
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void setOriginalEnvVariable() {
+        String envName = "";
+        for (Node node : envVariablesVbox.getChildren()) {
+            if (node instanceof VBox) {
+                VBox vBox = (VBox) node;
+                for (Node innerNode : vBox.getChildren()) {
+                    if (innerNode instanceof CheckBox) {
+                        envName = ((CheckBox) vBox.getChildren().get(ENVIRONMENT_VBOX_CHECKBOX_INDEX)).getText();
+                        ((CheckBox) innerNode).setSelected(true);
+                    } else if (innerNode instanceof TextField) {
+                        ((TextField) innerNode).clear();
+                        ((TextField) innerNode).setText(String.valueOf(mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envName).getOriginalValueFromUser()));
+
+                    } else if (innerNode instanceof RadioButton) {
+                        String choice = String.valueOf(mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envName).getOriginalValueFromUser());
+                        if (choice.equals("true"))
+                            ((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).setSelected(true);
+                        else
+                            ((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).setSelected(true);
+                    }
+                }
+            }
+        }
     }
 }

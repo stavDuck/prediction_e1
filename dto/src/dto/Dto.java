@@ -1,6 +1,7 @@
 package dto;
 
 import dto.entity.DtoEntity;
+import dto.entity.Pair;
 import dto.env.DtoEnv;
 import dto.grid.DtoGrid;
 import dto.property.DtoProperty;
@@ -21,11 +22,14 @@ public class Dto {
     private DtoTermination termination;
     private Map<String, DtoEnv> envs;
     private DtoGrid grid;
+    private int currTicks;
+    private String errorStopSimulation;
 
     public Dto() {
         this.entities = new HashMap<>();
         this.rules = new LinkedHashMap<>();
         this.envs = new HashMap<>();
+        errorStopSimulation = ""; // if no error empty string
     }
 
     //getter
@@ -44,7 +48,7 @@ public class Dto {
     public Map<String, DtoEnv> getEnvs(){return envs;}
     public DtoTermination getTermination(){return termination;}
 
-    public void addEntity(String entityName, int entityPopulation, List<Integer> populationHistoryList) {
+    public void addEntity(String entityName, int entityPopulation, List<Pair> populationHistoryList) {
         entities.put(entityName, new DtoEntity(entityName, entityPopulation, populationHistoryList));
     }
 
@@ -137,7 +141,20 @@ public class Dto {
         termination.printTermination();
     }
 
+    public int getCurrTicks() {
+        return currTicks;
+    }
 
+    public void setCurrTicks(int currTicks) {
+        this.currTicks = currTicks;
+    }
 
+    public void setErrorStopSimulation(String errorStopSimulation) {
+        this.errorStopSimulation = errorStopSimulation;
+    }
+
+    public String getErrorStopSimulation() {
+        return errorStopSimulation;
+    }
 }
 

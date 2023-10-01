@@ -48,8 +48,10 @@ public class IncreaseAction extends AbstractAction {
                 Integer int1 = Type.DECIMAL.convert(propVal);
                 Integer int2 = Type.DECIMAL.convert(increaseVal);
                 //check that the increase stays in range
-                if((int1 + int2) >= prop.getRange().getFrom() && (int1 + int2) <= prop.getRange().getTo())
-                    prop.setVal( int1 + int2);
+                if((int1 + int2) >= prop.getRange().getFrom() && (int1 + int2) <= prop.getRange().getTo()) {
+                    prop.setVal(int1 + int2);
+                    prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+                }
                 break;
             case FLOAT:
                 Float float1 = Type.FLOAT.convert(propVal);
@@ -60,11 +62,12 @@ public class IncreaseAction extends AbstractAction {
                 else {
                     float2 = Type.FLOAT.convert(increaseVal);
                 }
-                if(((float1 + float2) >= prop.getRange().getFrom()) && ((float1 + float2) <= prop.getRange().getTo()))
-                    prop.setVal( float1 + float2);
+                if(((float1 + float2) >= prop.getRange().getFrom()) && ((float1 + float2) <= prop.getRange().getTo())) {
+                    prop.setVal(float1 + float2);
+                    prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
+                }
                 break;
         }
-        prop.setNewTickHistory(prop.getLastEndTick(), context.getCurrTick());
     }
 
     public String getProperty() {

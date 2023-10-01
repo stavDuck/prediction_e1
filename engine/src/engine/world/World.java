@@ -1,6 +1,7 @@
 package engine.world;
 
 import dto.Dto;
+import dto.entity.Pair;
 import dto.grid.DtoGrid;
 import dto.rule.DtoRule;
 import engine.Position;
@@ -34,6 +35,11 @@ public class World {
     private Grid grid;
     private int threadCount;
     public int currTick;
+    private boolean isPaused;
+    private Object pauseObject;
+    private long runningTime;
+    private String errorStopSimulation;
+
 
     public World() {
         this.environment = new Environment();
@@ -44,6 +50,9 @@ public class World {
         this.grid = new Grid();
         this.threadCount = 0;
         this.currTick = 0;
+        isPaused = false;
+        pauseObject = new Object();
+        errorStopSimulation = "";
     }
 
     // getters
@@ -122,6 +131,10 @@ public class World {
     public void setEnvValueByName(String name, String value) throws NumberFormatException {
         environment.setEnvProperty(name,value);
     }
+    public void setEnvOriginalValueByName(String name, String value) throws NumberFormatException {
+        environment.setEnvOriginalProperty(name,value);
+    }
+
 
     public void addEntityStructure(String entityName, EntityStructure entityStructure) {
         this.entityStructures.put(entityName, entityStructure);
@@ -140,7 +153,7 @@ public class World {
         }
     }
 
-    public void invokeRules() {
+    public void invokeRules() throws InterruptedException {
         final int[] tick = {0};
 
         // get list of valid rules according to tick
@@ -151,20 +164,33 @@ public class World {
         long startTimeSeconds = System.currentTimeMillis() / 1000;
 
         while (!termination.isStop()) {
-
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            this.runningTime = System.currentTimeMillis() / 1000 - startTimeSeconds;
+            // if simulation is pause
+            synchronized (pauseObject) {
+                while (isPaused) {
+                    try {
+                        pauseObject.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
+
             // Move all instances on the grid
             moveAllInstancesInGrid(instanceManager);
 
             // save the population of all entities
             for (String currEntityName : instanceManager.getAllInstances().keySet()) {
-                // go over every entity and save the curr population
-                entityStructures.get(currEntityName).addToPopulationHistoryList(
-                        instanceManager.getAllInstances().get(currEntityName).size());
+                // go over every entity and save the curr population - if the last value is the same don't add new pair
+                int popHistorySize = entityStructures.get(currEntityName).getPopulationHistoryList().size();
+
+                if(popHistorySize == 0 ||
+                        entityStructures.get(currEntityName).getPopulationHistoryList().get(popHistorySize-1).getPopValue() !=
+                        instanceManager.getAllInstances().get(currEntityName).size()){
+
+                    entityStructures.get(currEntityName).addToPopulationHistoryList(
+                          currTick, instanceManager.getAllInstances().get(currEntityName).size());
+                }
             }
 
 
@@ -178,7 +204,16 @@ public class World {
                 for (EntityInstance currEntity : instanceManager.getInstancesByName(currEntityName)) {
                     // on every entity run all the active rules
                     for (Rule currRule : ActiveRules) {
-                        currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
+                        try {
+                            currRule.inokeRule(instanceManager, environment, currEntity, tick[0], grid, entityStructures);
+                        }
+                        catch (RuntimeException e){
+                            // set error
+                            errorStopSimulation = "Stopped cause: " + e.getMessage();
+
+                            // stop simulation
+                            termination.setStop(true);
+                        }
                     }
                 }
             }
@@ -204,32 +239,21 @@ public class World {
 
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
+            //Thread.sleep(1000);
         }
 
-
-
-        // save the start time in seconds
-        /*long startTimeSeconds = System.currentTimeMillis() / 1000;
-
-        while (!termination.isStop()){
-            // run on the rules
-            for(Rule currRule : rules.values()){
-                // if rule is active
-                if(isRuleActive(currRule, tick)) {
-                    currRule.inokeRule(instanceManager, environment, tick);
-                }
-            }
-            tick++;
-            // check if termination coditions are met
-            isSimulationTerminated(tick, startTimeSeconds);
-        }*/
+        // save the last value and the last tick
+        for (String currEntityName : instanceManager.getAllInstances().keySet()) {
+            entityStructures.get(currEntityName).addToPopulationHistoryList(
+                    currTick, instanceManager.getAllInstances().get(currEntityName).size());
+        }
     }
 
     private void moveAllInstancesInGrid(EntityInstanceManager instanceManager) {
-       int increaseX;
-       int decreaseX;
-       int increaseY;
-       int decreaseY;
+        int increaseX;
+        int decreaseX;
+        int increaseY;
+        int decreaseY;
 
 
         if (grid.getFreeSpots() != 0) {
@@ -239,9 +263,21 @@ public class World {
                     Position currEntityPos = currEntity.getPos();
                     // to support infinity movement in the grid
                     increaseX = (currEntityPos.getX() + 1) % grid.getRows();
-                    decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
                     increaseY = (currEntityPos.getY() + 1) % grid.getColumns();
-                    decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+
+                    if(currEntityPos.getX()!=0) {
+                        decreaseX = (currEntityPos.getX() - 1) % grid.getRows();
+                    }
+                    else{
+                        decreaseX = grid.getRows()-1;
+                    }
+
+                    if(currEntityPos.getY()!=0) {
+                        decreaseY = (currEntityPos.getY() - 1) % grid.getColumns();
+                    }
+                    else{
+                        decreaseY = grid.getColumns()-1;
+                    }
 
                     // move right
                     if (grid.getPositionInGridBoard(currEntityPos.getX(), increaseY) == null) {
@@ -298,6 +334,13 @@ public class World {
             termination.setStop(true);
             System.out.println("Simulation is Over !!! , you reached the max seconds");
         }
+        else if(termination.isStoppedByUser()){
+            termination.setStop(true);
+            System.out.println("Simulation is Over !!! , Stopped by user");
+            errorStopSimulation = "Simulation is stopped by user";
+
+        }
+
     }
 
     public boolean isRuleActive(Rule currRule, int tick){
@@ -316,7 +359,10 @@ public class World {
     public Dto createDto() {
         Dto dto = new Dto();
         for(EntityStructure entityStructure : entityStructures.values()) {
-            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), entityStructure.getPopulationHistoryList());
+            // create populationHistory
+            List<Pair> popHistoryDto = getPopHistoryList(entityStructure.getPopulationHistoryList());
+
+            dto.addEntity(entityStructure.getEntityName(), entityStructure.getPopulation(), popHistoryDto);
             for(PropertyStructure propertyStructure : entityStructure.getEntityPropMap().values()) {
                 if(propertyStructure.getRange() != null) {
                     dto.addPropertyToEntity(entityStructure.getEntityName(), propertyStructure.getName(),
@@ -350,8 +396,18 @@ public class World {
 
         dto.addTermination(termination.getByTick(), termination.getBySec());
         dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
+        dto.setCurrTicks(currTick);
+        dto.setErrorStopSimulation(errorStopSimulation);
 
         return dto;
+    }
+
+    private List<Pair> getPopHistoryList(List<engine.entity.Pair> populationHistoryList) {
+        List<Pair> res = new ArrayList<>();
+        for (engine.entity.Pair currPair : populationHistoryList){
+            res.add(new Pair(currPair.getTickNum(), currPair.getPopValue()));
+        }
+        return res;
     }
 
     public void addActionToRuleDto(Dto dto, String ruleName, AbstractAction action){
@@ -414,5 +470,33 @@ public class World {
 
     public void setPopulationForEntity(String entityName, int population) {
         entityStructures.get(entityName).setPopulation(population);
+    }
+    public int getPopulationForEntity(String entityName) {
+        return entityStructures.get(entityName).getPopulation();
+    }
+
+    public void pause() {
+        isPaused = true;
+    }
+    public void resume(){
+        isPaused = false;
+        synchronized (pauseObject) {
+            pauseObject.notifyAll();
+        }
+    }
+    public void stopByUser(){
+        termination.setStoppedByUser(true);
+    }
+
+    public long getRunningTime() {
+        return runningTime;
+    }
+
+    public String getErrorStopSimulation() {
+        return errorStopSimulation;
+    }
+
+    public void setErrorStopSimulation(String errorStopSimulation) {
+        this.errorStopSimulation = errorStopSimulation;
     }
 }

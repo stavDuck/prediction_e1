@@ -54,3 +54,20 @@
     -fx-background-color: #0094ff; /* Lighter blue on hover */
     -fx-border-color: #0073e6; /* Blue border on hover */
 }
+
+/*title Prediction*/
+.title-prediction{
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.title-thread-pool{
+    -fx-text-fill: #4F7522;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+}
+.subject-thred-pool{
+    -fx-font-weight: bold;
+}
