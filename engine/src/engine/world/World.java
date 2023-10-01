@@ -184,7 +184,8 @@ public class World {
                 // go over every entity and save the curr population - if the last value is the same don't add new pair
                 int popHistorySize = entityStructures.get(currEntityName).getPopulationHistoryList().size();
 
-                if(popHistorySize == 0 || entityStructures.get(currEntityName).getPopulationHistoryList().get(popHistorySize-1).getPopValue() !=
+                if(popHistorySize == 0 ||
+                        entityStructures.get(currEntityName).getPopulationHistoryList().get(popHistorySize-1).getPopValue() !=
                         instanceManager.getAllInstances().get(currEntityName).size()){
 
                     entityStructures.get(currEntityName).addToPopulationHistoryList(
