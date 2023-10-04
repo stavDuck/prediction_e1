@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PredictionUser">
+    <output-path>$PROJECT_DIR$/out/artifacts/PredictionUser</output-path>
+    <root id="archive" name="PredictionUser.jar">
+      <element id="module-output" name="user" />
+    </root>
+  </artifact>
+</component>

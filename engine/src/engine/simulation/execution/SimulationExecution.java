@@ -32,13 +32,47 @@ public class SimulationExecution {
     private Status simulationStatus;
     private boolean isSimulationSelected;
 
-
+    // NEW !!!
     // set World information
-    public SimulationExecution(String fileName) throws RuntimeException{
+    //public SimulationExecution(String fileName) throws RuntimeException{
+    public SimulationExecution(InputStream inputStream) throws RuntimeException{
         isSimulationSelected = false;
-
         try {
             //String absolutePath = new File(fileName).getAbsolutePath();
+            //InputStream inputStream = new FileInputStream(new File(fileName));
+
+            // creating PRDWorld
+            PRDWorld prdWorld = deserializeFrom(inputStream);
+            // validating PRDworld XML
+            WorldValidator worldValidator = new WorldValidator();
+            worldValidator.validateWorldData(prdWorld);
+
+            // copy the information from PRDWorld to World
+            world = new World();
+            CopyHandler copy = new CopyHandler();
+            copy.copyData(prdWorld, world);
+
+            simulationStatus = Status.CREATED;
+        }
+      /*  catch (FileNotFoundException e) {
+            throw new RuntimeException("File " + fileName + " was not found");
+        }*/
+        catch (JAXBException e){
+            //throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");
+            throw new RuntimeException("JAXB upload failed, please check the xml");
+        }
+        // exceptions from validate world
+        catch (XmlValidationException e){
+            throw new RuntimeException("xml validation failed with the error: \n" + e.getMessage());
+        }
+    }
+
+
+
+    public SimulationExecution(String fileName) throws RuntimeException{
+        isSimulationSelected = false;
+        try {
+            String absolutePath = new File(fileName).getAbsolutePath();
             InputStream inputStream = new FileInputStream(new File(fileName));
 
             // creating PRDWorld
@@ -58,13 +92,18 @@ public class SimulationExecution {
             throw new RuntimeException("File " + fileName + " was not found");
         }
         catch (JAXBException e){
-            throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");
+            //throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");
+            throw new RuntimeException("JAXB upload failed, please check the xml");
         }
         // exceptions from validate world
         catch (XmlValidationException e){
             throw new RuntimeException("xml validation failed with the error: \n" + e.getMessage());
         }
     }
+
+
+
+
     private PRDWorld deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();

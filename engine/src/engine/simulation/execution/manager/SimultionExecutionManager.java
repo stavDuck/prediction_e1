@@ -2,6 +2,8 @@ package engine.simulation.execution.manager;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import engine.simulation.execution.runner.SingleSimulationRunner;
+
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +24,23 @@ public class SimultionExecutionManager {
         currRunningThreads = 0;
         isManagerMapEmpty = true;
     }
+
+    // NEW !!!
+    public int addSimulationExecution(InputStream inputStream) throws RuntimeException{
+        SimulationExecution newSimulation = new SimulationExecution(inputStream);
+        newSimulation.setId(idGenerator);
+        idGenerator++;
+
+        if(isManagerMapEmpty){
+            // set thread pool
+            isManagerMapEmpty = false;
+            executorService = Executors.newFixedThreadPool(newSimulation.getWorld().getThreadCount());
+        }
+
+        simulations.put(newSimulation.getId(), newSimulation);
+        return newSimulation.getId();
+    }
+
 
     // create and preper simulation
     public int addSimulationExecution(String fileName) throws RuntimeException{

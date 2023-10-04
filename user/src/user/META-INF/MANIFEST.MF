@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: user.main.Main
+Class-Path: PredictionEngine.jar PredictionDto.jar
+

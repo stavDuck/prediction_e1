@@ -72,7 +72,8 @@ public class LoginController {
                             errorMessageProperty.set("Something went wrong: " + responseBody)
                     );
                 } else {
-                    System.out.println(response);
+
+                    System.out.println(response.body().string());
                    /* Platform.runLater(() -> {
                             chatAppMainController.updateUserName(userName);
                             chatAppMainController.switchToChatRoom();

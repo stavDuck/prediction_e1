@@ -5,11 +5,20 @@
          version="4.0">
     <servlet>
         <servlet-name>LoginResponseServlet</servlet-name>
-        <servlet-class>servlets.LightweightLoginServlet</servlet-class>
+        <servlet-class>servlets.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginResponseServlet</servlet-name>
         <url-pattern>/loginResponse</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UploadXml</servlet-name>
+        <servlet-class>servlets.admin.UploadXml</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadXml</servlet-name>
+        <url-pattern>/uploadXml</url-pattern>
     </servlet-mapping>
 
 </web-app>
