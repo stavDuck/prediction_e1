@@ -3,9 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <!-- USER SERVLETS  /-->
     <servlet>
         <servlet-name>LoginResponseServlet</servlet-name>
-        <servlet-class>servlets.LoginServlet</servlet-class>
+        <servlet-class>servlets.user.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginResponseServlet</servlet-name>
@@ -13,12 +14,41 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>UploadXml</servlet-name>
+        <servlet-name>LogoutUserResponseServlet</servlet-name>
+        <servlet-class>servlets.user.LogoutUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutUserResponseServlet</servlet-name>
+        <url-pattern>/logoutUserResponse</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- ADMIN SERVLETS  /-->
+    <servlet>
+        <servlet-name>UploadXmlServlet</servlet-name>
         <servlet-class>servlets.admin.UploadXml</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>UploadXml</servlet-name>
+        <servlet-name>UploadXmlServlet</servlet-name>
         <url-pattern>/uploadXml</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LoginAdminResponseServlet</servlet-name>
+        <servlet-class>servlets.admin.LoginAdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginAdminResponseServlet</servlet-name>
+        <url-pattern>/loginAdminResponse</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogoutAdminResponseServlet</servlet-name>
+        <servlet-class>servlets.admin.LogoutAdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutAdminResponseServlet</servlet-name>
+        <url-pattern>/logoutAdminResponse</url-pattern>
     </servlet-mapping>
 
 </web-app>

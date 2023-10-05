@@ -1,9 +1,11 @@
-package user.subcomponents.common;
+package admin.subcomponents.common;
 
 public class ResourcesConstants {
     //private static final String BASE_PACKAGE = "/screens";
-    private static final String BASE_PACKAGE = "/user/subcomponents";
+    private static final String BASE_PACKAGE = "/admin/subcomponents";
     public static final String APP_FXML_INCLUDE_RESOURCE = BASE_PACKAGE +"/app/app.fxml";
+    public static final String ERROR_LOGIN_FXML_INCLUDE_RESOURCE = BASE_PACKAGE +"/app/error/errorLogInPage.fxml";
+
 
     // for actions fxml
     public static final String CALCULATION_FXML_INCLUDE_RESOURCE = BASE_PACKAGE +
@@ -26,30 +28,17 @@ public class ResourcesConstants {
             "/actions/Set/SetComponent.fxml";
 
 
-
-
-
-    // login constance
-    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    public final static String JHON_DOE = "<Anonymous>";
-    public final static int REFRESH_RATE = 2000;
-    public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
-
-    // fxml locations
-    public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/user/login/login.fxml";
-
-
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
     private final static String CONTEXT_PATH = "/prediction-web";
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
-    public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginResponse";
-    public final static String LOGOUT = FULL_SERVER_PATH + "/logoutUserResponse";
+    public final static String LOGIN_ADMIN = FULL_SERVER_PATH + "/loginAdminResponse";
+    public final static String LOGOUT_ADMIN = FULL_SERVER_PATH + "/logoutAdminResponse";
 
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
 
     // GSON instance
-   // public final static Gson GSON_INSTANCE = new Gson();
+    // public final static Gson GSON_INSTANCE = new Gson();
 }

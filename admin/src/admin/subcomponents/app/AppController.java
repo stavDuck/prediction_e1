@@ -1,48 +1,37 @@
-package user.subcomponents.app;
+package admin.subcomponents.app;
 
+import admin.subcomponents.common.ResourcesConstants;
+import admin.subcomponents.model.Model;
+import admin.subcomponents.tabs.details.DetailsComponentController;
+import admin.subcomponents.tabs.execution.ExecutionComponentController;
+import admin.subcomponents.tabs.results.ResultsComponentController;
+import admin.util.http.HttpAdminUtil;
 import dto.Dto;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
-import user.login.LoginController;
+import admin.subcomponents.app.task.TaskThreadPoolUpdater;
 import okhttp3.*;
-import user.subcomponents.app.task.TaskThreadPoolUpdater;
-import user.subcomponents.common.ResourcesConstants;
-import user.subcomponents.model.Model;
-import user.subcomponents.tabs.details.DetailsComponentController;
-import user.subcomponents.tabs.execution.ExecutionComponentController;
-import user.subcomponents.tabs.results.ResultsComponentController;
-import user.util.http.HttpUserUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class AppController implements Closeable {
     private Model model;
-    // peaces to replace
-    @FXML private ScrollPane mainScroller;
-    @FXML private BorderPane mainApplicationScreen;
-
-    // login controller to replace on click
-    private GridPane loginComponent;
-    private LoginController logicController;
 
     @FXML private ScrollPane detailsTab;
     @FXML private DetailsComponentController detailsTabController;
@@ -98,32 +87,6 @@ public class AppController implements Closeable {
 
     @FXML
     public void initialize() {
-     loadLoginPage();
-
-    }
-
-    private void loadLoginPage() {
-        URL loginPageUrl = getClass().getResource(ResourcesConstants.LOGIN_PAGE_FXML_RESOURCE_LOCATION);
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(loginPageUrl);
-            loginComponent = fxmlLoader.load();
-            logicController = fxmlLoader.getController();
-            logicController.setAppController(this);
-            setMainPanelTo(loginComponent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void setMainPanelTo(Parent pane) {
-        mainScroller.setContent(pane);
-    }
-    public void switchToMainApplication() {
-        setMainPanelTo(mainApplicationScreen);
-        initializeMainApplication();
-    }
-
-    public void initializeMainApplication(){
         if (detailsTabController != null && executionTabController != null && resultTabController != null) {
             detailsTabController.setMainController(this);
             executionTabController.setMainController(this);
@@ -166,9 +129,7 @@ public class AppController implements Closeable {
         isFileSelected.set(true);
 
         // NEW !!!
-       // loadXmlRequest(absolutePath);
-
-
+        loadXmlRequest(absolutePath);
 
        /* String res = model.loadXmlFile(absolutePath);
         //messageToUser.setText(res.isEmpty() ? "Successful" : res);
@@ -182,15 +143,67 @@ public class AppController implements Closeable {
         resultTabController.clearPopulationChart();
         resultTabController.setSelectedSimulationId(-1);
         resultTabController.clearPopulationList();
-        // NEED TO CLEAR THE TABLE IN SCREEN 3
-
-
 
         showPopup(res);
         detailsTabController.loadDetailsView();
         executionTabController.populateTab();*/
     }
 
+    private void loadXmlRequest(String absolutePath) throws IOException {
+        File file = new File(absolutePath);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .addFormDataPart("file1", file.getName(), RequestBody.create(file, MediaType.parse("text/plain")))
+                .build();
+        String finalUrl = ResourcesConstants.UPLOAD_XML;
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(requestBody)
+                .build();
+
+        // Create a custom Callback
+        Callback customCallback = new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Handle successful response here
+                    String responseBody = response.body().string();
+                    System.out.println("Response: " + responseBody);
+
+                    // clear !!
+                    resultTabController.clearAllHistogramTabs();
+                    resultTabController.clearStopInformationError();
+                    resultTabController.clearSimulationProgressDetails();
+                    resultTabController.clearTreeViewHistogram();
+                    resultTabController.clearSelectSimulationList();
+                    resultTabController.clearPopulationChart();
+                    resultTabController.setSelectedSimulationId(-1);
+                    resultTabController.clearPopulationList();
+
+                    showPopup("File loaded successfully");
+                    detailsTabController.loadDetailsView();
+                    executionTabController.populateTab();
+
+                } else {
+                    // Handle unsuccessful response here
+                    System.out.println("Request was not successful. Response code: " + response.code());
+                    showPopup(response.body().string() + "\n please try to fix the issue and reload the xml again");
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        showPopup("Something went wrong: " + e.getMessage())
+                );
+            }
+        };
+
+       // Call call = HTTP_CLIENT.newCall(request);
+       // okhttp3.Response response = call.execute();
+
+        HttpAdminUtil.postRunASync(requestBody, finalUrl, customCallback);
+    }
 
     public void runTaskThreadPool(){
         // create task to update the thread pool information
@@ -262,7 +275,7 @@ public class AppController implements Closeable {
         resultTabController.clearStopInformationError();
     }
 
-    // close application will remove the username from the current user manager list
+
     @Override
     public void close() throws IOException {
         //usersListComponentController.close();
@@ -270,15 +283,16 @@ public class AppController implements Closeable {
     }
 
     public void logout(){
-        HttpUserUtil.runAsync(ResourcesConstants.LOGOUT, new Callback() {
+        HttpAdminUtil.runAsync(ResourcesConstants.LOGOUT_ADMIN, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println("Logout request ended with failure...");
             }
+
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.isSuccessful() || response.isRedirect()) {
-                    HttpUserUtil.removeCookiesOf(ResourcesConstants.BASE_DOMAIN);
+                    HttpAdminUtil.removeCookiesOf(ResourcesConstants.BASE_DOMAIN);
                     System.out.println(response.body().string());
                 }
             }

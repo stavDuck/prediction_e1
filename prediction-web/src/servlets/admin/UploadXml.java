@@ -1,8 +1,10 @@
 package servlets.admin;
 
+import constants.Constants;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationMultipleManager;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +13,7 @@ import utils.ServletUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
-
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadXml extends HttpServlet {
 
     @Override
@@ -25,13 +27,32 @@ public class UploadXml extends HttpServlet {
 
         // create simulation from InputStream
         Simulation simulation = new Simulation();
-        simulation.createSimulation(fileContent);
-        // add new xml (simulation) to the list with uniq number
-        simulationMultipleManager.addSimulationToSimulationMultipleManager("smoker", simulation);
-        System.out.println("Added new xml named : smoker");
+        try {
+           int simulationID = simulation.createSimulation(fileContent);
+            //if simulation name already exist!!!!
+            // String simulationName = simulation.getsimulationName()
+            if(simulationMultipleManager.isNameExistInMap("smoker")){
+                String errorMessage = "File name " + "smoker" + " already exists. Please enter a different xml.";
 
-        // NEED TO ADD SUPPORT IF NAME ALREADY EXIST
-        response.setStatus(HttpServletResponse.SC_OK);
+                // stands for unauthorized as there is already such user with this name
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getOutputStream().print(errorMessage);
+            }
+            else {
+                // add new xml (simulation) to the list with uniq number
+                simulationMultipleManager.addSimulationToSimulationMultipleManager("smoker", simulation);
+
+                System.out.println("Added new xml named : smoker");
+                response.setStatus(HttpServletResponse.SC_OK);
+                //return the simulation ID if sucessfully added
+                response.getWriter().println(simulationID);
+            }
+        }
+        catch (RuntimeException e){
+            // return status 500 - with the exception during creating the simulation from xml
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print(e.getMessage());
+        }
     }
 
 }

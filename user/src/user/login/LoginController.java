@@ -16,7 +16,7 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import user.subcomponents.app.AppController;
 import user.subcomponents.common.ResourcesConstants;
-import user.util.http.HttpClientUtil;
+import user.util.http.HttpUserUtil;
 
 import java.io.IOException;
 
@@ -57,7 +57,7 @@ public class LoginController {
 
         System.out.println("New request is launched for: " + finalUrl);
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpUserUtil.runAsync(finalUrl, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

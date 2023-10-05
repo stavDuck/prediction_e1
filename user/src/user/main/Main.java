@@ -7,19 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import user.subcomponents.model.Model;
+import user.util.http.HttpUserUtil;
 
 import java.net.URL;
 
 
 public class Main extends Application {
-//public class Main {
-   /* public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.startMenu();
-    }*/
-
-    //the new UI --> in comment for testing
     private Model model;
+    private AppController currAppController;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -33,6 +28,7 @@ public class Main extends Application {
 
         // wire up controller
         AppController controller = fxmlLoader.getController();
+        currAppController = controller;
         controller.setModel(model);
         controller.setPrimaryStage(primaryStage);
         //controller.setExecutionComponentController(executionComponentController);
@@ -46,10 +42,14 @@ public class Main extends Application {
         primaryStage.show();
 
     }
+    @Override
+    public void stop() throws Exception {
+        currAppController.close();
+        HttpUserUtil.shutdown();
+    }
 
 
     public static void main(String[] args) {
-       // Application.launch(Main.class);
         launch(args);
     }
 
