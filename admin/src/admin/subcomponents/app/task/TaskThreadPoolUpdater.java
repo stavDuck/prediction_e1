@@ -24,7 +24,7 @@ public class TaskThreadPoolUpdater implements Runnable{
     @Override
     public void run() {
         System.out.println("TaskThreadPoolUpdater START");
-        do{
+        /*do{
             int waitingThreads = simulation.getWaitingTreadsNumber();
             int runningThreads = simulation.getRunningThreadsNumber();
             int completedThreads =simulation.getCompletedThreadsNumber();
@@ -43,7 +43,7 @@ public class TaskThreadPoolUpdater implements Runnable{
                 // Handle the InterruptedException if needed
             }
         }
-        while(stopThread.isStop());
+        while(stopThread.isStop());*/
 
         System.out.println("TaskThreadPoolUpdater END");
     }

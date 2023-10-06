@@ -2,8 +2,8 @@ package admin.subcomponents.app;
 
 import admin.subcomponents.common.ResourcesConstants;
 import admin.subcomponents.model.Model;
+import admin.subcomponents.tabs.allocations.AllocationComponentController;
 import admin.subcomponents.tabs.details.DetailsComponentController;
-import admin.subcomponents.tabs.execution.ExecutionComponentController;
 import admin.subcomponents.tabs.results.ResultsComponentController;
 import admin.util.http.HttpAdminUtil;
 import dto.Dto;
@@ -35,8 +35,8 @@ public class AppController implements Closeable {
 
     @FXML private ScrollPane detailsTab;
     @FXML private DetailsComponentController detailsTabController;
-    @FXML private ScrollPane executionTab;
-    @FXML private ExecutionComponentController executionTabController;
+    @FXML private ScrollPane allocationTab;
+    @FXML private AllocationComponentController allocationTabController;
     @FXML private ScrollPane resultTab;
     @FXML private ResultsComponentController resultTabController;
 
@@ -48,58 +48,57 @@ public class AppController implements Closeable {
     private Button openFileButton;
     @FXML
     private Label selectedFileName;
-    @FXML
-    private Label messageToUser;
-    @FXML
-    private Label waitingThreadPoolLabel;
-    private SimpleLongProperty propertyWaitingThreadPool;
-    @FXML
-    private Label runningThreadPoolLabel;
-    private SimpleLongProperty propertyRunningThreadPool;
-    @FXML
-    private Label completedThreadPoolLabel;
-    private SimpleLongProperty propertyCompletedThreadPool;
 
-    @FXML
-    private GridPane gridPanelThreadsPool;
+    /*@FXML
+    private Label waitingThreadPoolLabel;
+    private SimpleLongProperty propertyWaitingThreadPool;*/
+    /*@FXML
+    private Label runningThreadPoolLabel;
+    private SimpleLongProperty propertyRunningThreadPool;*/
+   /* @FXML
+    private Label completedThreadPoolLabel;
+    private SimpleLongProperty propertyCompletedThreadPool;*/
+
+   /* @FXML
+    private GridPane gridPanelThreadsPool;*/
     @FXML
     private Tab detailsTabComponent;
     @FXML
-    private Tab executionTabComponent;
+    private Tab allocationTabComponent;
     @FXML
     private Tab resultTabComponent;
     private Stage primaryStage;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
 
-    private StopTaskObject stopThreadPool;
+    //private StopTaskObject stopThreadPool;
 
     public AppController() {
-        stopThreadPool = new StopTaskObject();
+        //stopThreadPool = new StopTaskObject();
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
-        propertyWaitingThreadPool = new SimpleLongProperty();
-        propertyRunningThreadPool = new SimpleLongProperty();
-        propertyCompletedThreadPool = new SimpleLongProperty();
+       // propertyWaitingThreadPool = new SimpleLongProperty();
+       // propertyRunningThreadPool = new SimpleLongProperty();
+       // propertyCompletedThreadPool = new SimpleLongProperty();
 
 
     }
 
     @FXML
     public void initialize() {
-        if (detailsTabController != null && executionTabController != null && resultTabController != null) {
+        if (detailsTabController != null && allocationTabController != null && resultTabController != null) {
             detailsTabController.setMainController(this);
-            executionTabController.setMainController(this);
+            allocationTabController.setMainController(this);
             resultTabController.setMainController(this);
         }
 
         selectedFileName.textProperty().bind(selectedFileProperty);
-        waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
-        runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
-        completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
-        propertyWaitingThreadPool.set(0);
-        propertyRunningThreadPool.set(0);
-        propertyCompletedThreadPool.set(0);
+        //waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
+       // runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
+       // completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
+       // propertyWaitingThreadPool.set(0);
+       // propertyRunningThreadPool.set(0);
+       // propertyCompletedThreadPool.set(0);
     }
 
     public void setModel(Model model) {
@@ -109,11 +108,9 @@ public class AppController implements Closeable {
     @FXML
     void openFileButtonAction(ActionEvent event) throws IOException {
         // reset value in threadpool - if boolean is true thread pool has already ran
-        if(stopThreadPool.isStop()){
-            stopThreadPool.setStop(false);
-            propertyWaitingThreadPool.set(0);
-            propertyRunningThreadPool.set(0);
-            propertyCompletedThreadPool.set(0);
+        if(detailsTabController.getStopThreadPool().isStop()){
+            detailsTabController.setStopThreadPool(false);
+           detailsTabController.resetThreadPoolLabelsInformation();
         }
 
         FileChooser fileChooser = new FileChooser();
@@ -182,7 +179,7 @@ public class AppController implements Closeable {
 
                     showPopup("File loaded successfully");
                     detailsTabController.loadDetailsView();
-                    executionTabController.populateTab();
+                    //executionTabController.populateTab();
 
                 } else {
                     // Handle unsuccessful response here
@@ -205,12 +202,12 @@ public class AppController implements Closeable {
         HttpAdminUtil.postRunASync(requestBody, finalUrl, customCallback);
     }
 
-    public void runTaskThreadPool(){
+    /*public void runTaskThreadPool(){
         // create task to update the thread pool information
         stopThreadPool.setStop(true);
         new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
                 propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
-    }
+    }*/
 
     public void showPopup(String message) {
         Popup popup = new Popup();
@@ -244,14 +241,14 @@ public class AppController implements Closeable {
         return model;
     }
 
-    public void setExecutionComponentController(ExecutionComponentController executionTabController) {
-        this.executionTabController = executionTabController;
-        executionTabController.setMainController(this);
+    public void setAllocationComponentController(AllocationComponentController allocationTabController) {
+        this.allocationTabController = allocationTabController;
+        allocationTabController.setMainController(this);
     }
 
-    public void startExecutionTab() {
+    /*public void startExecutionTab() {
         executionTabController.populateTab();
-    }
+    }*/
 
     public TabPane getTabPane() {
         return tabPane;
@@ -309,7 +306,7 @@ public class AppController implements Closeable {
     }
 
     public void moveToExecutionTab() {
-        tabPane.getSelectionModel().select(executionTabComponent);
-        executionTabController.populateTabFromRerunSimulation();
+        //tabPane.getSelectionModel().select(executionTabComponent);
+        //executionTabController.populateTabFromRerunSimulation();
     }
 }

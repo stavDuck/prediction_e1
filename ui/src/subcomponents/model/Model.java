@@ -96,7 +96,8 @@ public class Model {
 
             // run simulation
            // simulation.run();
-            simulation.execute(currSimulationId);
+
+            //simulation.execute(currSimulationId);
 
            // isSimulationDone = true;
             // set the end simulation after run is done

@@ -9,6 +9,8 @@ import admin.subcomponents.actions.Kill.KillCompenentController;
 import admin.subcomponents.actions.Proximity.ProximityComponentController;
 import admin.subcomponents.actions.Replace.ReplaceComponentController;
 import admin.subcomponents.actions.Set.SetComponentController;
+import admin.subcomponents.app.StopTaskObject;
+import admin.subcomponents.app.task.TaskThreadPoolUpdater;
 import admin.subcomponents.common.ResourcesConstants;
 import dto.Dto;
 import dto.entity.DtoEntity;
@@ -17,17 +19,17 @@ import dto.property.DtoProperty;
 import dto.rule.Action.*;
 import dto.rule.DtoRule;
 import dto.termination.DtoTermination;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import admin.subcomponents.app.AppController;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,15 +58,48 @@ public class DetailsComponentController {
     private AppController mainController;
     @FXML
     private GridPane gridPanelDetailsView;
-
     @FXML
     private Label informationDetailsTitle;
-
     @FXML
     private TreeView<String> treeViewInformation;
-
     @FXML
     private VBox informationDetailsBody;
+
+    // FXML iformation for thread pool manager
+    private StopTaskObject stopThreadPool;
+
+    @FXML
+    private Label waitingThreadPoolLabel;
+    private SimpleLongProperty propertyWaitingThreadPool;
+    @FXML
+    private Label runningThreadPoolLabel;
+    private SimpleLongProperty propertyRunningThreadPool;
+    @FXML
+    private Label completedThreadPoolLabel;
+    private SimpleLongProperty propertyCompletedThreadPool;
+    @FXML
+    private TextField threadNewNumber;
+    @FXML
+    private Button updateThreadPoolNumber;
+    @FXML
+    private GridPane gridPanelThreadsPool;
+
+    //ctor
+    public DetailsComponentController() {
+        stopThreadPool = new StopTaskObject();
+        propertyWaitingThreadPool = new SimpleLongProperty();
+        propertyRunningThreadPool = new SimpleLongProperty();
+        propertyCompletedThreadPool = new SimpleLongProperty();
+    }
+
+    @FXML
+    public void initialize() {
+        waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
+        runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
+        completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
+        resetThreadPoolLabelsInformation();
+    }
+
 
 
     public void setMainController(AppController mainController) {
@@ -565,4 +600,33 @@ public class DetailsComponentController {
         }
         return counter;
     }
+
+
+    // Thread pool functions
+
+    public StopTaskObject getStopThreadPool() {
+        return stopThreadPool;
+    }
+    public void setStopThreadPool(boolean bool) {
+        this.stopThreadPool.setStop(bool);
+    }
+
+    @FXML
+    void updateThreadPoolNumberAction(ActionEvent event) {
+
+    }
+
+    public void resetThreadPoolLabelsInformation(){
+        propertyWaitingThreadPool.set(0);
+        propertyRunningThreadPool.set(0);
+        propertyCompletedThreadPool.set(0);
+    }
+
+   /* public void runTaskThreadPool(){
+        // create task to update the thread pool information
+        stopThreadPool.setStop(true);
+        new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
+                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
+    }*/
+
 }

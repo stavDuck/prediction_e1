@@ -29,9 +29,9 @@ public class Simulation {
     public SimulationExecution getSimulationById(int id){
         return simulationManager.getSimulationById(id);
     }
-    public void execute(int id){
+    /*public void execute(int id){
         simulationManager.execute(id);
-    }
+    }*/
     public void pauseSimulationById(int id){
         simulationManager.pauseById(id);
     }
@@ -41,7 +41,7 @@ public class Simulation {
     public void stopSimulationById(int id){
         simulationManager.stopById(id);
     }
-    public int getRunningThreadsNumber(){
+    /*public int getRunningThreadsNumber(){
         return simulationManager.getRunningThreadsNumber();
     }
     public int getWaitingTreadsNumber(){
@@ -49,7 +49,7 @@ public class Simulation {
     }
     public int getCompletedThreadsNumber(){
         return simulationManager.getCompletedThreadsNumber();
-    }
+    }*/
 
     public void resetUniqID(){
         simulationManager.resetUniqId();

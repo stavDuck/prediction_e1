@@ -18,3 +18,13 @@
     -fx-underline: true; /* Underline text */
     -fx-font-size: 25px;
 }
+
+.title-thread-pool{
+    -fx-text-fill: #4F7522;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+}
+.subject-thred-pool{
+    -fx-font-weight: bold;
+}
