@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class SimultionExecutionManager {
-    private static int idGenerator = 1; // generate id for every new simulation
+    //private static int idGenerator = 1; // generate id for every new simulation
     private Map<Integer, SimulationExecution> simulations;
     //private ExecutorService executorService;
     private int currRunningThreads;
@@ -25,10 +25,10 @@ public class SimultionExecutionManager {
     }
 
     // NEW !!!
-    public int addSimulationExecution(InputStream inputStream) throws RuntimeException{
+    public void addSimulationExecution(InputStream inputStream, int idGenerator) throws RuntimeException{
         SimulationExecution newSimulation = new SimulationExecution(inputStream);
         newSimulation.setId(idGenerator);
-        idGenerator++;
+       // idGenerator++;
 
        /* if(isManagerMapEmpty){
             // set thread pool
@@ -36,13 +36,13 @@ public class SimultionExecutionManager {
             executorService = Executors.newFixedThreadPool(newSimulation.getWorld().getThreadCount());
         }*/
 
-        simulations.put(newSimulation.getId(), newSimulation);
-        return newSimulation.getId();
+        simulations.put(idGenerator, newSimulation);
+        //return newSimulation.getId();
     }
 
 
     // create and preper simulation
-    public int addSimulationExecution(String fileName) throws RuntimeException{
+    /*public int addSimulationExecution(String fileName) throws RuntimeException{
        SimulationExecution newSimulation = new SimulationExecution(fileName);
         newSimulation.setId(idGenerator);
         idGenerator++;
@@ -51,11 +51,12 @@ public class SimultionExecutionManager {
             // set thread pool
             isManagerMapEmpty = false;
             executorService = Executors.newFixedThreadPool(newSimulation.getWorld().getThreadCount());
-        }*/
+        }
 
         simulations.put(newSimulation.getId(), newSimulation);
         return newSimulation.getId();
-    }
+    }*/
+
     public SimulationExecution getSimulationById(int id){
         return simulations.get(id);
     }
@@ -89,7 +90,7 @@ public class SimultionExecutionManager {
         return (int)((ThreadPoolExecutor)executorService).getCompletedTaskCount();
     }*/
 
-    public void resetUniqId(){
+    /*public void resetUniqId(){
         idGenerator = 1;
-    }
+    }*/
 }

@@ -18,7 +18,7 @@ public class Model {
     private int currSimulationId;
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
-    public String loadXmlFile(String fileName){
+    /*public String loadXmlFile(String fileName){
         Simulation tempSimulation = null;
         int tempSimulationID;
 
@@ -53,7 +53,7 @@ public class Model {
 
         // loaded sucessfuly
         return "File loaded successfully";
-    }
+    }*/
 
     /*public Simulation createSimulationFromFile(String fileName) throws RuntimeException {
         Simulation simulation= new Simulation(fileName);

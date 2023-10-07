@@ -29,18 +29,15 @@ public class SimulationExecution {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     private World world;
     private  int id;
+    private String userName;
     private Status simulationStatus;
     private boolean isSimulationSelected;
 
     // NEW !!!
     // set World information
-    //public SimulationExecution(String fileName) throws RuntimeException{
     public SimulationExecution(InputStream inputStream) throws RuntimeException{
         isSimulationSelected = false;
         try {
-            //String absolutePath = new File(fileName).getAbsolutePath();
-            //InputStream inputStream = new FileInputStream(new File(fileName));
-
             // creating PRDWorld
             PRDWorld prdWorld = deserializeFrom(inputStream);
             // validating PRDworld XML
@@ -53,10 +50,8 @@ public class SimulationExecution {
             copy.copyData(prdWorld, world);
 
             simulationStatus = Status.CREATED;
+            this.userName = ""; // default for first time Admin uploading iformation
         }
-      /*  catch (FileNotFoundException e) {
-            throw new RuntimeException("File " + fileName + " was not found");
-        }*/
         catch (JAXBException e){
             //throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");
             throw new RuntimeException("JAXB upload failed, please check the xml");
@@ -69,7 +64,7 @@ public class SimulationExecution {
 
 
 
-    public SimulationExecution(String fileName) throws RuntimeException{
+    /*public SimulationExecution(String fileName) throws RuntimeException{
         isSimulationSelected = false;
         try {
             String absolutePath = new File(fileName).getAbsolutePath();
@@ -99,7 +94,7 @@ public class SimulationExecution {
         catch (XmlValidationException e){
             throw new RuntimeException("xml validation failed with the error: \n" + e.getMessage());
         }
-    }
+    }*/
 
 
 
@@ -267,5 +262,17 @@ public class SimulationExecution {
             return String.format("%.2f", sum / entityInstances.size());
         }
 
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getXmlName(){
+        return world.getName();
     }
 }

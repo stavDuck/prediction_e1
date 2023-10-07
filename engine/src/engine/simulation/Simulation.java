@@ -15,16 +15,16 @@ public class Simulation {
     }
 
     // NEW !!!
-    public int createSimulation(InputStream inputStream) throws RuntimeException{
-        int simulationId =  simulationManager.addSimulationExecution(inputStream);
-        return simulationId;
+    public void createSimulation(InputStream inputStream, int id) throws RuntimeException{
+        simulationManager.addSimulationExecution(inputStream, id);
+        //return simulationId;
     }
 
 
-    public int createSimulation(String fileName) throws RuntimeException{
+    /*public int createSimulation(String fileName) throws RuntimeException{
       int simulationId =  simulationManager.addSimulationExecution(fileName);
       return simulationId;
-    }
+    }*/
 
     public SimulationExecution getSimulationById(int id){
         return simulationManager.getSimulationById(id);
@@ -51,7 +51,7 @@ public class Simulation {
         return simulationManager.getCompletedThreadsNumber();
     }*/
 
-    public void resetUniqID(){
+   /* public void resetUniqID(){
         simulationManager.resetUniqId();
-    }
+    }*/
 }

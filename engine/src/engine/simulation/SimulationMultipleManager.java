@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class SimulationMultipleManager {
         private Map<String, Simulation> simulationsManager;
         private ExecutorService executorService;
+        private static int idGenerator = 1;
 
 
     public SimulationMultipleManager() {
@@ -72,5 +73,17 @@ public class SimulationMultipleManager {
     }
     public SimulationExecution getSimulationByNameAndID(String name, int id) {
         return simulationsManager.get(name).getSimulationById(id);
+    }
+
+    public int getIdGenerator(){
+        return idGenerator;
+    }
+
+    // advance the value ++
+    public void advanceIdGenerator(){
+        idGenerator++;
+    }
+    public void resetUniqId(){
+        idGenerator = 1;
     }
 }

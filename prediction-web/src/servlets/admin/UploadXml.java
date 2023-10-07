@@ -3,6 +3,7 @@ package servlets.admin;
 import constants.Constants;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationMultipleManager;
+import engine.simulation.execution.SimulationExecution;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -25,27 +26,27 @@ public class UploadXml extends HttpServlet {
         // check if simulationMultipleManager exist in servletContext - if not create one
         SimulationMultipleManager simulationMultipleManager = ServletUtils.getSimulationMultipleManager(getServletContext());
 
-        // create simulation from InputStream
+        // create simulation from InputStream to get the xml name
         Simulation simulation = new Simulation();
         try {
-           int simulationID = simulation.createSimulation(fileContent);
-            //if simulation name already exist!!!!
-            // String simulationName = simulation.getsimulationName()
-            if(simulationMultipleManager.isNameExistInMap("smoker")){
-                String errorMessage = "File name " + "smoker" + " already exists. Please enter a different xml.";
+           simulation.createSimulation(fileContent, simulationMultipleManager.getIdGenerator());
+
+           //if simulation name already exist!!!!
+            SimulationExecution simulationExecution = simulation.getSimulationById(simulationMultipleManager.getIdGenerator());
+            if(simulationMultipleManager.isNameExistInMap(simulationExecution.getXmlName())){
+                String errorMessage = "File name " + simulationExecution.getXmlName() + " already exists. Please enter a different xml.";
 
                 // stands for unauthorized as there is already such user with this name
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getOutputStream().print(errorMessage);
             }
             else {
-                // add new xml (simulation) to the list with uniq number
-                simulationMultipleManager.addSimulationToSimulationMultipleManager("smoker", simulation);
+                // add NEW xml (simulation) to the list with uniq number
+                simulationMultipleManager.addSimulationToSimulationMultipleManager(simulationExecution.getXmlName(), new Simulation());
 
-                System.out.println("Added new xml named : smoker");
+                System.out.println("Added new xml named : " + simulationExecution.getUserName());
                 response.setStatus(HttpServletResponse.SC_OK);
-                //return the simulation ID if sucessfully added
-                response.getWriter().println(simulationID);
+                response.getOutputStream().print("XmlFile Uploaded successfully");
             }
         }
         catch (RuntimeException e){

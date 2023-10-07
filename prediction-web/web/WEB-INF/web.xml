@@ -21,6 +21,7 @@
         <servlet-name>DtoResponseServlet</servlet-name>
         <url-pattern>/dtoResponse</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>LogoutUserResponseServlet</servlet-name>
         <servlet-class>servlets.user.LogoutUserServlet</servlet-class>
@@ -28,6 +29,15 @@
     <servlet-mapping>
         <servlet-name>LogoutUserResponseServlet</servlet-name>
         <url-pattern>/logoutUserResponse</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ExecuteNewSimulationServlet</servlet-name>
+        <servlet-class>servlets.user.ExecuteNewSimulationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExecuteNewSimulationServlet</servlet-name>
+        <url-pattern>/executeNewSimulationServlet</url-pattern>
     </servlet-mapping>
 
 

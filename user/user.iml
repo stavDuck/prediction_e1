@@ -21,29 +21,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/annotations-13.0.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/gson-2.8.8.jar!/" />
-          <root url="file://$MODULE_DIR$/.." />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/Downloads/gson-2.8.8-sources.jar!/" />
-          <root url="file://$MODULE_DIR$/../admin/src" />
-          <root url="file://$MODULE_DIR$/../commonComponent/src" />
-          <root url="file://$MODULE_DIR$/../dto/src" />
-          <root url="file://$MODULE_DIR$/../engine/src" />
-          <root url="file://$MODULE_DIR$/../prediction-web/src" />
-          <root url="file://$MODULE_DIR$/../src" />
-          <root url="file://$MODULE_DIR$/../ui/src" />
-          <root url="file://$MODULE_DIR$/src" />
-          <root url="file://$MODULE_DIR$/../web-module/src" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/kotlin-stdlib-1.4.10.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../jars/annotations-13.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -52,7 +30,34 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/okio-2.8.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../jars/kotlin-stdlib-1.4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../jars/kotlin-stdlib-common-1.4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../jars/okio-2.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../jars/gson-2.8.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

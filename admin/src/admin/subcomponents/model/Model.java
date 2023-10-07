@@ -12,8 +12,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import admin.subcomponents.common.ResourcesConstants;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    private Simulation simulation;
+    //private Simulation simulation;
     private boolean isFileLoaded = false;
     private int currSimulationId;
     private String currSimulationName;
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
-    public String loadXmlFile(String fileName){
+    /*public String loadXmlFile(String fileName){
         Simulation tempSimulation = null;
         int tempSimulationID;
 
@@ -64,7 +64,7 @@ public class Model {
 
         // loaded sucessfuly
         return "File loaded successfully";
-    }
+    }*/
 
     /*public Simulation createSimulationFromFile(String fileName) throws RuntimeException {
         Simulation simulation= new Simulation(fileName);
@@ -110,9 +110,9 @@ public class Model {
 
     }
 
-    public Simulation getSimulation() {
+    /*public Simulation getSimulation() {
         return simulation;
-    }
+    }*/
 
     public void runSimulation() {
         try {
@@ -156,14 +156,14 @@ public class Model {
     //    return isSimulationDone;
    // }
 
-    public SimulationExecution getSimulationById(int id) {
+   /* public SimulationExecution getSimulationById(int id) {
         return simulation.getSimulationById(id);
         //return simulationHistory.get(id).getStartSimulation();
-    }
+    }*/
 
-    public SimulationExecution getCurrSimulation(){
+    /*public SimulationExecution getCurrSimulation(){
         return simulation.getSimulationById(currSimulationId);
-    }
+    }*/
 
     public int getCurrSimulationId() {
         return currSimulationId;

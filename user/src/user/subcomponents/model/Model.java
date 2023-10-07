@@ -1,5 +1,6 @@
 package user.subcomponents.model;
 
+
 import com.google.gson.Gson;
 import dto.Dto;
 import engine.simulation.Simulation;
@@ -29,7 +30,7 @@ public class Model {
     private String currSimulationName;
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
-    public String loadXmlFile(String fileName){
+    /*public String loadXmlFile(String fileName){
         Simulation tempSimulation = null;
         int tempSimulationID;
 
@@ -64,7 +65,7 @@ public class Model {
 
         // loaded sucessfuly
         return "File loaded successfully";
-    }
+    }*/
 
     /*public Simulation createSimulationFromFile(String fileName) throws RuntimeException {
         Simulation simulation= new Simulation(fileName);

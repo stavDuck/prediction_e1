@@ -148,9 +148,11 @@ public class AppController implements Closeable {
 
     private void loadXmlRequest(String absolutePath) throws IOException {
         File file = new File(absolutePath);
+
         RequestBody requestBody = new MultipartBody.Builder()
                 .addFormDataPart("file1", file.getName(), RequestBody.create(file, MediaType.parse("text/plain")))
                 .build();
+
         String finalUrl = ResourcesConstants.UPLOAD_XML;
 
         Request request = new Request.Builder()

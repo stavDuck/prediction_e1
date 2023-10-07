@@ -172,7 +172,7 @@ public class ExecutionComponentController {
 
     }
 
-    @FXML
+  /*  @FXML
     void startButtonAction(ActionEvent event) {
         boolean entityVal, envVal;
         boolean isNewSimulationFailed = false;
@@ -206,7 +206,7 @@ public class ExecutionComponentController {
             }
             mainController.runSimulation();
         }
-    }
+    }*/
 
     public boolean validateEntityPopulation() {
         boolean res = true;
