@@ -77,7 +77,7 @@ public class LoginController {
 
                     System.out.println(response.body().string());
                     Platform.runLater(() -> {
-                           // chatAppMainController.updateUserName(userName);
+                            appController.updateUserName(userName);
                             appController.switchToMainApplication();
                     });
                 }

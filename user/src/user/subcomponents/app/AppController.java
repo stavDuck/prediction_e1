@@ -26,6 +26,7 @@ import user.subcomponents.common.ResourcesConstants;
 import user.subcomponents.model.Model;
 import user.subcomponents.tabs.details.DetailsComponentController;
 import user.subcomponents.tabs.execution.ExecutionComponentController;
+import user.subcomponents.tabs.requests.RequestComponentController;
 import user.subcomponents.tabs.results.ResultsComponentController;
 import user.util.http.HttpUserUtil;
 
@@ -50,6 +51,8 @@ public class AppController implements Closeable {
     @FXML private ExecutionComponentController executionTabController;
     @FXML private ScrollPane resultTab;
     @FXML private ResultsComponentController resultTabController;
+    @FXML private ScrollPane requestTab;
+    @FXML private RequestComponentController requestTabController;
 
     @FXML
     private TabPane tabPane;
@@ -79,6 +82,9 @@ public class AppController implements Closeable {
     private Tab executionTabComponent;
     @FXML
     private Tab resultTabComponent;
+    @FXML
+    private Tab requestTabComponent;
+    @FXML private Label userNameLabel;
     private Stage primaryStage;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
@@ -89,9 +95,9 @@ public class AppController implements Closeable {
         stopThreadPool = new StopTaskObject();
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
-        propertyWaitingThreadPool = new SimpleLongProperty();
+        /*propertyWaitingThreadPool = new SimpleLongProperty();
         propertyRunningThreadPool = new SimpleLongProperty();
-        propertyCompletedThreadPool = new SimpleLongProperty();
+        propertyCompletedThreadPool = new SimpleLongProperty();*/
 
 
     }
@@ -124,26 +130,28 @@ public class AppController implements Closeable {
     }
 
     public void initializeMainApplication(){
-        if (detailsTabController != null && executionTabController != null && resultTabController != null) {
+        if (detailsTabController != null && executionTabController != null
+                && resultTabController != null && requestTabController != null) {
             detailsTabController.setMainController(this);
             executionTabController.setMainController(this);
             resultTabController.setMainController(this);
+            requestTabController.setMainController(this);
         }
 
-        selectedFileName.textProperty().bind(selectedFileProperty);
+       /* selectedFileName.textProperty().bind(selectedFileProperty);
         waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
         runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
         completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
         propertyWaitingThreadPool.set(0);
         propertyRunningThreadPool.set(0);
-        propertyCompletedThreadPool.set(0);
+        propertyCompletedThreadPool.set(0);*/
     }
 
     public void setModel(Model model) {
         this.model = model;
     }
 
-    @FXML
+   /* @FXML
     void openFileButtonAction(ActionEvent event) throws IOException {
         // reset value in threadpool - if boolean is true thread pool has already ran
         if(stopThreadPool.isStop()){
@@ -188,16 +196,16 @@ public class AppController implements Closeable {
 
         showPopup(res);
         detailsTabController.loadDetailsView();
-        executionTabController.populateTab();*/
-    }
+        executionTabController.populateTab();
+    } */
 
 
-    public void runTaskThreadPool(){
+   /* public void runTaskThreadPool(){
         // create task to update the thread pool information
         stopThreadPool.setStop(true);
         new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
                 propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
-    }
+    }*/
 
     public void showPopup(String message) {
         Popup popup = new Popup();
@@ -297,5 +305,9 @@ public class AppController implements Closeable {
     public void moveToExecutionTab() {
         tabPane.getSelectionModel().select(executionTabComponent);
         executionTabController.populateTabFromRerunSimulation();
+    }
+
+    public void updateUserName(String userName) {
+        userNameLabel.setText(userName);
     }
 }

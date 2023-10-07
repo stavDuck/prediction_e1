@@ -170,7 +170,7 @@ public class ExecutionComponentController {
 
     @FXML
     void startButtonAction(ActionEvent event) {
-        boolean entityVal, envVal;
+       /* boolean entityVal, envVal;
         boolean isNewSimulationFailed = false;
         // if the first time starting simulation with new xml - start thread
        if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
@@ -201,7 +201,7 @@ public class ExecutionComponentController {
                 mainController.moveToResultsTab();
             }
             mainController.runSimulation();
-        }
+        }*/
     }
 
     public boolean validateEntityPopulation() {

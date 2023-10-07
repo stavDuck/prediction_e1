@@ -1,0 +1,8 @@
+.table-title{
+    -fx-font-size: 10px;
+}
+.title{
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0073e6;
+}

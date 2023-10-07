@@ -70,7 +70,7 @@ public class Model {
     }
 
     public void runSimulation() {
-        try {
+       /* try {
             LocalDate currentDate;
             LocalTime currentTime;
             // simulation already ran need to create a new one
@@ -78,7 +78,7 @@ public class Model {
                 simulation = loadFileXML(fileName);
                 simulation.setSimulationID(idGenerator);
                 idGenerator++;
-            }*/
+            }
 
             // set env values
             //setSimulationEnvValues(simulation);
@@ -104,7 +104,7 @@ public class Model {
         }
         catch (RuntimeException e) {
             //System.out.println("Simulation failed with an error: " + e.getMessage());
-        }
+        }*/
     }
 
    // public boolean getSimulationDone() {

@@ -71,3 +71,8 @@
 .subject-thred-pool{
     -fx-font-weight: bold;
 }
+
+.user-name{
+    -fx-text-fill:#0073e6;
+    -fx-font-weight: bold;
+}
