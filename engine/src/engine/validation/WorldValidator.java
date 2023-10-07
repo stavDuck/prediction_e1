@@ -18,7 +18,7 @@ public class WorldValidator {
         envValidator.validateEnvData(prdWorld);
         entitiesValidator.validateEntitiesData(prdWorld);
         rulesValidator.validateRulesData(prdWorld);
-        terminationValidator.validateTerminationData(prdWorld);
+        //terminationValidator.validateTerminationData(prdWorld);
         gridValidator.validateGridData(prdWorld);
     }
 }

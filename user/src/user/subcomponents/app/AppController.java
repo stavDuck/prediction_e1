@@ -231,6 +231,7 @@ public class AppController implements Closeable {
         this.primaryStage = primaryStage;
     }
 
+    public   Stage getPrimaryStage() {return this.primaryStage;}
     public Dto getDtoWorld(){
         return model.getDtoWorld();
     }

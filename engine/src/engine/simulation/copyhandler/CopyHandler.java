@@ -27,14 +27,21 @@ public class CopyHandler {
     private static final String REPLACE = "replace";
     private static final String PROXIMITY = "proximity";
     public void copyData(PRDWorld prdWorld, World world) {
+        copyWorldData(prdWorld, world);
         copyEnvironmentProperties(prdWorld, world);
         copyEntityStructure(prdWorld, world);
         copyRules(prdWorld, world);
-        copyTermination(prdWorld, world);
+        //copyTermination(prdWorld, world);
         copyGrid(prdWorld, world);
-        copyTreadCount(prdWorld.getPRDThreadCount(),world);
+        //copyTreadCount(prdWorld.getPRDThreadCount(),world);
     }
 
+    public void copyWorldData(PRDWorld prdWorld, World world) {
+        world.setName(prdWorld.getName());
+        if(prdWorld.getSleep() != null) {
+            world.setSleep(prdWorld.getSleep());
+        }
+    }
     public void copyEnvironmentProperties(PRDWorld prdWorld, World world) {
         List<PRDEnvProperty> prdList = prdWorld.getPRDEnvironment().getPRDEnvProperty();
         for(PRDEnvProperty property : prdList) {
@@ -279,7 +286,7 @@ public class CopyHandler {
         }
         return proximityAction;
     }
-    public void copyTermination(PRDWorld prdWorld, World world) {
+    /*public void copyTermination(PRDWorld prdWorld, World world) {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
         //or by user or tick/ seconds
@@ -298,13 +305,13 @@ public class CopyHandler {
         world.setTermination(new Termination(seconds != null ? seconds.getCount() : null,
                 ticks != null ? ticks.getCount() : null));
         }
-    }
+    }*/
 
     public void copyGrid(PRDWorld prdWorld, World world) {
         world.setGrid(new Grid(prdWorld.getPRDGrid().getRows(), prdWorld.getPRDGrid().getColumns()));
     }
 
-    public void copyTreadCount(int count, World world){
+    /*public void copyTreadCount(int count, World world){
         world.setThreadCount(count);
-    }
+    }*/
 }

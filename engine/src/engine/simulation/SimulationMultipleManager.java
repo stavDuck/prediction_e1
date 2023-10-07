@@ -2,6 +2,8 @@ package engine.simulation;
 import engine.simulation.execution.Status;
 import engine.simulation.execution.runner.SingleSimulationRunner;
 
+import engine.simulation.execution.SimulationExecution;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -67,5 +69,8 @@ public class SimulationMultipleManager {
         // Shut down the ExecutorService gracefully
         executorService.shutdown();
         executorService = Executors.newFixedThreadPool(newNumber);
+    }
+    public SimulationExecution getSimulationByNameAndID(String name, int id) {
+        return simulationsManager.get(name).getSimulationById(id);
     }
 }

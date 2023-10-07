@@ -36,6 +36,7 @@ public class ResourcesConstants {
 
     public final static String LOGIN_ADMIN = FULL_SERVER_PATH + "/loginAdminResponse";
     public final static String LOGOUT_ADMIN = FULL_SERVER_PATH + "/logoutAdminResponse";
+    public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
 
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
 

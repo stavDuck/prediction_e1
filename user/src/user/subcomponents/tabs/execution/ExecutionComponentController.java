@@ -8,9 +8,12 @@ import engine.value.generator.ValueGeneratorFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import user.subcomponents.app.AppController;
 
 public class ExecutionComponentController {
@@ -198,10 +201,37 @@ public class ExecutionComponentController {
             entityVal = validateEntityPopulation();
             envVal = verifyEnvVariable();
             if (entityVal && envVal) {
-                mainController.moveToResultsTab();
+                showPopup("Variables Summary");
+                //mainController.moveToResultsTab();
             }
             mainController.runSimulation();
         }*/
+    }
+
+    public void showPopup(String message) {
+        Popup popup = new Popup();
+
+        Label popupLabel = new Label(message);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(event -> popup.hide());
+        Button startButton = new Button("Start");
+        startButton.setOnAction(event -> {
+            popup.hide();
+            mainController.moveToResultsTab();
+        });
+
+        VBox popupContent = new VBox(10); // Use VBox layout
+        popupContent.setStyle("-fx-background-color: white" + ";-fx-border-color: #007bff" + "; -fx-padding: 10;");
+        popupContent.getChildren().addAll(popupLabel);
+
+        HBox buttonContainer = new HBox(closeButton); // Place the button in an HBox
+        //need to place the popup
+        buttonContainer.setAlignment(Pos.TOP_CENTER);
+        popupContent.getChildren().add(buttonContainer); // Add the button container to the VBox
+        popup.getContent().add(popupContent);
+
+        popup.show(mainController.getPrimaryStage());
     }
 
     public boolean validateEntityPopulation() {

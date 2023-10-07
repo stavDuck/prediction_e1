@@ -1,11 +1,12 @@
 package dto.rule.Action;
 
-public abstract class DtoAbstractAction {
+public class DtoAbstractAction {
     private String type;
     private String primaryEntity;
     private boolean isSecondaryExist;
     private String secondaryEntity;
 
+    public DtoAbstractAction() {}
     public DtoAbstractAction(String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity) {
         this.type = type;
         this.primaryEntity = primaryEntity;

@@ -1,11 +1,21 @@
 package user.subcomponents.model;
 
+import com.google.gson.Gson;
 import dto.Dto;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationHistory;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
+import javafx.application.Platform;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import user.subcomponents.common.ResourcesConstants;
+import user.util.http.HttpUserUtil;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +26,7 @@ public class Model {
     private Simulation simulation;
     private boolean isFileLoaded = false;
     private int currSimulationId;
+    private String currSimulationName;
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
     public String loadXmlFile(String fileName){
@@ -43,7 +54,7 @@ public class Model {
             // if all went good
             simulation = tempSimulation;
             currSimulationId = tempSimulationID;
-
+            currSimulationName = fileName;
             //simulationHistory = new ArrayList<>(); // every time we load new XML the history is deleted
             //isSimulateHistoryNotEmpty = false;
         } catch (RuntimeException e) {
@@ -61,7 +72,55 @@ public class Model {
     }*/
 
     public Dto getDtoWorld(){
-        return simulation.getSimulationById(currSimulationId).getWorld().createDto();
+        String simulationName;
+        final Dto[] dto = new Dto[1];
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.GET_DTO)
+                .newBuilder()
+                .addQueryParameter("name", currSimulationName)
+                .addQueryParameter("id", String.valueOf(currSimulationId))
+                .build()
+                .toString();
+
+        HttpUserUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("dto retrival failed");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseBody = response.body().string();
+                Gson gson = new Gson();
+                if (response.code() != 200) {
+                    System.out.println("dto retrival failed");
+                } else {
+                    Platform.runLater(() -> {
+                        // chatAppMainController.updateUserName(userName);
+                        dto[0] = gson.fromJson(responseBody, Dto.class);
+                    });
+                }
+
+/*
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                    );
+                } else {
+
+                    System.out.println(response.body().string());
+                    Platform.runLater(() -> {
+                        // chatAppMainController.updateUserName(userName);
+                        appController.switchToMainApplication();
+                    });
+                }*/
+            }
+        });
+
+
+        return dto[0];
        // return simulation.getWorld().createDto();
     }
 
@@ -96,7 +155,7 @@ public class Model {
 
             // run simulation
            // simulation.run();
-            simulation.execute(currSimulationId);
+            //simulation.execute(currSimulationId);
 
            // isSimulationDone = true;
             // set the end simulation after run is done

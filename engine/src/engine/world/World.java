@@ -1,9 +1,9 @@
 package engine.world;
 
+import com.google.gson.Gson;
 import dto.Dto;
 import dto.entity.Pair;
 import dto.grid.DtoGrid;
-import dto.rule.DtoRule;
 import engine.Position;
 import engine.action.AbstractAction;
 import engine.action.type.*;
@@ -22,6 +22,7 @@ import engine.rule.Rule;
 import engine.termination.Termination;
 import engine.value.generator.ValueGeneratorFactory;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -39,6 +40,8 @@ public class World {
     private Object pauseObject;
     private long runningTime;
     private String errorStopSimulation;
+private String name;
+private Integer sleep;
 
 
     public World() {
@@ -53,6 +56,7 @@ public class World {
         isPaused = false;
         pauseObject = new Object();
         errorStopSimulation = "";
+        this.sleep = null;
     }
 
     // getters
@@ -356,6 +360,8 @@ public class World {
         return false;
     }
 
+
+
     public Dto createDto() {
         Dto dto = new Dto();
         for(EntityStructure entityStructure : entityStructures.values()) {
@@ -401,6 +407,7 @@ public class World {
 
         return dto;
     }
+
 
     private List<Pair> getPopHistoryList(List<engine.entity.Pair> populationHistoryList) {
         List<Pair> res = new ArrayList<>();
@@ -499,4 +506,20 @@ public class World {
     public void setErrorStopSimulation(String errorStopSimulation) {
         this.errorStopSimulation = errorStopSimulation;
     }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getSleep() {
+        return sleep;
+    }
+
+    public void setSleep(Integer sleep) {
+        this.sleep = sleep;
+    }
+
 }
