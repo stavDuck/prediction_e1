@@ -1,5 +1,6 @@
 package user.subcomponents.app;
 
+import com.sun.istack.internal.NotNull;
 import dto.Dto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -18,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import user.login.LoginController;
 import okhttp3.*;
 import user.subcomponents.app.task.TaskThreadPoolUpdater;
