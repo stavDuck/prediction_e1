@@ -14,6 +14,14 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>DtoResponseServlet</servlet-name>
+        <servlet-class>servlets.DtoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DtoResponseServlet</servlet-name>
+        <url-pattern>/dtoResponse</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>LogoutUserResponseServlet</servlet-name>
         <servlet-class>servlets.user.LogoutUserServlet</servlet-class>
     </servlet>

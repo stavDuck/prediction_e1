@@ -6,7 +6,7 @@ import generated.PRDWorld;
 
 public class TerminationValidator {
 
-    public boolean validateTerminationData(PRDWorld prdWorld) throws XmlValidationException {
+    /*public boolean validateTerminationData(PRDWorld prdWorld) throws XmlValidationException {
         PRDByTicks ticks = null;
         PRDBySecond seconds = null;
         for (Object curr : prdWorld.getPRDTermination().getPRDBySecondOrPRDByTicks()){
@@ -25,5 +25,5 @@ public class TerminationValidator {
             throw new XmlValidationException("Invalid Termination conditions, 'User Termination' cannot be combined with other options");
         }
         return true;
-    }
+    }*/
 }
