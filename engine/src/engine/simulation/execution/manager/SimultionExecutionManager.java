@@ -25,10 +25,14 @@ public class SimultionExecutionManager {
     }
 
     // NEW !!!
-    public void addSimulationExecution(InputStream inputStream, int idGenerator) throws RuntimeException{
-        SimulationExecution newSimulation = new SimulationExecution(inputStream);
+    public void addSimulationExecution(InputStream inputStream, int idGenerator) throws RuntimeException {
+        addSimulationExecution(inputStream, idGenerator, "");
+    }
+
+    public void addSimulationExecution(InputStream inputStream, int idGenerator, String userName) throws RuntimeException {
+        SimulationExecution newSimulation = new SimulationExecution(inputStream, userName);
         newSimulation.setId(idGenerator);
-       // idGenerator++;
+        // idGenerator++;
 
        /* if(isManagerMapEmpty){
             // set thread pool

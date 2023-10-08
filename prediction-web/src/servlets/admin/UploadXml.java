@@ -14,6 +14,7 @@ import utils.ServletUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
+// if response is successful response body will have the xml name
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class UploadXml extends HttpServlet {
 
@@ -46,7 +47,7 @@ public class UploadXml extends HttpServlet {
 
                 System.out.println("Added new xml named : " + simulationExecution.getUserName());
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print("XmlFile Uploaded successfully");
+                response.getOutputStream().print(simulationExecution.getXmlName());
             }
         }
         catch (RuntimeException e){

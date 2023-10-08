@@ -35,7 +35,10 @@ public class SimulationExecution {
 
     // NEW !!!
     // set World information
-    public SimulationExecution(InputStream inputStream) throws RuntimeException{
+    public SimulationExecution(InputStream inputStream) throws RuntimeException {
+        this(inputStream, "");
+    }
+    public SimulationExecution(InputStream inputStream, String userName) throws RuntimeException{
         isSimulationSelected = false;
         try {
             // creating PRDWorld
@@ -50,7 +53,7 @@ public class SimulationExecution {
             copy.copyData(prdWorld, world);
 
             simulationStatus = Status.CREATED;
-            this.userName = ""; // default for first time Admin uploading iformation
+            this.userName = userName; // default for first time Admin uploading iformation
         }
         catch (JAXBException e){
             //throw new RuntimeException("File " + fileName + " JAXB upload filed, please check the xml");

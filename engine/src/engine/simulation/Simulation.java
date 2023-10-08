@@ -16,7 +16,12 @@ public class Simulation {
 
     // NEW !!!
     public void createSimulation(InputStream inputStream, int id) throws RuntimeException{
-        simulationManager.addSimulationExecution(inputStream, id);
+        //simulationManager.addSimulationExecution(inputStream, id);
+        //return simulationId;
+        createSimulation(inputStream, id, "");
+    }
+    public void createSimulation(InputStream inputStream, int id, String userName) throws RuntimeException{
+        simulationManager.addSimulationExecution(inputStream, id, userName);
         //return simulationId;
     }
 
