@@ -234,7 +234,7 @@ public class ExecutionComponentController {
         popup.show(mainController.getPrimaryStage());
     }
 
-    public boolean validateEntityPopulation() {
+    /*public boolean validateEntityPopulation() {
         boolean res = true;
         int sum = 0;
         int population;
@@ -266,7 +266,7 @@ public class ExecutionComponentController {
         return res;
     }
 
-    public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
+    /*public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
         try {
             int pop = Integer.parseInt(population);
             mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, pop);
@@ -281,9 +281,9 @@ public class ExecutionComponentController {
                 throw new NumberFormatException("Population value should be numeric and an integer");
             }
         }
-    }
+    }*/
 
-    public boolean verifyEnvVariable() {
+    /*public boolean verifyEnvVariable() {
         boolean valid = true;
         boolean checked = false;
         String type = "";
@@ -393,9 +393,9 @@ public class ExecutionComponentController {
 
         }
         return valid;
-    }
+    }*/
 
-    public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
+    /*public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
         try {
             mainController.getModel().getCurrSimulation().setEnvVariable(envVarName, value);
             mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envVarName, value);
@@ -412,7 +412,7 @@ public class ExecutionComponentController {
             }
         }
 
-    }
+    }*/
 
     public void setErrorMessage(VBox vBox, int index, String message, boolean shouldRemove) {
         if (!shouldRemove) {
@@ -423,7 +423,7 @@ public class ExecutionComponentController {
     }
 
 
-    public void generateFloat(String envPropName) {
+   /* public void generateFloat(String envPropName) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         if (currProp.getRange() != null) {
             Object random = ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
@@ -440,9 +440,9 @@ public class ExecutionComponentController {
             currProp.setVal(random);
             currProp.setOriginalValueFromUser(random);
         }
-    }
+    }*/
 
-    public void generateBoolean(String envPropName) {
+   /* public void generateBoolean(String envPropName) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         Object random = ValueGeneratorFactory.createRandomBoolean().generateValue();
@@ -450,9 +450,9 @@ public class ExecutionComponentController {
         currProp.setVal(random);
         currProp.setOriginalValueFromUser(random);
 
-    }
+    }*/
 
-    public void generateString(String envPropName) {
+  /*  public void generateString(String envPropName) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         //currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
@@ -460,14 +460,14 @@ public class ExecutionComponentController {
         currProp.setVal(random);
         currProp.setOriginalValueFromUser(random);
 
-    }
+    }*/
 
-    public void populateTabFromRerunSimulation() {
+   /* public void populateTabFromRerunSimulation() {
         setOriginalEntityPopulation();
         setOriginalEnvVariable();
-    }
+    }*/
 
-    public void setOriginalEntityPopulation() {
+   /* public void setOriginalEntityPopulation() {
         int population;
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
@@ -507,5 +507,5 @@ public class ExecutionComponentController {
                 }
             }
         }
-    }
+    }*/
 }

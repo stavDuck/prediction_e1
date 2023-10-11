@@ -130,11 +130,11 @@ public class ResultsComponentController {
 
     public void addSimulation(int simulationID, boolean isFinished) {
         String text = "Simulation no. " + simulationID;
-        simulationDetails.getChildren().add(createSimulationHbox(text));
+       // simulationDetails.getChildren().add(createSimulationHbox(text));
 
     }
 
-    public HBox createSimulationHbox(String text) {
+    /*public HBox createSimulationHbox(String text) {
         Image image;
         Label labelSimulationId = new Label(text);
         Label labelSimulationStatus = new Label(" Process");
@@ -155,34 +155,34 @@ public class ResultsComponentController {
                 clearTreeViewHistogram();
 
                 // set curr simulation on the currect simulation
-                mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+               // mainController.getModel().getCurrSimulation().setSimulationSelected(false);
                 mainController.getModel().setCurrSimulationId(index + 1);
                 setSelectedSimulationId(index+1);
-                mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+                //mainController.getModel().getCurrSimulation().setSimulationSelected(true);
                 addEntityToTable();
 
                 // set view tree with entities
                 loadHistoeamEntityTreeView();
 
-                new Thread(() -> {
+               new Thread(() -> {
                     this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
                             propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
                     task.runTask();
 
-                }).start();
+                }).start();*/
 
-                setPropertyLineChart();
+               /* setPropertyLineChart();
                 System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
-         //   }
-        };
+          }
+
 
         dynamicVBox.setOnMouseClicked(HBoxClickHandler);
 
         return dynamicVBox;
-    }
+    }*/
 
 
-    public void runSimulation() {
+   /* public void runSimulation() {
         mainController.getModel().runSimulation();
         mainController.getModel().getCurrSimulation().setSimulationSelected(true);
         new Thread(()->{
@@ -193,31 +193,31 @@ public class ResultsComponentController {
             });
                 task.runTask();
             }).start();
-    }
+    }*/
 
     @FXML
     void pauseOnclick(ActionEvent event) {
-        new Thread(new TaskSimulationPause(
+       /* new Thread(new TaskSimulationPause(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails
-        )).start();
+        )).start();*/
     }
 
     @FXML
     void resumeOnclick(ActionEvent event) {
-        new Thread(new TaskSimulationResume(
+        /*new Thread(new TaskSimulationResume(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick,
                 runningTimeProperty,simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel
-        )).start();
+        )).start();*/
     }
 
     @FXML
     void stopOnClick(ActionEvent event) {
-        new Thread(new TaskSimulationStop(
+        /*new Thread(new TaskSimulationStop(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails, populationTableView, propertyMap
-        )).start();
+        )).start();*/
     }
 
-    public void setPropertyLineChart(){
+    /*public void setPropertyLineChart(){
         SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
         if(simulationExecution.getSimulationStatus() == Status.FINISH || simulationExecution.getSimulationStatus() == Status.STOP) {
             // Clear the chart by removing all data series
@@ -241,7 +241,7 @@ public class ResultsComponentController {
                 popultionGraph.getData().add(series);
             }
         }
-    }
+    }*/
 
     public void addEntityToTable() {
         //TableView<FillPopulation> tableView;
@@ -318,7 +318,7 @@ public class ResultsComponentController {
     // for selected tree view
     @FXML
     void selectedEntityProperty(MouseEvent event){
-        Dto dto = mainController.getDtoWorld();
+       /* Dto dto = mainController.getDtoWorld();
         SimulationExecution currSimulation = mainController.getModel().getCurrSimulation();
         TreeItem<String> item = histoeamEntityTree.getSelectionModel().getSelectedItem();
 
@@ -345,7 +345,7 @@ public class ResultsComponentController {
 
                 System.out.println("Entity: " + entityName + " Property: " + propertyName);
             }
-        }
+        }*/
     }
 
     public void clearAllHistogramTabs(){

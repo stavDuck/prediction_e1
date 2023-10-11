@@ -3,10 +3,7 @@ package admin.subcomponents.model;
 import admin.util.http.HttpAdminUtil;
 import com.google.gson.Gson;
 import dto.Dto;
-import engine.simulation.Simulation;
-import engine.simulation.SimulationHistory;
-import engine.simulation.execution.SimulationExecution;
-import engine.simulation.execution.Status;
+import dto.manager.DtoManager;
 import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,10 +20,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    //private Simulation simulation;
     private boolean isFileLoaded = false;
     private int currSimulationId;
     private String currSimulationName;
+    private DtoManager dtoXmlManager;
+
+    public Model() {
+        dtoXmlManager = new DtoManager();
+    }
+
+    public DtoManager getDtoXmlManager(){
+        return dtoXmlManager;
+    }
+    public void addNewDtoToManager(Dto dto){
+        dtoXmlManager.addNewDtoToManager(dto.getXmlName(), dto);
+    }
+    public void setDtoXmlManager(DtoManager dtoManager){
+        this.dtoXmlManager = dtoManager;
+    }
+    public Dto getDtoByXmlName(String xmlName){
+        return dtoXmlManager.getDtoXmlManager().get(xmlName);
+    }
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
     /*public String loadXmlFile(String fileName){

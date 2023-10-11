@@ -137,6 +137,8 @@ public class AppController implements Closeable {
             resultTabController.setMainController(this);
             requestTabController.setMainController(this);
         }
+        // set connection to details updater
+        detailsTabController.runTaskDetailsUpdater();
 
        /* selectedFileName.textProperty().bind(selectedFileProperty);
         waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
@@ -255,8 +257,8 @@ public class AppController implements Closeable {
     public void moveToResultsTab() {
         tabPane.getSelectionModel().select(resultTabComponent);
        // resultTabController.addSimulation(model.getSimulation().getSimulationID(), model.getSimulationDone());
-        resultTabController.addSimulation(model.getCurrSimulationId(), false);
-        resultTabController.setSelectedSimulationId(model.getCurrSimulationId());
+       // resultTabController.addSimulation(model.getCurrSimulationId(), false);
+        //resultTabController.setSelectedSimulationId(model.getCurrSimulationId());
 
         // Clear !!
         resultTabController.clearAllHistogramTabs();
@@ -279,6 +281,8 @@ public class AppController implements Closeable {
     }
 
     public void logout(){
+        // stop taskUpdater in Details controller
+        detailsTabController.setStopDetailsUpdater(false);
         HttpUserUtil.runAsync(ResourcesConstants.LOGOUT, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -295,9 +299,9 @@ public class AppController implements Closeable {
     }
 
 
-    public void runSimulation() {
+    /*public void runSimulation() {
         resultTabController.runSimulation();
-    }
+    }*/
 
     public String getCurrLoadedFileName(){
         return selectedFileProperty.get();
@@ -305,7 +309,7 @@ public class AppController implements Closeable {
 
     public void moveToExecutionTab() {
         tabPane.getSelectionModel().select(executionTabComponent);
-        executionTabController.populateTabFromRerunSimulation();
+      //  executionTabController.populateTabFromRerunSimulation();
     }
 
     public void updateUserName(String userName) {

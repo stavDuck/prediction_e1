@@ -12,13 +12,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.subcomponents.tabs.details.DetailsComponentController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.subcomponents.tabs.details.DetailsComponentController">
    <content>
-       <GridPane fx:id="gridPanelDetailsView" alignment="TOP_CENTER" hgap="5.0" maxWidth="1.7976931348623157E308" stylesheets="@DetailsComponent.css" BorderPane.alignment="CENTER">
+       <GridPane fx:id="gridPanelDetailsView" alignment="CENTER_LEFT" hgap="5.0" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" stylesheets="@DetailsComponent.css" BorderPane.alignment="CENTER">
            <columnConstraints>
-               <ColumnConstraints hgrow="SOMETIMES" maxWidth="374.0" minWidth="10.0" percentWidth="0.0" prefWidth="216.0" />
-               <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="200.0" percentWidth="0.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="170.0" percentWidth="0.0" prefWidth="170.0" />
+               <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" percentWidth="0.0" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="180.0" percentWidth="0.0" prefWidth="170.0" />
            </columnConstraints>
            <rowConstraints>
                <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="ALWAYS" />
@@ -26,8 +26,8 @@
            </rowConstraints>
            <children>
                <Label id="title-view" fx:id="informationDetailsTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="title-information" textAlignment="CENTER" GridPane.columnIndex="1" />
-               <TreeView fx:id="treeViewInformation" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="200.0" prefWidth="200.0" stylesheets="@DetailsComponent.css" GridPane.rowIndex="1" />
-            <VBox fx:id="informationDetailsBody" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <TreeView fx:id="treeViewInformation" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="353.0" prefWidth="200.0" stylesheets="@DetailsComponent.css" GridPane.rowIndex="1" />
+            <VBox fx:id="informationDetailsBody" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -38,40 +38,43 @@
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="36.0" styleClass="title-thread-pool" text="Thread Pool Status" GridPane.columnIndex="2" />
             <GridPane fx:id="gridPanelThreadsPool" GridPane.columnIndex="2" GridPane.rowIndex="1">
               <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="40.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="115.0" prefWidth="115.0" />
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="40.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
+                  <RowConstraints maxHeight="40.0" minHeight="40.0" percentHeight="0.0" prefHeight="40.0" vgrow="ALWAYS" />
                 <RowConstraints maxHeight="40.0" minHeight="40.0" percentHeight="0.0" prefHeight="40.0" vgrow="ALWAYS" />
                 <RowConstraints maxHeight="40.0" percentHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="40.0" minHeight="40.0" percentHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="30.0" percentHeight="0.0" prefHeight="30.0" valignment="CENTER" />
               </rowConstraints>
                <children>
-                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Waiting:">
+                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Waiting:" GridPane.rowIndex="1">
                      <padding>
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="waitingThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" />
-                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Running:" GridPane.rowIndex="1">
+                  <Label fx:id="waitingThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Running:" GridPane.rowIndex="2">
                      <padding>
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="runningThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Completed:" GridPane.rowIndex="2">
+                  <Label fx:id="runningThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="70.0" styleClass="subject-thred-pool" text="Completed:" GridPane.rowIndex="3">
                      <padding>
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="completedThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="threadNewNumber" alignment="CENTER" maxWidth="1.7976931348623157E308" minHeight="20.0" minWidth="40.0" prefHeight="20.0" prefWidth="99.0" GridPane.rowIndex="3">
+                  <Label fx:id="completedThreadPoolLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="threadNewNumber" alignment="CENTER" maxWidth="1.7976931348623157E308" minHeight="20.0" minWidth="40.0" prefHeight="20.0" prefWidth="99.0" GridPane.rowIndex="4">
                      <padding>
                         <Insets left="10.0" />
                      </padding>
                   </TextField>
-                  <Button fx:id="updateThreadPoolNumber" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateThreadPoolNumberAction" text="Update" textOverrun="LEADING_ELLIPSIS" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                  <Button fx:id="updateThreadPoolNumber" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateThreadPoolNumberAction" text="Update" textOverrun="LEADING_ELLIPSIS" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="40.0" styleClass="subject-thred-pool" text="Max Thread Number:" />
+                  <Label fx:id="maxThreadsNumberThreadPoolLabel" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="70.0" GridPane.columnIndex="1" />
                </children>
             </GridPane>
            </children>

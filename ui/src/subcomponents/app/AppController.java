@@ -124,7 +124,7 @@ public class AppController {
         selectedFileProperty.set(absolutePath);
         isFileSelected.set(true);
 
-        String res = model.loadXmlFile(absolutePath);
+      //  String res = model.loadXmlFile(absolutePath);
         //messageToUser.setText(res.isEmpty() ? "Successful" : res);
 
         // clear !!
@@ -140,7 +140,7 @@ public class AppController {
 
 
 
-        showPopup(res);
+        //showPopup(res);
         detailsTabController.loadDetailsView();
         executionTabController.populateTab();
     }

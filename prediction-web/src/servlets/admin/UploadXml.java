@@ -1,6 +1,9 @@
 package servlets.admin;
 
+import com.google.gson.Gson;
 import constants.Constants;
+import dto.Dto;
+import dto.manager.DtoManager;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationMultipleManager;
 import engine.simulation.execution.SimulationExecution;
@@ -24,30 +27,39 @@ public class UploadXml extends HttpServlet {
         Part filePart = request.getPart("file1");
         InputStream fileContent = filePart.getInputStream();
 
+        // check if dtoXmlManager exist in servletContext- if not create one
+        DtoManager dtoManager = ServletUtils.getDtoXmlManager(getServletContext());
         // check if simulationMultipleManager exist in servletContext - if not create one
         SimulationMultipleManager simulationMultipleManager = ServletUtils.getSimulationMultipleManager(getServletContext());
 
         // create simulation from InputStream to get the xml name
         Simulation simulation = new Simulation();
         try {
-           simulation.createSimulation(fileContent, simulationMultipleManager.getIdGenerator());
+            simulation.createSimulation(fileContent, simulationMultipleManager.getIdGenerator());
 
-           //if simulation name already exist!!!!
+            //if simulation name already exist!!!!
             SimulationExecution simulationExecution = simulation.getSimulationById(simulationMultipleManager.getIdGenerator());
-            if(simulationMultipleManager.isNameExistInMap(simulationExecution.getXmlName())){
-                String errorMessage = "File name " + simulationExecution.getXmlName() + " already exists. Please enter a different xml.";
+            synchronized (this) {
+                if (simulationMultipleManager.isNameExistInMap(simulationExecution.getXmlName())) {
+                    String errorMessage = "File name " + simulationExecution.getXmlName() + " already exists. Please enter a different xml.";
 
-                // stands for unauthorized as there is already such user with this name
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getOutputStream().print(errorMessage);
-            }
-            else {
-                // add NEW xml (simulation) to the list with uniq number
-                simulationMultipleManager.addSimulationToSimulationMultipleManager(simulationExecution.getXmlName(), new Simulation());
+                    // stands for unauthorized as there is already such user with this name
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getOutputStream().print(errorMessage);
+                } else {
+                    Dto dtoUploadXml = simulation.getSimulationById(simulationMultipleManager.getIdGenerator()).createWorldDto();
+                    // save new simulation dto
+                    dtoManager.addNewDtoToManager(dtoUploadXml.getXmlName(), dtoUploadXml);
+                    // add NEW xml (simulation) to the list with uniq number
+                    simulationMultipleManager.addSimulationToSimulationMultipleManager(simulationExecution.getXmlName(), new Simulation());
 
-                System.out.println("Added new xml named : " + simulationExecution.getUserName());
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().print(simulationExecution.getXmlName());
+                    System.out.println("Added new xml named : " + simulationExecution.getUserName());
+                    response.setStatus(HttpServletResponse.SC_OK);
+
+                    // return the DTO in string format
+                    Gson gson = new Gson();
+                    response.getOutputStream().print(gson.toJson(dtoUploadXml));
+                }
             }
         }
         catch (RuntimeException e){

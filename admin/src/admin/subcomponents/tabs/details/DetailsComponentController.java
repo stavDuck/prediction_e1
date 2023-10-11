@@ -42,10 +42,8 @@ public class DetailsComponentController {
     private final static String RULES_TITLE = "Rules List";
     private final static String RULES_ACTIVATION = "Activation";
     private final static String RULES_ACTIONS = "Actions";
-    private final static String TERMINATION_TITLE = "Termination Conditions";
     private final static String GRID_TITLE = "Grid";
-
-    private final static String ROOT_TITEL = "Simulation's Information";
+    private final static String ROOT_TITEL = "Loded XMLS in the system";
     private final static String INCREASE = "increase";
     private final static String DECREASE = "decrease";
     private final static String CALCULATION = "calculation";
@@ -68,15 +66,14 @@ public class DetailsComponentController {
     // FXML iformation for thread pool manager
     private StopTaskObject stopThreadPool;
 
-    @FXML
-    private Label waitingThreadPoolLabel;
+    @FXML private Label waitingThreadPoolLabel;
     private SimpleLongProperty propertyWaitingThreadPool;
-    @FXML
-    private Label runningThreadPoolLabel;
+    @FXML private Label runningThreadPoolLabel;
     private SimpleLongProperty propertyRunningThreadPool;
-    @FXML
-    private Label completedThreadPoolLabel;
+    @FXML private Label completedThreadPoolLabel;
     private SimpleLongProperty propertyCompletedThreadPool;
+    @FXML private Label maxThreadsNumberThreadPoolLabel;
+    private SimpleLongProperty propertyMaxThreadsNumberThreadPool;
     @FXML
     private TextField threadNewNumber;
     @FXML
@@ -90,6 +87,7 @@ public class DetailsComponentController {
         propertyWaitingThreadPool = new SimpleLongProperty();
         propertyRunningThreadPool = new SimpleLongProperty();
         propertyCompletedThreadPool = new SimpleLongProperty();
+        propertyMaxThreadsNumberThreadPool = new SimpleLongProperty();
     }
 
     @FXML
@@ -97,22 +95,15 @@ public class DetailsComponentController {
         waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
         runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
         completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
+        maxThreadsNumberThreadPoolLabel.textProperty().bind(Bindings.format("%,d",propertyMaxThreadsNumberThreadPool));
         resetThreadPoolLabelsInformation();
     }
-
-
 
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
 
     public void loadDetailsView(){
-        Dto dto = mainController.getDtoWorld();
-        Collection<DtoEntity> dtoEntityLst = dto.getEntities().values();
-        Collection<DtoEnv> dtoEnvLst = dto.getEnvs().values();
-        Collection<DtoRule> dtoRuleLst = dto.getRules().values();
-        DtoTermination dtoTermination = dto.getTermination();
-
         // clear if already exist in open new file
         if (treeViewInformation.getRoot() != null &&
                 treeViewInformation.getRoot().getChildren() != null){
@@ -123,93 +114,97 @@ public class DetailsComponentController {
             informationDetailsTitle.setText("");
         }
 
-
         // set the tree root
-        TreeItem<String> rootItem = new TreeItem<>("Simulation's Information");
+        TreeItem<String> rootItem = new TreeItem<>(ROOT_TITEL);
 
-        // create view of entities by entities names
-        if(dtoEntityLst!= null && !dtoEntityLst.isEmpty()) {
-            TreeItem<String> branchItemEntities = new TreeItem<>(ENTITIES_TITLE);
-            // add leafs by entities names
-            for (DtoEntity curr : dtoEntityLst){
-                branchItemEntities.getChildren().add(new TreeItem<>(curr.getEntityName()));
-            }
-            rootItem.getChildren().add(branchItemEntities);
-        }
+        // create tree Item for every xml dto
+        for (Dto currDto : mainController.getModel().getDtoXmlManager().getDtoXmlManager().values()){
+           // create title by XML name
+            TreeItem<String> xmlNameItem = new TreeItem<>("XML : " + currDto.getXmlName());
 
-        // create view of env values by names
-        if(dtoEnvLst != null && !dtoEnvLst.isEmpty()){
-            TreeItem<String> branchItemEnvs = new TreeItem<>(ENVS_TITLE);
-            // add leafs by env vars names
-            for(DtoEnv curr : dtoEnvLst){
-                branchItemEnvs.getChildren().add(new TreeItem<>(curr.getEnvName()));
-            }
-            rootItem.getChildren().add(branchItemEnvs);
-        }
+            Collection<DtoEntity> dtoEntityLst = currDto.getEntities().values();
+            Collection<DtoEnv> dtoEnvLst = currDto.getEnvs().values();
+            Collection<DtoRule> dtoRuleLst = currDto.getRules().values();
 
-        // create view of rules list by rule names
-        if(dtoRuleLst != null && !dtoRuleLst.isEmpty()){
-            TreeItem<String> branchItemRules = new TreeItem<>(RULES_TITLE);
-            // add leafs by env vars names
-            for(DtoRule curr : dtoRuleLst){
-                TreeItem<String> branchItemRuleName = new TreeItem<>(curr.getName());
-
-                TreeItem<String> branchItemRuleActions = new TreeItem<>(RULES_ACTIONS);
-                // create activation
-                TreeItem<String> branchItemRuleActivation = new TreeItem<>(RULES_ACTIVATION);
-
-                // create actions for curr rule
-                for(DtoAbstractAction currAction : curr.getAction()){
-                    branchItemRuleActions.getChildren().add(new TreeItem<>(currAction.getType()));
+            // create view of entities by entities names
+            if(dtoEntityLst!= null && !dtoEntityLst.isEmpty()) {
+                TreeItem<String> branchItemEntities = new TreeItem<>(ENTITIES_TITLE);
+                // add leafs by entities names
+                for (DtoEntity curr : dtoEntityLst){
+                    branchItemEntities.getChildren().add(new TreeItem<>(curr.getEntityName()));
                 }
-
-
-                //- rules
-                // -- rule name
-                // --- actions
-                // ---- increase
-                // ---- decrease
-                // --- activation
-                branchItemRuleName.getChildren().add(branchItemRuleActions);
-                branchItemRuleName.getChildren().add(branchItemRuleActivation);
-                branchItemRules.getChildren().add(branchItemRuleName);
-
+                xmlNameItem.getChildren().add(branchItemEntities);
             }
-            rootItem.getChildren().add(branchItemRules);
-        }
 
-        // create view of Termination conidtions
-        if(dtoTermination != null){
-            TreeItem<String> branchItemTermination = new TreeItem<>(TERMINATION_TITLE);
-            branchItemTermination.getChildren().addAll(new TreeItem<>("By Ticks"),new TreeItem<>("By Time"));
-            rootItem.getChildren().add(branchItemTermination);
-        }
-        // create view of Grid
-        TreeItem<String> branchItemGrid = new TreeItem<>(GRID_TITLE);
-        rootItem.getChildren().add(branchItemGrid);
+            // create view of env values by names
+            if(dtoEnvLst != null && !dtoEnvLst.isEmpty()){
+                TreeItem<String> branchItemEnvs = new TreeItem<>(ENVS_TITLE);
+                // add leafs by env vars names
+                for(DtoEnv curr : dtoEnvLst){
+                    branchItemEnvs.getChildren().add(new TreeItem<>(curr.getEnvName()));
+                }
+                xmlNameItem.getChildren().add(branchItemEnvs);
+            }
 
+
+            // create view of rules list by rule names
+            if(dtoRuleLst != null && !dtoRuleLst.isEmpty()){
+                TreeItem<String> branchItemRules = new TreeItem<>(RULES_TITLE);
+                // add leafs by env vars names
+                for(DtoRule curr : dtoRuleLst){
+                    TreeItem<String> branchItemRuleName = new TreeItem<>(curr.getName());
+
+                    TreeItem<String> branchItemRuleActions = new TreeItem<>(RULES_ACTIONS);
+                    // create activation
+                    TreeItem<String> branchItemRuleActivation = new TreeItem<>(RULES_ACTIVATION);
+
+                    // create actions for curr rule
+                    for(DtoAbstractAction currAction : curr.getAction()){
+                        branchItemRuleActions.getChildren().add(new TreeItem<>(currAction.getType()));
+                    }
+                    //- rules
+                    // -- rule name
+                    // --- actions
+                    // ---- increase
+                    // ---- decrease
+                    // --- activation
+                    branchItemRuleName.getChildren().add(branchItemRuleActions);
+                    branchItemRuleName.getChildren().add(branchItemRuleActivation);
+                    branchItemRules.getChildren().add(branchItemRuleName);
+
+                }
+                xmlNameItem.getChildren().add(branchItemRules);
+            }
+
+            // create view of Grid
+            TreeItem<String> branchItemGrid = new TreeItem<>(GRID_TITLE);
+            xmlNameItem.getChildren().add(branchItemGrid);
+
+            // set curr xml into the root's children
+            rootItem.getChildren().add(xmlNameItem);
+        }
+        // after all xmls added to Root, set tree view
         treeViewInformation.setRoot(rootItem);
     }
 
     @FXML
     void selectItem(MouseEvent event) {
         String txt = "";
-        Dto dto = mainController.getDtoWorld();
+        Dto dto;
         TreeItem<String> item = treeViewInformation.getSelectionModel().getSelectedItem();
 
-
         if(item != null && !item.getValue().equals(ROOT_TITEL)){
-           boolean isValueRuleAction = false;
+            String xmlName = getXmlNameForSelectedItem(item);
+            dto = mainController.getModel().getDtoByXmlName(xmlName);
+
+            boolean isValueRuleAction = false;
             int indexChildInRuleLst;
             DtoRule dtoRule;
 
             // reset info in screen
             informationDetailsTitle.setText("");
             // clear details body
-            //informationDetailsBody.getChildren().clear();
-           removeAllChildrenFromBody(informationDetailsBody);
-
-
+            removeAllChildrenFromBody(informationDetailsBody);
             informationDetailsTitle.setText(item.getValue());
 
             String ifoType = item.getParent().getValue();
@@ -234,14 +229,6 @@ public class DetailsComponentController {
                         txt += "Property Range from: " + dtoEnv.getEnvRange().getFrom() + ", to: " + dtoEnv.getEnvRange().getTo() + "\n";
                     }
                     break;
-                case TERMINATION_TITLE:
-                    if (item.getValue().indexOf("Ticks") != -1){
-                        txt += "End Condition By Ticks: " + dto.getTermination().getByTick();
-                    }
-                    else{
-                        txt += "End Condition By Seconds: " + dto.getTermination().getBySeconds();
-                    }
-                    break;
                 case RULES_ACTIONS:
                     isValueRuleAction = true;
                     handleRuleAction(dto, item);
@@ -263,6 +250,34 @@ public class DetailsComponentController {
                 informationDetailsBody.getChildren().add(new Label(txt));
             }
         }
+    }
+
+    private String getXmlNameForSelectedItem(TreeItem<String> item) {
+        String helperString = "";
+        String xmlName = "";
+
+        // can be up to 5 level deep (for clicking on action type)-
+        // take the xml value one level before the root title
+        if(item.getParent().getValue().equals(ROOT_TITEL)){
+            helperString = item.getValue();
+        }
+        else if (item.getParent().getParent().getValue().equals(ROOT_TITEL)){
+            helperString = item.getParent().getValue();
+        }
+        else if(item.getParent().getParent().getParent().getValue().equals(ROOT_TITEL)){
+            helperString = item.getParent().getParent().getValue();
+        }
+        else if(item.getParent().getParent().getParent().getParent().getValue().equals(ROOT_TITEL)){
+            helperString = item.getParent().getParent().getParent().getValue();
+        }
+        else if(item.getParent().getParent().getParent().getParent().getParent().getValue().equals(ROOT_TITEL)){
+            helperString = item.getParent().getParent().getParent().getParent().getValue();
+        }
+
+        if(!helperString.equals("")) {
+            xmlName = helperString.substring(6);
+        }
+        return xmlName;
     }
 
     private void removeAllChildrenFromBody(VBox informationDetailsBody) {
@@ -326,8 +341,10 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtTargetEntityLabel(((DtoProximity)dtoAction).getTargetEntity());
-            tileController.setTxtDepthLabel(((DtoProximity)dtoAction).getEnvDepthOf());
+            //tileController.setTxtTargetEntityLabel(((DtoProximity)dtoAction).getTargetEntity());
+            tileController.setTxtTargetEntityLabel(dtoAction.getTargetEntity());
+            //tileController.setTxtDepthLabel(((DtoProximity)dtoAction).getEnvDepthOf());
+            tileController.setTxtDepthLabel(dtoAction.getEnvDepthOf());
 
             informationDetailsBody.getChildren().add(tile);
 
@@ -352,8 +369,10 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtCreateEntityLable(((DtoReplace)dtoAction).getCreateEntity());
-            tileController.setTxtModeLable(((DtoReplace)dtoAction).getMode());
+            //tileController.setTxtCreateEntityLable(((DtoReplace)dtoAction).getCreateEntity());
+            tileController.setTxtCreateEntityLable(dtoAction.getCreateEntity());
+            //tileController.setTxtModeLable(((DtoReplace)dtoAction).getMode());
+            tileController.setTxtModeLable(dtoAction.getMode());
 
             informationDetailsBody.getChildren().add(tile);
            // loader.setRoot(null);
@@ -401,8 +420,10 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtPropertyLabel(((DtoSet)dtoAction).getProperty());
-            tileController.setTxtValueLable(((DtoSet)dtoAction).getNewValue());
+            //tileController.setTxtPropertyLabel(((DtoSet)dtoAction).getProperty());
+            tileController.setTxtPropertyLabel(dtoAction.getProperty());
+            //tileController.setTxtValueLable(((DtoSet)dtoAction).getNewValue());
+            tileController.setTxtValueLable(dtoAction.getNewValue());
 
             informationDetailsBody.getChildren().add(tile);
            // loader.setRoot(null);
@@ -414,7 +435,7 @@ public class DetailsComponentController {
     }
 
     private void addConditionInformationToBody(DtoAbstractAction dtoAction) {
-        String singularity = ((DtoCondition)dtoAction).getSingularity();
+        String singularity = dtoAction.getSingularity();
         URL url = null;
         try{
             FXMLLoader loader = new FXMLLoader();
@@ -426,38 +447,48 @@ public class DetailsComponentController {
            }
 
             loader.setLocation(url);
-            //loader.setRoot(new VBox());
             Node tile = loader.load();
 
             if(singularity.equals("single")){
                 SingleConditionComponentController tileController = loader.getController();
                 // set information
-                tileController.setTxtTypeLabel(dtoAction.getType());
+                tileController.setTxtTypeLabel("Single Condition");
                 tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
                 tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
                 tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-                tileController.setTxtPropertyLabel((( (DtoCondition) dtoAction).getDtoSingleCondition()).getProperty());
+                tileController.setTxtPropertyLabel(dtoAction.getDtoSingleCondition().getProperty());
+                tileController.setTxtOperatorLabel(dtoAction.getDtoSingleCondition().getOperator());
+                tileController.setTxtValueLabel(dtoAction.getDtoSingleCondition().getValue());
+                tileController.setTxtThenConditionLabel(((Integer)dtoAction.getThenConditionsNumber()).toString());
+                tileController.setTxtElseConditionLabel(((Integer)dtoAction.getElseConditionsNumber()).toString());
+
+               /* tileController.setTxtPropertyLabel((( (DtoCondition) dtoAction).getDtoSingleCondition()).getProperty());
                 tileController.setTxtOperatorLabel((( (DtoCondition) dtoAction).getDtoSingleCondition()).getOperator());
-                tileController.setTxtValueLabel((( (DtoCondition) dtoAction).getDtoSingleCondition()).getValue());
-                Integer thenConition = ((DtoCondition)dtoAction).getThenConditionsNumber();
+                tileController.setTxtValueLabel((( (DtoCondition) dtoAction).getDtoSingleCondition()).getValue());*/
+               /* Integer thenConition = ((DtoCondition)dtoAction).getThenConditionsNumber();
                 Integer elseCondition = ((DtoCondition)dtoAction).getElseConditionsNumber();
                 tileController.setTxtThenConditionLabel(thenConition.toString());
-                tileController.setTxtThenConditionLabel(elseCondition.toString());
+                tileController.setTxtThenConditionLabel(elseCondition.toString());*/
             }
             else{
                 MultipleConditionComponentController tileController = loader.getController();
                 // set information
-                tileController.setTxtTypeLabel(dtoAction.getType());
+                tileController.setTxtTypeLabel("Multiple Condition");
                 tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
                 tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
                 tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-                tileController.setTxtLogicalLabel((( (DtoCondition) dtoAction).getDtoMultipleCondition()).getLogic());
+                tileController.setTxtLogicalLabel(dtoAction.getDtoMultipleCondition().getLogic());
+                tileController.setTxtConditionNumberLabel(((Integer)dtoAction.getDtoMultipleCondition().getConditionNumber()).toString());
+                tileController.setTxtThenConditionLabel(((Integer)dtoAction.getThenConditionsNumber()).toString());
+                tileController.setTxtElseConditionLabel(((Integer)dtoAction.getElseConditionsNumber()).toString());
+
+               /* tileController.setTxtLogicalLabel((( (DtoCondition) dtoAction).getDtoMultipleCondition()).getLogic());
                 Integer number = ((( (DtoCondition) dtoAction).getDtoMultipleCondition()).getConditionNumber());
                 tileController.setTxtConditionNumberLabel(number.toString());
                 Integer thenConition = ((DtoCondition)dtoAction).getThenConditionsNumber();
                 Integer elseCondition = ((DtoCondition)dtoAction).getElseConditionsNumber();
                 tileController.setTxtThenConditionLabel(thenConition.toString());
-                tileController.setTxtThenConditionLabel(elseCondition.toString());
+                tileController.setTxtThenConditionLabel(elseCondition.toString());*/
             }
 
             informationDetailsBody.getChildren().add(tile);
@@ -483,10 +514,15 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtOperatorLabel(((DtoCalculation)dtoAction).getOperatorType());
+            tileController.setTxtOperatorLabel(dtoAction.getOperatorType());
+            tileController.setTxtFirstArgumentLabel(dtoAction.getArg1());
+            tileController.setTxtFirstArgumentLabel(dtoAction.getArg2());
+            tileController.setTxtResultPropertyLabel(dtoAction.getResultProp());
+
+            /*tileController.setTxtOperatorLabel(((DtoCalculation)dtoAction).getOperatorType());
             tileController.setTxtFirstArgumentLabel(((DtoCalculation)dtoAction).getArg1());
             tileController.setTxtSecondArgumentLabel(((DtoCalculation)dtoAction).getArg2());
-            tileController.setTxtResultPropertyLabel(((DtoCalculation)dtoAction).getResultProp());
+            tileController.setTxtResultPropertyLabel(((DtoCalculation)dtoAction).getResultProp());*/
 
             informationDetailsBody.getChildren().add(tile);
            // loader.setRoot(null);
@@ -512,8 +548,11 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtPropertyLabel(((DtoDecrease)dtoAction).getProperty());
-            tileController.setTxtByLabel(((DtoDecrease)dtoAction).getByExpression());
+            tileController.setTxtPropertyLabel(dtoAction.getProperty());
+            tileController.setTxtByLabel(dtoAction.getByExpression());
+
+           /* tileController.setTxtPropertyLabel(((DtoDecrease)dtoAction).getProperty());
+            tileController.setTxtByLabel(((DtoDecrease)dtoAction).getByExpression());*/
 
             informationDetailsBody.getChildren().add(tile);
 
@@ -538,8 +577,10 @@ public class DetailsComponentController {
             tileController.setTxtPrimaryLabel(dtoAction.getPrimaryEntity());
             tileController.setTxtSecondaryExistLabel(dtoAction.isSecondaryExist() == true ? "Yes" : "No");
             tileController.setTxtSecondaryLabel(dtoAction.getSecondaryEntity());
-            tileController.setTxtPropertyLabel(((DtoIncrease)dtoAction).getProperty());
-            tileController.setTxtByLabel(((DtoIncrease)dtoAction).getByExpression());
+            //tileController.setTxtPropertyLabel(((DtoIncrease)dtoAction).getProperty());
+            tileController.setTxtPropertyLabel(dtoAction.getProperty());
+            //tileController.setTxtByLabel(((DtoIncrease)dtoAction).getByExpression());
+            tileController.setTxtByLabel(dtoAction.getByExpression());
 
             informationDetailsBody.getChildren().add(tile);
            // loader.setRoot(null);

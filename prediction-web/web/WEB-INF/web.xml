@@ -40,6 +40,15 @@
         <url-pattern>/executeNewSimulationServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>GetXmlsServlet</servlet-name>
+        <servlet-class>servlets.user.GetXmlsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetXmlsServlet</servlet-name>
+        <url-pattern>/getXmlsServlet</url-pattern>
+    </servlet-mapping>
+
 
     <!-- ADMIN SERVLETS  /-->
     <servlet>

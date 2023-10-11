@@ -3,6 +3,7 @@ package user.subcomponents.model;
 
 import com.google.gson.Gson;
 import dto.Dto;
+import dto.manager.DtoManager;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationHistory;
 import engine.simulation.execution.SimulationExecution;
@@ -24,10 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    private Simulation simulation;
+    //private Simulation simulation;
     private boolean isFileLoaded = false;
     private int currSimulationId;
     private String currSimulationName;
+    private DtoManager dtoXmlManager;
+
+    public Model() {
+        dtoXmlManager = new DtoManager();
+    }
+
+    public DtoManager getDtoXmlManager(){
+        return dtoXmlManager;
+    }
+    public void addNewDtoToManager(Dto dto){
+        dtoXmlManager.addNewDtoToManager(dto.getXmlName(), dto);
+    }
+    public void setDtoXmlManager(DtoManager dtoManager){
+        this.dtoXmlManager = dtoManager;
+    }
+    public Dto getDtoByXmlName(String xmlName){
+        return dtoXmlManager.getDtoXmlManager().get(xmlName);
+    }
 
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
     /*public String loadXmlFile(String fileName){
@@ -125,9 +144,9 @@ public class Model {
        // return simulation.getWorld().createDto();
     }
 
-    public Simulation getSimulation() {
+    /*public Simulation getSimulation() {
         return simulation;
-    }
+    }*/
 
     public void runSimulation() {
        /* try {
@@ -171,7 +190,7 @@ public class Model {
     //    return isSimulationDone;
    // }
 
-    public SimulationExecution getSimulationById(int id) {
+   /* public SimulationExecution getSimulationById(int id) {
         return simulation.getSimulationById(id);
         //return simulationHistory.get(id).getStartSimulation();
     }
@@ -182,7 +201,7 @@ public class Model {
 
     public int getCurrSimulationId() {
         return currSimulationId;
-    }
+    }*/
 
     public void setCurrSimulationId(int currSimulationId) {
         this.currSimulationId = currSimulationId;

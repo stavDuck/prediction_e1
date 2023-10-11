@@ -1,6 +1,6 @@
 package servlets;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import dto.Dto;
 import dto.grid.DtoGrid;
 import dto.rule.Action.DtoAbstractAction;
@@ -18,20 +18,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class DtoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //getParameter xml name+ simulation ID
         //getSevlerContex.getSimulation
-        String fileName = getServletContext().getAttribute("name").toString();
-        Integer id = Integer.parseInt(getServletContext().getAttribute("id").toString());
+        //String fileName = getServletContext().getAttribute("name").toString();
+       // Integer id = Integer.parseInt(getServletContext().getAttribute("id").toString());
         //should be "createDto" func
         String dtoJson = createDummy();
         response.getWriter().println(dtoJson);
-        //Gson gson = new Gson();
-        //Dto dto = gson.fromJson(dtoJson, Dto.class);
-
+        Gson gson = new Gson();
+        Dto dto = gson.fromJson(dtoJson, Dto.class);
+        System.out.println("finished");
     }
 
     public String createDummy() {
@@ -43,8 +44,8 @@ public class DtoServlet extends HttpServlet {
             dto.addIncreaseAction("rule", "property", "3", "increase", "entity", false, null);
             dto.addEnv("env type", "env", 3.0f, 4.0f);
             dto.addTermination(3, 3);
-dto.setGrid(new DtoGrid(3, 3));
-dto.setCurrTicks(2);
+            dto.setGrid(new DtoGrid(3, 3));
+            dto.setCurrTicks(2);
         dto.setErrorStopSimulation("stop");
         return gson.toJson(dto);
     }
@@ -53,7 +54,9 @@ dto.setCurrTicks(2);
         SimulationMultipleManager manager = ServletUtils.getSimulationMultipleManager(getServletContext());
         SimulationExecution reqSimulation = manager.getSimulationByNameAndID(simulationName, simulationID);
         Dto dto = reqSimulation.createWorldDto();
-Gson gson = new Gson();
-return gson.toJson(dto);
+        Gson gson = new Gson();
+        return gson.toJson(dto);
     }
+
+
 }

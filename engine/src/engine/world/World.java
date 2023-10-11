@@ -404,6 +404,7 @@ private Integer sleep;
         dto.setGrid(new DtoGrid(grid.getRows(), grid.getColumns()));
         dto.setCurrTicks(currTick);
         dto.setErrorStopSimulation(errorStopSimulation);
+        dto.setXmlName(name);
 
         return dto;
     }

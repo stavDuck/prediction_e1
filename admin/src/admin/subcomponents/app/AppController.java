@@ -1,34 +1,32 @@
 package admin.subcomponents.app;
-
 import admin.subcomponents.common.ResourcesConstants;
 import admin.subcomponents.model.Model;
 import admin.subcomponents.tabs.allocations.AllocationComponentController;
 import admin.subcomponents.tabs.details.DetailsComponentController;
 import admin.subcomponents.tabs.results.ResultsComponentController;
 import admin.util.http.HttpAdminUtil;
+import com.google.gson.Gson;
 import dto.Dto;
+import dto.manager.DtoManager;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import admin.subcomponents.app.task.TaskThreadPoolUpdater;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+
+import static admin.util.http.HttpAdminUtil.HTTP_CLIENT;
 
 public class AppController implements Closeable {
     private Model model;
@@ -126,7 +124,38 @@ public class AppController implements Closeable {
         isFileSelected.set(true);
 
         // NEW !!!
-        loadXmlRequest(absolutePath);
+        Response response = loadXmlRequest(absolutePath);
+
+        if (response.isSuccessful()) {
+            // Handle successful response here
+            String responseBody = response.body().string();
+            System.out.println("Response: " + responseBody);
+
+            // get Dto Object from response and save in local
+            Gson gson = new Gson();
+            Dto dto = gson.fromJson(responseBody, Dto.class);
+            model.addNewDtoToManager(dto);
+
+            // clear !!
+            resultTabController.clearAllHistogramTabs();
+            resultTabController.clearStopInformationError();
+            resultTabController.clearSimulationProgressDetails();
+            resultTabController.clearTreeViewHistogram();
+            resultTabController.clearSelectSimulationList();
+            resultTabController.clearPopulationChart();
+            resultTabController.setSelectedSimulationId(-1);
+            resultTabController.clearPopulationList();
+
+            showPopup("File loaded successfully");
+            // load all the information on all XMLs loaded in system
+            detailsTabController.loadDetailsView();
+
+
+        } else {
+            // Handle unsuccessful response here
+            System.out.println("Request was not successful. Response code: " + response.code());
+            showPopup(response.body().string() + "\n please try to fix the issue and reload the xml again");
+        }
 
        /* String res = model.loadXmlFile(absolutePath);
         //messageToUser.setText(res.isEmpty() ? "Successful" : res);
@@ -146,7 +175,7 @@ public class AppController implements Closeable {
         executionTabController.populateTab();*/
     }
 
-    private void loadXmlRequest(String absolutePath) throws IOException {
+    private Response loadXmlRequest(String absolutePath) throws IOException {
         File file = new File(absolutePath);
 
         RequestBody requestBody = new MultipartBody.Builder()
@@ -160,14 +189,25 @@ public class AppController implements Closeable {
                 .post(requestBody)
                 .build();
 
+
+         Call call = HTTP_CLIENT.newCall(request);
+         okhttp3.Response response = call.execute();
+
+         return response;
+
         // Create a custom Callback
-        Callback customCallback = new Callback() {
+      /*  Callback customCallback = new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     // Handle successful response here
                     String responseBody = response.body().string();
                     System.out.println("Response: " + responseBody);
+
+                    // get Dto Object from response and save in local
+                    Gson gson = new Gson();
+                    Dto dto = gson.fromJson(responseBody, Dto.class);
+                    model.addNewDtoToManager(dto);
 
                     // clear !!
                     resultTabController.clearAllHistogramTabs();
@@ -180,8 +220,9 @@ public class AppController implements Closeable {
                     resultTabController.clearPopulationList();
 
                     showPopup("File loaded successfully");
+                    // load all the information on all XMLs loaded in system
                     detailsTabController.loadDetailsView();
-                    //executionTabController.populateTab();
+
 
                 } else {
                     // Handle unsuccessful response here
@@ -198,10 +239,9 @@ public class AppController implements Closeable {
             }
         };
 
-       // Call call = HTTP_CLIENT.newCall(request);
-       // okhttp3.Response response = call.execute();
 
-        HttpAdminUtil.postRunASync(requestBody, finalUrl, customCallback);
+
+        HttpAdminUtil.postRunASync(requestBody, finalUrl, customCallback);*/
     }
 
     /*public void runTaskThreadPool(){

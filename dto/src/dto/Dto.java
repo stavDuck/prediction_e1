@@ -23,6 +23,7 @@ public class Dto {
     private Map<String, DtoEnv> envs;
     private DtoGrid grid;
     private int currTicks;
+    private String xmlName;
     private String errorStopSimulation;
 
     public Dto() {
@@ -30,6 +31,7 @@ public class Dto {
         this.rules = new LinkedHashMap<>();
         this.envs = new HashMap<>();
         errorStopSimulation = ""; // if no error empty string
+        xmlName ="";
     }
 
     //getter
@@ -78,39 +80,83 @@ public class Dto {
     }
 
     // add action according to the type
+
     public void addIncreaseAction(String ruleName,String property, String byExpression, String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity) {
-        rules.get(ruleName).addAction(new DtoIncrease(property, byExpression, type, primaryEntity, isSecondaryExist, secondaryEntity));
+        //rules.get(ruleName).addAction(new DtoIncrease(property, byExpression, type, primaryEntity, isSecondaryExist, secondaryEntity));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setProperty(property);
+        tempAction.setByExpression(byExpression);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addDecreaseAction(String ruleName,String property, String byExpression, String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity){
-        rules.get(ruleName).addAction(new DtoDecrease(property, byExpression, type, primaryEntity, isSecondaryExist, secondaryEntity));
+        //rules.get(ruleName).addAction(new DtoDecrease(property, byExpression, type, primaryEntity, isSecondaryExist, secondaryEntity));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setProperty(property);
+        tempAction.setByExpression(byExpression);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addCalculationAction(String ruleName,String operatorType, String resultProp, String arg1, String arg2,
                                      String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity){
-        rules.get(ruleName).addAction(new DtoCalculation(operatorType,resultProp,arg1,arg2,type,primaryEntity,isSecondaryExist,secondaryEntity));
+       // rules.get(ruleName).addAction(new DtoCalculation(operatorType,resultProp,arg1,arg2,type,primaryEntity,isSecondaryExist,secondaryEntity));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setResultProp(resultProp);
+        tempAction.setArg1(arg1);
+        tempAction.setArg2(arg2);
+        tempAction.setOperatorType(operatorType);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addSingelConditionAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity, String property, String operator, String value, int thenConditionsNumber, int elseConditionsNumber){
         DtoSingleCondition singleCondition = new DtoSingleCondition( type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  property,  operator,  value);
         // ctor for single condition
-        rules.get(ruleName).addAction(new DtoCondition(type,  primaryEntity,  isSecondaryExist,  secondaryEntity,
-                singleCondition, thenConditionsNumber, elseConditionsNumber));
+       // rules.get(ruleName).addAction(new DtoCondition(type,  primaryEntity,  isSecondaryExist,  secondaryEntity,
+              //  singleCondition, thenConditionsNumber, elseConditionsNumber));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setSingularity("single");
+        tempAction.setElseConditionsNumber(elseConditionsNumber);
+        tempAction.setThenConditionsNumber(thenConditionsNumber);
+        tempAction.setDtoSingleCondition(singleCondition);
+        rules.get(ruleName).addAction(tempAction);
+
     }
     public void addMultipleConditionAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity, String logic, int conditionNumber,int thenConditionsNumber, int elseConditionsNumber){
         DtoMultipleCondition multipleCondition = new DtoMultipleCondition( type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  logic,  conditionNumber);
         // ctor for multiple condition
-        rules.get(ruleName).addAction(new DtoCondition(type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  multipleCondition,
-                thenConditionsNumber,  elseConditionsNumber));
+       // rules.get(ruleName).addAction(new DtoCondition(type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  multipleCondition,
+             //   thenConditionsNumber,  elseConditionsNumber));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setSingularity("multiple");
+        tempAction.setElseConditionsNumber(elseConditionsNumber);
+        tempAction.setThenConditionsNumber(thenConditionsNumber);
+        tempAction.setDtoMultipleCondition(multipleCondition);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addSetAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity, String property, String newValue){
-        rules.get(ruleName).addAction(new DtoSet(type,primaryEntity,isSecondaryExist,secondaryEntity,property,newValue));
+        //rules.get(ruleName).addAction(new DtoSet(type,primaryEntity,isSecondaryExist,secondaryEntity,property,newValue));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setProperty(property);
+        tempAction.setNewValue(newValue);
+        rules.get(ruleName).addAction(tempAction);
+
+
     }
     public void addKillAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity){
-        rules.get(ruleName).addAction(new DtoKill(type,primaryEntity,isSecondaryExist,secondaryEntity));
+       // rules.get(ruleName).addAction(new DtoKill(type,primaryEntity,isSecondaryExist,secondaryEntity));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addReplaceAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity, String createEntity, String mode){
-        rules.get(ruleName).addAction(new DtoReplace(type,primaryEntity,isSecondaryExist,secondaryEntity,createEntity,mode));
+        //rules.get(ruleName).addAction(new DtoReplace(type,primaryEntity,isSecondaryExist,secondaryEntity,createEntity,mode));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setCreateEntity(createEntity);
+        tempAction.setMode(mode);
+        rules.get(ruleName).addAction(tempAction);
     }
     public void addProximityAction(String ruleName,String type, String primaryEntity, boolean isSecondaryExist, String secondaryEntity, String targetEntity, String envDepthOf){
-        rules.get(ruleName).addAction(new DtoProximity( type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  targetEntity,  envDepthOf));
+        //rules.get(ruleName).addAction(new DtoProximity( type,  primaryEntity,  isSecondaryExist,  secondaryEntity,  targetEntity,  envDepthOf));
+        DtoAbstractAction tempAction = new DtoAbstractAction(type, primaryEntity, isSecondaryExist, secondaryEntity);
+        tempAction.setTargetEntity(targetEntity);
+        tempAction.setEnvDepthOf(envDepthOf);
+        rules.get(ruleName).addAction(tempAction);
     }
 
     public void addTermination(Integer byTicks, Integer bySeconds) {
@@ -155,6 +201,13 @@ public class Dto {
 
     public String getErrorStopSimulation() {
         return errorStopSimulation;
+    }
+
+    public String getXmlName() {
+        return xmlName;
+    }
+    public void setXmlName(String xmlName) {
+        this.xmlName = xmlName;
     }
 }
 

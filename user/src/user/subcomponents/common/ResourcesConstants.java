@@ -48,7 +48,7 @@ public class ResourcesConstants {
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginResponse";
     public final static String LOGOUT = FULL_SERVER_PATH + "/logoutUserResponse";
     public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
-
+    public final static String GET_DTO_XML_MAP = FULL_SERVER_PATH + "/getXmlsServlet";
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
 
     // GSON instance

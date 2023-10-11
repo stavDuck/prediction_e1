@@ -19,7 +19,7 @@ import java.io.InputStream;
 public class ExecuteNewSimulationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/plain");
+      /*  response.setContentType("text/plain");
         // need to add
         String xmlName = request.getXmlNameFromRequest;
         String fileFullPath = ServletUtils.getXmlFileMap().get(xmlName);
@@ -59,6 +59,6 @@ public class ExecuteNewSimulationServlet extends HttpServlet {
         else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getOutputStream().print("No file with the name: " + xmlName + " was found");
-        }
+        }*/
     }
 }

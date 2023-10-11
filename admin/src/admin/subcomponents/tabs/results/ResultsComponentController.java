@@ -155,21 +155,21 @@ public class ResultsComponentController {
                 clearTreeViewHistogram();
 
                 // set curr simulation on the currect simulation
-                mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+               // mainController.getModel().getCurrSimulation().setSimulationSelected(false);
                 mainController.getModel().setCurrSimulationId(index + 1);
                 setSelectedSimulationId(index+1);
-                mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+                //mainController.getModel().getCurrSimulation().setSimulationSelected(true);
                 addEntityToTable();
 
                 // set view tree with entities
                 loadHistoeamEntityTreeView();
 
-                new Thread(() -> {
+                /*new Thread(() -> {
                     this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
                             propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
                     task.runTask();
 
-                }).start();
+                }).start();*/
 
                 setPropertyLineChart();
                 System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
@@ -184,41 +184,41 @@ public class ResultsComponentController {
 
     public void runSimulation() {
         mainController.getModel().runSimulation();
-        mainController.getModel().getCurrSimulation().setSimulationSelected(true);
-        new Thread(()->{
+       // mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+      /*  new Thread(()->{
                 this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
                         propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap, propertyStopInformationLabel);
             Platform.runLater(() -> {
                 addEntityToTable(); // Update the UI component in the JavaFX Application Thread
             });
                 task.runTask();
-            }).start();
+            }).start();*/
     }
 
     @FXML
     void pauseOnclick(ActionEvent event) {
-        new Thread(new TaskSimulationPause(
+        /*new Thread(new TaskSimulationPause(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails
-        )).start();
+        )).start();*/
     }
 
     @FXML
     void resumeOnclick(ActionEvent event) {
-        new Thread(new TaskSimulationResume(
+       /* new Thread(new TaskSimulationResume(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),propertyCurrTick,
                 runningTimeProperty,simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel
-        )).start();
+        )).start();*/
     }
 
     @FXML
     void stopOnClick(ActionEvent event) {
-        new Thread(new TaskSimulationStop(
+      /*  new Thread(new TaskSimulationStop(
                 mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(), simulationDetails, populationTableView, propertyMap
-        )).start();
+        )).start();*/
     }
 
     public void setPropertyLineChart(){
-        SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
+       /* SimulationExecution simulationExecution = mainController.getModel().getCurrSimulation(); // last function updated the index if the curr simulation
         if(simulationExecution.getSimulationStatus() == Status.FINISH || simulationExecution.getSimulationStatus() == Status.STOP) {
             // Clear the chart by removing all data series
             popultionGraph.getData().clear();
@@ -240,7 +240,7 @@ public class ResultsComponentController {
                 }
                 popultionGraph.getData().add(series);
             }
-        }
+        }*/
     }
 
     public void addEntityToTable() {
@@ -319,7 +319,7 @@ public class ResultsComponentController {
     @FXML
     void selectedEntityProperty(MouseEvent event){
         Dto dto = mainController.getDtoWorld();
-        SimulationExecution currSimulation = mainController.getModel().getCurrSimulation();
+       // SimulationExecution currSimulation = mainController.getModel().getCurrSimulation();
         TreeItem<String> item = histoeamEntityTree.getSelectionModel().getSelectedItem();
 
         if(item != null && !item.getValue().equals(ROOT_TITEL)) {
@@ -336,12 +336,12 @@ public class ResultsComponentController {
                 String propertyName = item.getValue();
 
                 // show information only when simulation is finished
-                if(currSimulation.getSimulationStatus() == Status.STOP ||
+              /*  if(currSimulation.getSimulationStatus() == Status.STOP ||
                         currSimulation.getSimulationStatus() == Status.FINISH){
                     entitiesHistogramComponentController.presentHistogramByEntityAndValue(currSimulation, entityName, propertyName);
                     consistencyComponentController.presentConsistency(currSimulation, entityName, propertyName);
                     averageValueComponentController.presentAveragePropertyValue(currSimulation, entityName, propertyName);
-                }
+                }*/
 
                 System.out.println("Entity: " + entityName + " Property: " + propertyName);
             }
