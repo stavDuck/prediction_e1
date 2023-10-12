@@ -78,4 +78,22 @@
         <url-pattern>/logoutAdminResponse</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UpdateThreadPoolNumberServlet</servlet-name>
+        <servlet-class>servlets.admin.UpdateThreadPoolNumberServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateThreadPoolNumberServlet</servlet-name>
+        <url-pattern>/updateThreadPoolNumber</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetThreadPoolInfoServlet</servlet-name>
+        <servlet-class>servlets.admin.GetThreadPoolInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetThreadPoolInfoServlet</servlet-name>
+        <url-pattern>/getThreadPoolInfoServlet</url-pattern>
+    </servlet-mapping>
+
 </web-app>

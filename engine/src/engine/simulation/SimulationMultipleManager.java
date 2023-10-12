@@ -1,4 +1,5 @@
 package engine.simulation;
+import dto.threadpool.DtoThreadPool;
 import engine.simulation.execution.Status;
 import engine.simulation.execution.runner.SingleSimulationRunner;
 
@@ -22,7 +23,7 @@ public class SimulationMultipleManager {
         this.simulationsManager = new HashMap<>();
 
         // set default number of threads for start
-        executorService = Executors.newFixedThreadPool(3);
+        executorService = Executors.newFixedThreadPool(1);
     }
 
     public Map<String, Simulation> getSimulationsManager() {
@@ -55,6 +56,7 @@ public class SimulationMultipleManager {
         }
     }
 
+    // Thread pool information
     public int getRunningThreadsNumber(){
         return ((ThreadPoolExecutor)executorService).getActiveCount();
     }
@@ -63,6 +65,10 @@ public class SimulationMultipleManager {
     }
     public int getCompletedThreadsNumber(){
         return (int)((ThreadPoolExecutor)executorService).getCompletedTaskCount();
+    }
+
+    public DtoThreadPool createDtoThreadPool(){
+        return new DtoThreadPool(getWaitingTreadsNumber(), getRunningThreadsNumber(), getCompletedThreadsNumber());
     }
 
     // function will shout down the old thread pool and create new one with the new thread number

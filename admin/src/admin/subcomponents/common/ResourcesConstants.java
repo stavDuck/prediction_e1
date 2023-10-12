@@ -37,6 +37,8 @@ public class ResourcesConstants {
     public final static String LOGIN_ADMIN = FULL_SERVER_PATH + "/loginAdminResponse";
     public final static String LOGOUT_ADMIN = FULL_SERVER_PATH + "/logoutAdminResponse";
     public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
+    public final static String UPDATE_THREAD_POOL_NUMBER = FULL_SERVER_PATH + "/updateThreadPoolNumber";
+    public final static String GET_THREAD_POOL_INFO = FULL_SERVER_PATH + "/getThreadPoolInfoServlet";
 
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
 

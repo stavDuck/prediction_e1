@@ -12,6 +12,7 @@ import admin.subcomponents.actions.Set.SetComponentController;
 import admin.subcomponents.app.StopTaskObject;
 import admin.subcomponents.app.task.TaskThreadPoolUpdater;
 import admin.subcomponents.common.ResourcesConstants;
+import admin.util.http.HttpAdminUtil;
 import dto.Dto;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
@@ -30,6 +31,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import admin.subcomponents.app.AppController;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -96,7 +102,10 @@ public class DetailsComponentController {
         runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
         completedThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyCompletedThreadPool));
         maxThreadsNumberThreadPoolLabel.textProperty().bind(Bindings.format("%,d",propertyMaxThreadsNumberThreadPool));
+        // start updating thread pool information
         resetThreadPoolLabelsInformation();
+        resetThreadPoolMaxNumDefault();
+        runTaskThreadPool();
     }
 
     public void setMainController(AppController mainController) {
@@ -654,7 +663,53 @@ public class DetailsComponentController {
 
     @FXML
     void updateThreadPoolNumberAction(ActionEvent event) {
+        // reset value in threadpool - if boolean is true thread pool has already ran
+        if(stopThreadPool.isStop()){
+            stopThreadPool.setStop(false);
+            resetThreadPoolLabelsInformation();
+        }
 
+        try {
+            // validate input is a number
+            int newThreadNumber = Integer.parseInt(threadNewNumber.getText());
+
+            // create new HTTP request to set new thread number
+            Response response = updateThreadPoolNumberRequest(threadNewNumber.getText());
+
+            if(response.isSuccessful()){
+                System.out.println("Response updateThreadPoolNumber is valid - Thread max number was updated to :" + newThreadNumber);
+                // set property number
+                propertyMaxThreadsNumberThreadPool.setValue(newThreadNumber);
+                threadNewNumber.setText("");
+                runTaskThreadPool();
+            }
+            else{
+                System.out.println("Response updateThreadPoolNumber is NOT valid");
+                mainController.showPopup("Error: update thread pool number failed, " + response.message());
+            }
+            response.close();
+        }
+        catch (NumberFormatException e){
+            mainController.showPopup("Error: Input is not a number, please try again");
+        }
+        catch (IOException e){
+            mainController.showPopup(e.getMessage());
+        }
+    }
+
+    private Response updateThreadPoolNumberRequest(String newThreadNumber) throws IOException {
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.UPDATE_THREAD_POOL_NUMBER)
+                .newBuilder()
+                .addQueryParameter("newNumber", newThreadNumber)
+                .build()
+                .toString();
+
+        System.out.println("New request is launched for: " + finalUrl);
+        Request request = new Request.Builder()
+                .url(finalUrl).build();
+        Call call = HttpAdminUtil.HTTP_CLIENT.newCall(request);
+        return call.execute();
     }
 
     public void resetThreadPoolLabelsInformation(){
@@ -662,12 +717,14 @@ public class DetailsComponentController {
         propertyRunningThreadPool.set(0);
         propertyCompletedThreadPool.set(0);
     }
+    public void resetThreadPoolMaxNumDefault(){
+        propertyMaxThreadsNumberThreadPool.set(1);
+    }
 
-   /* public void runTaskThreadPool(){
+    public void runTaskThreadPool(){
         // create task to update the thread pool information
         stopThreadPool.setStop(true);
-        new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
-                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
-    }*/
+        new Thread(new TaskThreadPoolUpdater(propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
+    }
 
 }

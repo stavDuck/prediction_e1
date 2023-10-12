@@ -243,7 +243,10 @@ private Integer sleep;
 
             // check if termination coditions are met
             isSimulationTerminated(tick[0], startTimeSeconds);
-            //Thread.sleep(1000);
+            if(sleep != null){
+                Thread.sleep(sleep);
+            }
+
         }
 
         // save the last value and the last tick
