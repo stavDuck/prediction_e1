@@ -1,5 +1,7 @@
 package user.subcomponents.common;
 
+import com.google.gson.Gson;
+
 public class ResourcesConstants {
     //private static final String BASE_PACKAGE = "/screens";
     private static final String BASE_PACKAGE = "/user/subcomponents";
@@ -50,7 +52,10 @@ public class ResourcesConstants {
     public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
     public final static String GET_DTO_XML_MAP = FULL_SERVER_PATH + "/getXmlsServlet";
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
+    public final static String ADD_NEW_REQUEST_FROM_USER = FULL_SERVER_PATH + "/addNewRequestFromUser";
+    public final static String GET_USER_REQUESTS = FULL_SERVER_PATH + "/getUserRequests";
+
 
     // GSON instance
-   // public final static Gson GSON_INSTANCE = new Gson();
+    public final static Gson GSON_INSTANCE = new Gson();
 }

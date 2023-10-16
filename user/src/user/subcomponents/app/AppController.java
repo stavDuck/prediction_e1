@@ -21,6 +21,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import user.login.LoginController;
 import okhttp3.*;
+import user.subcomponents.app.task.TaskDetailsUpdater;
 import user.subcomponents.app.task.TaskThreadPoolUpdater;
 import user.subcomponents.common.ResourcesConstants;
 import user.subcomponents.model.Model;
@@ -98,14 +99,11 @@ public class AppController implements Closeable {
         /*propertyWaitingThreadPool = new SimpleLongProperty();
         propertyRunningThreadPool = new SimpleLongProperty();
         propertyCompletedThreadPool = new SimpleLongProperty();*/
-
-
     }
 
     @FXML
     public void initialize() {
      loadLoginPage();
-
     }
 
     private void loadLoginPage() {
@@ -138,7 +136,8 @@ public class AppController implements Closeable {
             requestTabController.setMainController(this);
         }
         // set connection to details updater
-        detailsTabController.runTaskDetailsUpdater();
+        runTaskDetailsUpdater();
+        //detailsTabController.runTaskDetailsUpdater();
 
        /* selectedFileName.textProperty().bind(selectedFileProperty);
         waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
@@ -152,62 +151,11 @@ public class AppController implements Closeable {
     public void setModel(Model model) {
         this.model = model;
     }
-
-   /* @FXML
-    void openFileButtonAction(ActionEvent event) throws IOException {
-        // reset value in threadpool - if boolean is true thread pool has already ran
-        if(stopThreadPool.isStop()){
-            stopThreadPool.setStop(false);
-            propertyWaitingThreadPool.set(0);
-            propertyRunningThreadPool.set(0);
-            propertyCompletedThreadPool.set(0);
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select XML file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        if (selectedFile == null) {
-            return;
-        }
-
-        String absolutePath = selectedFile.getAbsolutePath();
-        selectedFileProperty.set(absolutePath);
-        isFileSelected.set(true);
-
-        // NEW !!!
-       // loadXmlRequest(absolutePath);
-
-
-
-       /* String res = model.loadXmlFile(absolutePath);
-        //messageToUser.setText(res.isEmpty() ? "Successful" : res);
-
-        // clear !!
-        resultTabController.clearAllHistogramTabs();
-        resultTabController.clearStopInformationError();
-        resultTabController.clearSimulationProgressDetails();
-        resultTabController.clearTreeViewHistogram();
-        resultTabController.clearSelectSimulationList();
-        resultTabController.clearPopulationChart();
-        resultTabController.setSelectedSimulationId(-1);
-        resultTabController.clearPopulationList();
-        // NEED TO CLEAR THE TABLE IN SCREEN 3
-
-
-
-        showPopup(res);
-        detailsTabController.loadDetailsView();
-        executionTabController.populateTab();
-    } */
-
-
-   /* public void runTaskThreadPool(){
+    public void runTaskDetailsUpdater(){
         // create task to update the thread pool information
-        stopThreadPool.setStop(true);
-        new Thread(new TaskThreadPoolUpdater(model.getSimulation(),
-                propertyWaitingThreadPool, propertyRunningThreadPool, propertyCompletedThreadPool, stopThreadPool)).start();
-    }*/
+        detailsTabController.setStopDetailsUpdater(true);
+        new Thread(new TaskDetailsUpdater(detailsTabController.getStopDetailsUpdaterThread(),model, detailsTabController, requestTabController)).start();
+    }
 
     public void showPopup(String message) {
         Popup popup = new Popup();
@@ -314,5 +262,9 @@ public class AppController implements Closeable {
 
     public void updateUserName(String userName) {
         userNameLabel.setText(userName);
+    }
+
+    public String getUserNameValue(){
+        return userNameLabel.getText();
     }
 }

@@ -1,5 +1,7 @@
 package admin.subcomponents.common;
 
+import com.google.gson.Gson;
+
 public class ResourcesConstants {
     //private static final String BASE_PACKAGE = "/screens";
     private static final String BASE_PACKAGE = "/admin/subcomponents";
@@ -39,9 +41,14 @@ public class ResourcesConstants {
     public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
     public final static String UPDATE_THREAD_POOL_NUMBER = FULL_SERVER_PATH + "/updateThreadPoolNumber";
     public final static String GET_THREAD_POOL_INFO = FULL_SERVER_PATH + "/getThreadPoolInfoServlet";
-
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
+    public final static String UPDATE_REQUEST_STATUS = FULL_SERVER_PATH + "/updateRequestStatus";
 
     // GSON instance
-    // public final static Gson GSON_INSTANCE = new Gson();
+     public final static Gson GSON_INSTANCE = new Gson();
+
+     // Statuses constants
+     public static final String PENDING_STATUS = "pending";
+     public static final String APPROVED_STATUS = "approved";
+     public static final String DENIED_STATUS = "denied";
 }

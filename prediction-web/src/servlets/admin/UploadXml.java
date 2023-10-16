@@ -57,7 +57,8 @@ public class UploadXml extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_OK);
 
                     // return the DTO in string format
-                    Gson gson = new Gson();
+                    //Gson gson = new Gson();
+                    Gson gson = Constants.GSON_INSTANCE;
                     response.getOutputStream().print(gson.toJson(dtoUploadXml));
                 }
             }

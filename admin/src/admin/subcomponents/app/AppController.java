@@ -132,7 +132,8 @@ public class AppController implements Closeable {
             System.out.println("Response: " + responseBody);
 
             // get Dto Object from response and save in local
-            Gson gson = new Gson();
+            //Gson gson = new Gson();
+            Gson gson = ResourcesConstants.GSON_INSTANCE;
             Dto dto = gson.fromJson(responseBody, Dto.class);
             model.addNewDtoToManager(dto);
 
@@ -156,23 +157,6 @@ public class AppController implements Closeable {
             System.out.println("Request was not successful. Response code: " + response.code());
             showPopup(response.body().string() + "\n please try to fix the issue and reload the xml again");
         }
-
-       /* String res = model.loadXmlFile(absolutePath);
-        //messageToUser.setText(res.isEmpty() ? "Successful" : res);
-
-        // clear !!
-        resultTabController.clearAllHistogramTabs();
-        resultTabController.clearStopInformationError();
-        resultTabController.clearSimulationProgressDetails();
-        resultTabController.clearTreeViewHistogram();
-        resultTabController.clearSelectSimulationList();
-        resultTabController.clearPopulationChart();
-        resultTabController.setSelectedSimulationId(-1);
-        resultTabController.clearPopulationList();
-
-        showPopup(res);
-        detailsTabController.loadDetailsView();
-        executionTabController.populateTab();*/
     }
 
     private Response loadXmlRequest(String absolutePath) throws IOException {
@@ -189,59 +173,10 @@ public class AppController implements Closeable {
                 .post(requestBody)
                 .build();
 
-
          Call call = HTTP_CLIENT.newCall(request);
          okhttp3.Response response = call.execute();
 
          return response;
-
-        // Create a custom Callback
-      /*  Callback customCallback = new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Handle successful response here
-                    String responseBody = response.body().string();
-                    System.out.println("Response: " + responseBody);
-
-                    // get Dto Object from response and save in local
-                    Gson gson = new Gson();
-                    Dto dto = gson.fromJson(responseBody, Dto.class);
-                    model.addNewDtoToManager(dto);
-
-                    // clear !!
-                    resultTabController.clearAllHistogramTabs();
-                    resultTabController.clearStopInformationError();
-                    resultTabController.clearSimulationProgressDetails();
-                    resultTabController.clearTreeViewHistogram();
-                    resultTabController.clearSelectSimulationList();
-                    resultTabController.clearPopulationChart();
-                    resultTabController.setSelectedSimulationId(-1);
-                    resultTabController.clearPopulationList();
-
-                    showPopup("File loaded successfully");
-                    // load all the information on all XMLs loaded in system
-                    detailsTabController.loadDetailsView();
-
-
-                } else {
-                    // Handle unsuccessful response here
-                    System.out.println("Request was not successful. Response code: " + response.code());
-                    showPopup(response.body().string() + "\n please try to fix the issue and reload the xml again");
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        showPopup("Something went wrong: " + e.getMessage())
-                );
-            }
-        };
-
-
-
-        HttpAdminUtil.postRunASync(requestBody, finalUrl, customCallback);*/
     }
 
     /*public void runTaskThreadPool(){
@@ -253,7 +188,6 @@ public class AppController implements Closeable {
 
     public void showPopup(String message) {
         Popup popup = new Popup();
-
         Label popupLabel = new Label(message);
 
         Button closeButton = new Button("Close");

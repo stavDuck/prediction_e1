@@ -39,7 +39,6 @@ public class HttpUserUtil {
                 .post(body)
                 .build();
 
-        //Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
         Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
 
         call.enqueue(callback);

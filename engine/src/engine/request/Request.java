@@ -1,6 +1,7 @@
 package engine.request;
 import engine.termination.Termination;
 public class Request {
+    private static int idGenerator = 1; // generate id for every new request
     private static final String PENDING_STATUS = "pending";
     private static final String APPROVED_STATUS = "approved";
     private static final String DENIED_STATUS = "denied";
@@ -13,12 +14,14 @@ public class Request {
     private String status;
     private String userName;
 
-    public Request(int requestId, String simulationXmlName, int simulationRequstedRuns, int simulationCurrentRunning, int simulationLevtoverRuns, Termination terminationConditions, String userName) {
-        this.requestId = requestId;
+    public Request(String simulationXmlName, int simulationRequstedRuns, Termination terminationConditions, String userName) {
+        this.requestId = idGenerator;
+        idGenerator ++;
+
         this.simulationXmlName = simulationXmlName;
         this.simulationRequstedRuns = simulationRequstedRuns;
-        this.simulationCurrentRunning = simulationCurrentRunning;
-        this.simulationLevtoverRuns = simulationLevtoverRuns;
+        this.simulationCurrentRunning = 0; // default value
+        this.simulationLevtoverRuns = simulationRequstedRuns; // default value
         this.terminationConditions = terminationConditions;
         this.status = PENDING_STATUS;
         this.userName = userName;

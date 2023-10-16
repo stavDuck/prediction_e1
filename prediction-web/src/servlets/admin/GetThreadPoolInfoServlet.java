@@ -1,6 +1,7 @@
 package servlets.admin;
 
 import com.google.gson.Gson;
+import constants.Constants;
 import dto.manager.DtoManager;
 import engine.simulation.SimulationMultipleManager;
 import jakarta.servlet.ServletException;
@@ -15,7 +16,8 @@ public class GetThreadPoolInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        SimulationMultipleManager simulationMultipleManager = ServletUtils.getSimulationMultipleManager(getServletContext());
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
+        Gson gson = Constants.GSON_INSTANCE;
         String dtoThreadPool = gson.toJson(simulationMultipleManager.createDtoThreadPool());
         System.out.println("GetThreadPoolInfoServlet sending current state thread pool");
         response.getWriter().println(dtoThreadPool);

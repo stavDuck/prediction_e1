@@ -13,26 +13,32 @@ import user.subcomponents.app.StopTaskObject;
 import user.subcomponents.common.ResourcesConstants;
 import user.subcomponents.model.Model;
 import user.subcomponents.tabs.details.DetailsComponentController;
+import user.subcomponents.tabs.requests.RequestComponentController;
 import user.util.http.HttpUserUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class TaskDetailsUpdater implements Runnable{
     private StopTaskObject stopThread;
     private Model model;
     private DetailsComponentController detailsComponentController;
+    private RequestComponentController requestComponentController;
 
-    public TaskDetailsUpdater(StopTaskObject stopThread, Model model, DetailsComponentController detailsComponentController) {
+    public TaskDetailsUpdater(StopTaskObject stopThread, Model model,
+                              DetailsComponentController detailsComponentController, RequestComponentController requestComponentController) {
         this.stopThread = stopThread;
         this.model = model;
         this.detailsComponentController = detailsComponentController;
+        this.requestComponentController = requestComponentController;
     }
 
     @Override
     public void run() {
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
+        Gson gson = ResourcesConstants.GSON_INSTANCE;
         System.out.println("TaskDetailsUpdater START");
         do {
             // get list of all curr dtos
@@ -42,7 +48,7 @@ public class TaskDetailsUpdater implements Runnable{
                     .build()
                     .toString();
 
-            System.out.println("New request is launched for: " + finalUrl);
+            //System.out.println("New request is launched for: " + finalUrl);
 
             Request request = new Request.Builder()
                     .url(finalUrl).build();
@@ -71,9 +77,12 @@ public class TaskDetailsUpdater implements Runnable{
                 // dto cnnot be delete so the size only can get bigger
                 if( (tempDtoMap.values().size() != 0) && (currDtoMap.values().size() != tempDtoMap.values().size())){
                     model.getDtoXmlManager().setDtoXmlManager(tempDtoMap);
+                    System.out.println("UPDATING: updating the details tree and the list in user request");
                     // set update details controller
                     Platform.runLater(() -> {
                         detailsComponentController.loadDetailsView();
+                        // update the XML list in REQUEST SCREEN in user
+                        requestComponentController.updateChoiceBoxWithNewArr(new ArrayList(model.getDtoXmlManager().getDtoXmlManager().keySet()));
                     });
                 }
             }else {

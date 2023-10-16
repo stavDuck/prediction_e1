@@ -49,6 +49,24 @@
         <url-pattern>/getXmlsServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AddNewRequestFromUser</servlet-name>
+        <servlet-class>servlets.user.AddNewRequestFromUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddNewRequestFromUser</servlet-name>
+        <url-pattern>/addNewRequestFromUser</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetUserRequests</servlet-name>
+        <servlet-class>servlets.user.GetUserRequestsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetUserRequests</servlet-name>
+        <url-pattern>/getUserRequests</url-pattern>
+    </servlet-mapping>
+
 
     <!-- ADMIN SERVLETS  /-->
     <servlet>
@@ -94,6 +112,15 @@
     <servlet-mapping>
         <servlet-name>GetThreadPoolInfoServlet</servlet-name>
         <url-pattern>/getThreadPoolInfoServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UpdateRequestStatus</servlet-name>
+        <servlet-class>servlets.admin.UpdateRequestStatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateRequestStatus</servlet-name>
+        <url-pattern>/updateRequestStatus</url-pattern>
     </servlet-mapping>
 
 </web-app>

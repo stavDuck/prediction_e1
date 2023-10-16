@@ -6,7 +6,6 @@ import dto.env.DtoEnv;
 import dto.property.DtoProperty;
 import dto.rule.Action.*;
 import dto.rule.DtoRule;
-import dto.termination.DtoTermination;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -615,13 +614,17 @@ public class DetailsComponentController {
         return counter;
     }
 
-      public void runTaskDetailsUpdater(){
+      /*public void runTaskDetailsUpdater(){
         // create task to update the thread pool information
           stopDetailsUpdaterThread.setStop(true);
         new Thread(new TaskDetailsUpdater(stopDetailsUpdaterThread,mainController.getModel(), this)).start();
-    }
+    }*/
 
     public void setStopDetailsUpdater(boolean bool) {
         this.stopDetailsUpdaterThread.setStop(bool);
+    }
+
+    public StopTaskObject getStopDetailsUpdaterThread() {
+        return stopDetailsUpdaterThread;
     }
 }

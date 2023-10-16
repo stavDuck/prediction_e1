@@ -4,6 +4,7 @@ import admin.subcomponents.app.StopTaskObject;
 import admin.subcomponents.common.ResourcesConstants;
 import admin.util.http.HttpAdminUtil;
 import com.google.gson.Gson;
+import com.sun.org.apache.bcel.internal.Const;
 import dto.threadpool.DtoThreadPool;
 import engine.simulation.Simulation;
 import javafx.application.Platform;
@@ -31,7 +32,8 @@ public class TaskThreadPoolUpdater implements Runnable{
 
     @Override
     public void run() {
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
+        Gson gson = ResourcesConstants.GSON_INSTANCE;
         System.out.println("TaskThreadPoolUpdater START");
 
         do{
