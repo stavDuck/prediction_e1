@@ -1,6 +1,7 @@
 package admin.subcomponents.tabs.allocations;
 
 import admin.subcomponents.app.AppController;
+import admin.subcomponents.app.task.TaskRequestTableAdminUpdater;
 import admin.subcomponents.common.ResourcesConstants;
 import admin.util.http.HttpAdminUtil;
 import dto.termination.DtoTermination;
@@ -64,7 +65,7 @@ public class AllocationComponentController {
             return new SimpleStringProperty(userName);
         });
         requestedRunsAdminTableColumn.setCellValueFactory(cellData -> {
-            String requestedRuns = cellData.getValue().getSimulationRequstedRuns().toString();
+            String requestedRuns = cellData.getValue().getSimulationRequestedRuns().toString();
             return new SimpleStringProperty(requestedRuns);
         });
         endConditionAdminTableColumn.setCellValueFactory(cellData -> {
@@ -80,7 +81,7 @@ public class AllocationComponentController {
             return new SimpleStringProperty(running);
         });
         finishedAdminTableColumn.setCellValueFactory(cellData -> {
-            Integer finishedInt = cellData.getValue().getSimulationRequstedRuns() - cellData.getValue().getSimulationLeftoverRuns();
+            Integer finishedInt = cellData.getValue().getSimulationRequestedRuns() - cellData.getValue().getSimulationLeftoverRuns();
             String finished = finishedInt.toString();
             return new SimpleStringProperty(finished);
         });
@@ -125,6 +126,9 @@ public class AllocationComponentController {
                 return null;
             }
         });
+
+        // run table view task
+        runTaskRequestTableUpdater();
     }
 
     // when clicking on deny button admin is updating the request status from pending to "deny"
@@ -205,6 +209,7 @@ public class AllocationComponentController {
         ObservableList<DtoRequest> newObserveList = FXCollections.observableList(list);
 
         requsetAdminTable.setItems(newObserveList);
+        requsetAdminTable.refresh();
     }
 
     public Map<Integer, DtoRequest> getAdminRequestsMap() {
@@ -214,4 +219,11 @@ public class AllocationComponentController {
     public void setAdminRequestsMap(Map<Integer, DtoRequest> adminRequestsMap) {
         this.adminRequestsMap = adminRequestsMap;
     }
+
+    public void runTaskRequestTableUpdater(){
+        // create task to update the request table information
+        new Thread(new TaskRequestTableAdminUpdater(this)).start();
+    }
+
+
 }

@@ -123,4 +123,13 @@
         <url-pattern>/updateRequestStatus</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>GetAllUsersRequests</servlet-name>
+        <servlet-class>servlets.admin.GetAllUsersRequestsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetAllUsersRequests</servlet-name>
+        <url-pattern>/getAllUsersRequests</url-pattern>
+    </servlet-mapping>
+
 </web-app>

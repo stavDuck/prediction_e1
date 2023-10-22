@@ -75,7 +75,7 @@ public class RequestComponentController {
             return new SimpleStringProperty(userName);
         });
         requestedRunsTableColumn.setCellValueFactory(cellData -> {
-            String requestedRuns = cellData.getValue().getSimulationRequstedRuns().toString();
+            String requestedRuns = cellData.getValue().getSimulationRequestedRuns().toString();
             return new SimpleStringProperty(requestedRuns);
         });
         endConditionTableColumn.setCellValueFactory(cellData -> {
@@ -91,7 +91,7 @@ public class RequestComponentController {
             return new SimpleStringProperty(running);
         });
         finishedTableColumn.setCellValueFactory(cellData -> {
-            Integer finishedInt = cellData.getValue().getSimulationRequstedRuns() - cellData.getValue().getSimulationLeftoverRuns();
+            Integer finishedInt = cellData.getValue().getSimulationRequestedRuns() - cellData.getValue().getSimulationLeftoverRuns();
             String finished = finishedInt.toString();
             return new SimpleStringProperty(finished);
         });
@@ -307,6 +307,7 @@ public class RequestComponentController {
         ObservableList<DtoRequest> newObserveList = FXCollections.observableList(list);
 
         requsetUserTable.setItems(newObserveList);
+        requsetUserTable.refresh();
     }
 
     public void runTaskRequestTableUpdater(){

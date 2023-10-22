@@ -81,7 +81,7 @@ public class TaskThreadPoolUpdater implements Runnable{
                 .build()
                 .toString();
 
-        System.out.println("New request is launched for: " + finalUrl);
+        //System.out.println("New request is launched for: " + finalUrl);
 
         Request request = new Request.Builder()
                 .url(finalUrl).build();

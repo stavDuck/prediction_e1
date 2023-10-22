@@ -19,6 +19,14 @@ public class UpdateRequestStatusServlet extends HttpServlet {
         String newstatusFromParameter = request.getParameter(Constants.NEW_STATUS);
 
         RequestManager requestManager = ServletUtils.getRequestManager(getServletContext());
-       // Request request1 = requestManager.getRequestByIdAndUserName()
+        try {
+            Request requestToUpdate = requestManager.getRequestByIdAndUserName(Integer.parseInt(requestidFromParameter), usernameFromParameter);
+            requestToUpdate.setStatus(newstatusFromParameter);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+        catch (NumberFormatException e){
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getOutputStream().print("request ID was not a number");
+        }
     }
 }

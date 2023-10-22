@@ -1,5 +1,8 @@
 package engine.request;
+import dto.termination.DtoTermination;
 import engine.termination.Termination;
+import request.DtoRequest;
+
 public class Request {
     private static int idGenerator = 1; // generate id for every new request
     private static final String PENDING_STATUS = "pending";
@@ -7,21 +10,21 @@ public class Request {
     private static final String DENIED_STATUS = "denied";
     private int requestId;
     private String simulationXmlName;
-    private int simulationRequstedRuns;
+    private int simulationRequestedRuns;
     private int simulationCurrentRunning;
-    private int simulationLevtoverRuns;
+    private int simulationLeftoverRuns;
     private Termination terminationConditions;
     private String status;
     private String userName;
 
-    public Request(String simulationXmlName, int simulationRequstedRuns, Termination terminationConditions, String userName) {
+    public Request(String simulationXmlName, int simulationRequestedRuns, Termination terminationConditions, String userName) {
         this.requestId = idGenerator;
         idGenerator ++;
 
         this.simulationXmlName = simulationXmlName;
-        this.simulationRequstedRuns = simulationRequstedRuns;
+        this.simulationRequestedRuns = simulationRequestedRuns;
         this.simulationCurrentRunning = 0; // default value
-        this.simulationLevtoverRuns = simulationRequstedRuns; // default value
+        this.simulationLeftoverRuns = simulationRequestedRuns; // default value
         this.terminationConditions = terminationConditions;
         this.status = PENDING_STATUS;
         this.userName = userName;
@@ -34,14 +37,14 @@ public class Request {
     public void setSimulationXmlName(String simulationXmlName) {
         this.simulationXmlName = simulationXmlName;
     }
-    public void setSimulationRequstedRuns(int simulationRequstedRuns) {
-        this.simulationRequstedRuns = simulationRequstedRuns;
+    public void setSimulationRequestedRuns(int simulationRequestedRuns) {
+        this.simulationRequestedRuns = simulationRequestedRuns;
     }
     public void setSimulationCurrentRunning(int simulationCurrentRunning) {
         this.simulationCurrentRunning = simulationCurrentRunning;
     }
-    public void setSimulationLevtoverRuns(int simulationLevtoverRuns) {
-        this.simulationLevtoverRuns = simulationLevtoverRuns;
+    public void setSimulationLeftoverRuns(int simulationLeftoverRuns) {
+        this.simulationLeftoverRuns = simulationLeftoverRuns;
     }
     public void setTerminationConditions(Termination terminationConditions) {
         this.terminationConditions = terminationConditions;
@@ -60,14 +63,14 @@ public class Request {
     public String getSimulationXmlName() {
         return simulationXmlName;
     }
-    public int getSimulationRequstedRuns() {
-        return simulationRequstedRuns;
+    public int getSimulationRequestedRuns() {
+        return simulationRequestedRuns;
     }
     public int getSimulationCurrentRunning() {
         return simulationCurrentRunning;
     }
-    public int getSimulationLevtoverRuns() {
-        return simulationLevtoverRuns;
+    public int getSimulationLeftoverRuns() {
+        return simulationLeftoverRuns;
     }
     public Termination getTerminationConditions() {
         return terminationConditions;
@@ -77,5 +80,12 @@ public class Request {
     }
     public String getUserName() {
         return userName;
+    }
+
+    public DtoRequest createDtoRequest() {
+        DtoTermination dtoTermination = new DtoTermination(terminationConditions.getByTick(), terminationConditions.getBySec());
+
+        return new DtoRequest(requestId, simulationXmlName, simulationRequestedRuns, simulationCurrentRunning, simulationLeftoverRuns,
+                dtoTermination, status, userName);
     }
 }

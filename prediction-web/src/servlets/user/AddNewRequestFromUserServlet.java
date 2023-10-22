@@ -64,7 +64,7 @@ public class AddNewRequestFromUserServlet extends HttpServlet {
 
     private Request createRequestFromUser(DtoRequest dtoRequest) {
         String xmlName = dtoRequest.getSimulationXmlName();
-        Integer simulationRequstedRuns = dtoRequest.getSimulationRequstedRuns();
+        Integer simulationRequstedRuns = dtoRequest.getSimulationRequestedRuns();
         Termination termination = new Termination(dtoRequest.getTerminationConditions().getBySeconds(), dtoRequest.getTerminationConditions().getByTick());
         if (dtoRequest.getTerminationConditions().getBySeconds() == null &&
                 dtoRequest.getTerminationConditions().getByTick() == null) {
@@ -78,8 +78,8 @@ public class AddNewRequestFromUserServlet extends HttpServlet {
 
     private DtoRequest createDtoRequestFromRequest(Request request){
         DtoTermination dtoTermination = new DtoTermination(request.getTerminationConditions().getByTick(),request.getTerminationConditions().getBySec());
-        DtoRequest dtoRequest = new DtoRequest(request.getRequestId(), request.getSimulationXmlName(), request.getSimulationRequstedRuns(),
-                request.getSimulationCurrentRunning(), request.getSimulationLevtoverRuns(), dtoTermination, request.getStatus(), request.getUserName());
+        DtoRequest dtoRequest = new DtoRequest(request.getRequestId(), request.getSimulationXmlName(), request.getSimulationRequestedRuns(),
+                request.getSimulationCurrentRunning(), request.getSimulationLeftoverRuns(), dtoTermination, request.getStatus(), request.getUserName());
 
         return dtoRequest;
     }

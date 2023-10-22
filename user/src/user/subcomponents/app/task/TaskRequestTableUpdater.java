@@ -59,7 +59,7 @@ public class TaskRequestTableUpdater implements Runnable{
 
                     if (isNeedToUpdate) {
                         Platform.runLater(() -> {
-                            System.out.println("UPDATING TABLE VIEW");
+                            System.out.println("UPDATING USER TABLE VIEW");
                             requestComponentController.updateRequestTableInfo();
                         });
                     }
@@ -90,7 +90,7 @@ public class TaskRequestTableUpdater implements Runnable{
                 .build()
                 .toString();
 
-        System.out.println("New request is launched for: " + finalUrl);
+        //System.out.println("New request is launched for: " + finalUrl);
 
         Request request = new Request.Builder()
                 .url(finalUrl).build();

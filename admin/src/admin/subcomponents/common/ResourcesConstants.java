@@ -43,6 +43,7 @@ public class ResourcesConstants {
     public final static String GET_THREAD_POOL_INFO = FULL_SERVER_PATH + "/getThreadPoolInfoServlet";
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
     public final static String UPDATE_REQUEST_STATUS = FULL_SERVER_PATH + "/updateRequestStatus";
+    public final static String GET_ALL_USERS_REQUESTS = FULL_SERVER_PATH + "/getAllUsersRequests";
 
     // GSON instance
      public final static Gson GSON_INSTANCE = new Gson();

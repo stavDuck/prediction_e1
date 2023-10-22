@@ -5,7 +5,7 @@ import dto.termination.DtoTermination;
 public class DtoRequest {
     private Integer requestId;
     private String simulationXmlName;
-    private Integer simulationRequstedRuns;
+    private Integer simulationRequestedRuns;
     private Integer simulationCurrentRunning;
     private Integer simulationLeftoverRuns;
     // if termination is null - condition is stop by user
@@ -13,10 +13,10 @@ public class DtoRequest {
     private String status;
     private String userName;
 
-    public DtoRequest(Integer requestId, String simulationXmlName, Integer simulationRequstedRuns, Integer simulationCurrentRunning, Integer simulationLeftoverRuns, DtoTermination terminationConditions, String status, String userName) {
+    public DtoRequest(Integer requestId, String simulationXmlName, Integer simulationRequestedRuns, Integer simulationCurrentRunning, Integer simulationLeftoverRuns, DtoTermination terminationConditions, String status, String userName) {
         this.requestId = requestId;
         this.simulationXmlName = simulationXmlName;
-        this.simulationRequstedRuns = simulationRequstedRuns;
+        this.simulationRequestedRuns = simulationRequestedRuns;
         this.simulationCurrentRunning = simulationCurrentRunning;
         this.simulationLeftoverRuns = simulationLeftoverRuns;
         this.terminationConditions = terminationConditions;
@@ -31,8 +31,8 @@ public class DtoRequest {
     public void setSimulationXmlName(String simulationXmlName) {
         this.simulationXmlName = simulationXmlName;
     }
-    public void setSimulationRequstedRuns(Integer simulationRequstedRuns) {
-        this.simulationRequstedRuns = simulationRequstedRuns;
+    public void setSimulationRequestedRuns(Integer simulationRequestedRuns) {
+        this.simulationRequestedRuns = simulationRequestedRuns;
     }
     public void setSimulationCurrentRunning(Integer simulationCurrentRunning) {
         this.simulationCurrentRunning = simulationCurrentRunning;
@@ -57,8 +57,8 @@ public class DtoRequest {
     public String getSimulationXmlName() {
         return simulationXmlName;
     }
-    public Integer getSimulationRequstedRuns() {
-        return simulationRequstedRuns;
+    public Integer getSimulationRequestedRuns() {
+        return simulationRequestedRuns;
     }
     public Integer getSimulationCurrentRunning() {
         return simulationCurrentRunning;
