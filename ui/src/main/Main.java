@@ -14,13 +14,13 @@ import java.net.URL;
 
 
 public class Main extends Application {
+    // backup for testing - console version
 //public class Main {
    /* public static void main(String[] args) {
         Menu menu = new Menu();
         menu.startMenu();
     }*/
 
-    //the new UI --> in comment for testing
     private Model model;
 
     @Override
