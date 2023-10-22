@@ -5,12 +5,13 @@ import com.google.gson.Gson;
 import dto.Dto;
 import dto.manager.DtoManager;
 import javafx.application.Platform;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import admin.subcomponents.common.ResourcesConstants;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -50,7 +51,7 @@ public class Model {
         LocalDate currentDate;
         LocalTime currentTime;
         // list of simulations history
-       // simulationHistory = null;
+        // simulationHistory = null;
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         //DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH.mm.ss");
 
@@ -62,7 +63,7 @@ public class Model {
             isFileLoaded = true;
 
             //tempSimulation = createSimulationFromFile(fileName);
-           // tempSimlate.setSimulationID(idGenerator);
+            // tempSimlate.setSimulationID(idGenerator);
             //idGenerator++;
 
             // if all went good
@@ -85,7 +86,7 @@ public class Model {
         return simulation;
     }*/
 
-    public Dto getDtoWorld(){
+   /* public Dto getDtoWorld(){
         String simulationName;
         final Dto[] dto = new Dto[1];
         String finalUrl = HttpUrl
@@ -122,7 +123,50 @@ public class Model {
         return dto[0];
         // return simulation.getWorld().createDto();
 
+    }*/
+
+
+
+
+
+    public Dto getDtoWorld() {
+        Dto dto = new Dto();
+
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.GET_DTO)
+                .newBuilder()
+                .addQueryParameter("name", currSimulationName)
+                .addQueryParameter("id", String.valueOf(currSimulationId))
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl).build();
+        Call call = HttpAdminUtil.HTTP_CLIENT.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+                Gson gson = new Gson();
+                if (response.code() != 200) {
+                    System.out.println("dto retrieval failed");
+                } else {
+                    dto = gson.fromJson(responseBody, Dto.class);
+
+                }
+            } else {
+                System.out.println("Response is NOT valid");
+            }
+            response.close();
+
+        } catch (IOException e) {
+            System.out.println("call to dtoResponse servlet failed");
+        }
+
+        return dto;
     }
+
+
 
     /*public Simulation getSimulation() {
         return simulation;

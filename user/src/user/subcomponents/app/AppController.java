@@ -139,6 +139,8 @@ public class AppController implements Closeable {
         runTaskDetailsUpdater();
         //detailsTabController.runTaskDetailsUpdater();
 
+        //detailsTabController.runTaskDetailsUpdater();
+        //startExecutionTab();
        /* selectedFileName.textProperty().bind(selectedFileProperty);
         waitingThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyWaitingThreadPool));
         runningThreadPoolLabel.textProperty().bind(Bindings.format("%,d", propertyRunningThreadPool));
@@ -195,8 +197,8 @@ public class AppController implements Closeable {
         executionTabController.setMainController(this);
     }
 
-    public void startExecutionTab() {
-        executionTabController.populateTab();
+    public void startExecutionTab(String xmlName) {
+        executionTabController.populateTab(xmlName);
     }
 
     public TabPane getTabPane() {
@@ -247,9 +249,9 @@ public class AppController implements Closeable {
     }
 
 
-    /*public void runSimulation() {
+    public void runSimulation() {
         resultTabController.runSimulation();
-    }*/
+    }
 
     public String getCurrLoadedFileName(){
         return selectedFileProperty.get();

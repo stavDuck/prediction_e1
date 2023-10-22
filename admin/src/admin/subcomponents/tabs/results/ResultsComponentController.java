@@ -155,21 +155,21 @@ public class ResultsComponentController {
                 clearTreeViewHistogram();
 
                 // set curr simulation on the currect simulation
-               // mainController.getModel().getCurrSimulation().setSimulationSelected(false);
-                mainController.getModel().setCurrSimulationId(index + 1);
-                setSelectedSimulationId(index+1);
-                //mainController.getModel().getCurrSimulation().setSimulationSelected(true);
-                addEntityToTable();
+//                mainController.getModel().getCurrSimulation().setSimulationSelected(false);
+//                mainController.getModel().setCurrSimulationId(index + 1);
+//                setSelectedSimulationId(index+1);
+//                mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+//                addEntityToTable();
 
                 // set view tree with entities
                 loadHistoeamEntityTreeView();
 
-                /*new Thread(() -> {
-                    this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
-                            propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
-                    task.runTask();
+                new Thread(() -> {
+//                    this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
+//                            propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
+//                    task.runTask();
 
-                }).start();*/
+                }).start();
 
                 setPropertyLineChart();
                 System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
@@ -185,14 +185,14 @@ public class ResultsComponentController {
     public void runSimulation() {
         mainController.getModel().runSimulation();
        // mainController.getModel().getCurrSimulation().setSimulationSelected(true);
-      /*  new Thread(()->{
-                this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
-                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap, propertyStopInformationLabel);
-            Platform.runLater(() -> {
-                addEntityToTable(); // Update the UI component in the JavaFX Application Thread
-            });
-                task.runTask();
-            }).start();*/
+//        new Thread(()->{
+//                this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
+//                        propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap, propertyStopInformationLabel);
+//            Platform.runLater(() -> {
+//                addEntityToTable(); // Update the UI component in the JavaFX Application Thread
+//            });
+//                task.runTask();
+//            }).start();
     }
 
     @FXML

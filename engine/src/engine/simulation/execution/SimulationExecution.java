@@ -278,4 +278,16 @@ public class SimulationExecution {
     public String getXmlName(){
         return world.getName();
     }
+
+    public void setPopulationValues(Map<String, Integer> populationValues) {
+        for (String entityName : populationValues.keySet())
+            world.setPopulationForEntity(entityName, populationValues.get(entityName));
+
+    }
+
+    public void setEnvValues(Map<String, String> environmantMap) {
+        for (String entityName : environmantMap.keySet())
+            world.setEnvValueByName(entityName, environmantMap.get(entityName));
+
+    }
 }

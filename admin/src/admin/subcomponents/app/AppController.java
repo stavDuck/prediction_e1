@@ -209,7 +209,7 @@ public class AppController implements Closeable {
         this.primaryStage = primaryStage;
     }
 
-    public Dto getDtoWorld(){
+    public Dto getDtoWorld() {
         return model.getDtoWorld();
     }
 

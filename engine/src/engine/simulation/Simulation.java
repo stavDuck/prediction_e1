@@ -26,7 +26,7 @@ public class Simulation {
     }
 
 
-    /*public int createSimulation(String fileName) throws RuntimeException{
+   /* public int createSimulation(String fileName) throws RuntimeException{
       int simulationId =  simulationManager.addSimulationExecution(fileName);
       return simulationId;
     }*/

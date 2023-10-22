@@ -41,6 +41,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>RunSimulationServlet</servlet-name>
+        <servlet-class>servlets.user.RunSimulationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RunSimulationServlet</servlet-name>
+        <url-pattern>/runSimulation</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>GetXmlsServlet</servlet-name>
         <servlet-class>servlets.user.GetXmlsServlet</servlet-class>
     </servlet>
@@ -67,7 +76,14 @@
         <url-pattern>/getUserRequests</url-pattern>
     </servlet-mapping>
 
-
+    <servlet>
+        <servlet-name>GenerateRandomServlet</servlet-name>
+        <servlet-class>servlets.user.GenerateRandomServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GenerateRandomServlet</servlet-name>
+        <url-pattern>/generateRandom</url-pattern>
+    </servlet-mapping>
     <!-- ADMIN SERVLETS  /-->
     <servlet>
         <servlet-name>UploadXmlServlet</servlet-name>

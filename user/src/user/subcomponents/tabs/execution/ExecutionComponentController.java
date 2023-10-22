@@ -1,10 +1,13 @@
 package user.subcomponents.tabs.execution;
+import com.google.gson.Gson;
+import dto.Dto;
 import dto.entity.DtoEntity;
 import dto.env.DtoEnv;
 import dto.range.DtoRange;
 import engine.property.PropertyInstance;
 import engine.simulation.execution.Status;
 import engine.value.generator.ValueGeneratorFactory;
+import executionDto.ExecutionDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -14,7 +17,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import okhttp3.*;
 import user.subcomponents.app.AppController;
+import user.subcomponents.common.ResourcesConstants;
+import user.util.http.HttpUserUtil;
+
+import java.io.IOException;
 
 public class ExecutionComponentController {
     private static final String POPULATION_PROMPT_TEXT = "Population";
@@ -69,21 +77,25 @@ public class ExecutionComponentController {
         this.mainController = mainController;
     }
 
-    public void populateTab() {
+    public void populateTab(String xmlName) {
         entitiesVbox.getChildren().clear();
         envVariablesVbox.getChildren().clear();
-        populateEntityNames();
-        populateEnvVariables();
+        populateEntityNames(xmlName);
+        populateEnvVariables(xmlName);
     }
 
-    public void populateEntityNames() {
-        for(DtoEntity entity : mainController.getDtoWorld().getEntities().values()) {
+    public void populateEntityNames(String xmlName) {
+        //previous call to dto
+        //mainController.getDtoWorld().getEntities().values()
+
+        //check if valid
+        for(DtoEntity entity : mainController.getModel().getDtoByXmlName(xmlName).getEntities().values()) {
             entitiesVbox.getChildren().add(createEntityVbox(entity.getEntityName(), POPULATION_PROMPT_TEXT));
         }
     }
 
-    public void populateEnvVariables() {
-        for(DtoEnv env : mainController.getDtoWorld().getEnvs().values()) {
+    public void populateEnvVariables(String xmlName) {
+        for(DtoEnv env : mainController.getModel().getDtoByXmlName(xmlName).getEnvs().values()) {
             envVariablesVbox.getChildren().add(createEnvVariableVbox(env.getEnvName(), env.getEnvType(), VALUE_PROMPT_TEXT, env.getEnvRange()));
         }
 
@@ -173,11 +185,12 @@ public class ExecutionComponentController {
 
     @FXML
     void startButtonAction(ActionEvent event) {
-       /* boolean entityVal, envVal;
+        ExecutionDto dto = new ExecutionDto(mainController.getModel().getCurrSimulationName());
+        boolean entityVal, envVal;
         boolean isNewSimulationFailed = false;
         // if the first time starting simulation with new xml - start thread
-       if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
-           mainController.runTaskThreadPool();
+       /*if(mainController.getModel().getCurrSimulation().getSimulationStatus() == Status.CREATED){
+           //mainController.runTaskThreadPool();
        }
        if(mainController.getModel().getCurrSimulation().isSimulationSelected()){
            mainController.getModel().getCurrSimulation().setSimulationSelected(false);
@@ -189,24 +202,85 @@ public class ExecutionComponentController {
         // in this case we need to add new simulation in the manager and update the current ID to new simulation
         try {
             if (mainController.getModel().getCurrSimulation().getSimulationStatus() != Status.CREATED) {
-                int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
-                mainController.getModel().setCurrSimulationId(currID);
+                //int currID = mainController.getModel().getSimulation().createSimulation(mainController.getCurrLoadedFileName());
+                //mainController.getModel().setCurrSimulationId(currID);
             }
         }
         catch (RuntimeException e){
             isNewSimulationFailed = true;
-        }
+        }*/
 
         if(!isNewSimulationFailed) {
-            entityVal = validateEntityPopulation();
-            envVal = verifyEnvVariable();
+            entityVal = validateEntityPopulation(dto);
+            envVal = verifyEnvVariable(dto);
             if (entityVal && envVal) {
-                showPopup("Variables Summary");
+                //showPopup("Variables Summary");
                 //mainController.moveToResultsTab();
+
+                Gson gson = ResourcesConstants.GSON_INSTANCE;
+                String jsonDto = gson.toJson(dto);
+
+
+                Request request = new Request.Builder()
+                        .url(ResourcesConstants.NEW_EXECUTION_WINDOW)
+                        // .addHeader("Content-Type", "text/plain")
+                        .post(RequestBody.create(jsonDto.getBytes()))
+                        .build();
+
+
+                Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
+                try {
+                    Response response = call.execute();
+                    if (response.isSuccessful()) {
+                        mainController.moveToResultsTab();
+                        mainController.runSimulation();
+                        //runSimulation(response);
+                    }
+
+                } catch (IOException e) {
+                    System.out.println("call to dtoResponse servlet failed");
+                }
             }
-            mainController.runSimulation();
-        }*/
+        }
     }
+
+    /*private void runSimulation(Response response) throws IOException {
+        try {
+            if(response.body() != null) {
+                String resBody = response.body().string();
+                String[] regex = resBody.split(",");
+
+                Request request = new Request.Builder()
+                        .url(ResourcesConstants.RUN_SIMULATION)
+                        // .addHeader("Content-Type", "text/plain")
+                        .post(RequestBody.create(jsonDto.getBytes()))
+                        .build();
+
+
+                Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
+                try {
+                    Response response = call.execute();
+                    if (response.isSuccessful()) {
+                        mainController.moveToResultsTab();
+                        //mainController.runSimulation();
+                        runSimulation(response);
+                    }
+
+                } catch (IOException e) {
+                    System.out.println("call to dtoResponse servlet failed");
+                }
+
+            }
+
+        }
+        catch (IOException e) {
+            throw new IOException("unable to read response body.");
+        }
+        catch (NumberFormatException e) {
+            throw new IOException("unable to read the id from the response body.");
+        }
+
+    }*/
 
     public void showPopup(String message) {
         Popup popup = new Popup();
@@ -234,7 +308,7 @@ public class ExecutionComponentController {
         popup.show(mainController.getPrimaryStage());
     }
 
-    /*public boolean validateEntityPopulation() {
+    public boolean validateEntityPopulation(ExecutionDto dto) {
         boolean res = true;
         int sum = 0;
         int population;
@@ -245,7 +319,7 @@ public class ExecutionComponentController {
                 for (Node innerNode : vBox.getChildren()) {
                     if (innerNode instanceof TextField) {
                         try {
-                            population = verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText());
+                            population = verifyPopulationIsNumber(((Label)vBox.getChildren().get(ENTITY_VBOX_ENTITY_NAME_INDEX)).getText(), ((TextField) innerNode).getText(), dto);
                             setErrorMessage(vBox, ENTITY_VBOX_ERROR_MESSAGE_INDEX, "", true);
                             res = true;
                             sum += population;
@@ -266,28 +340,32 @@ public class ExecutionComponentController {
         return res;
     }
 
-    /*public int verifyPopulationIsNumber(String entityName, String population) throws NumberFormatException {
+    public int verifyPopulationIsNumber(String entityName, String population, ExecutionDto dto) throws NumberFormatException {
         try {
             int pop = Integer.parseInt(population);
-            mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, pop);
+            dto.addEntityPopulation(entityName, pop);
+            //mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, pop);
             return pop;
         }
         catch (NumberFormatException e) {
             if(population.isEmpty()) {
-                mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, 0);
+                //mainController.getModel().getCurrSimulation().setPopulationForEntity(entityName, 0);
+                dto.addEntityPopulation(entityName, 0);
+
                 return 0;
             }
             else {
                 throw new NumberFormatException("Population value should be numeric and an integer");
             }
         }
-    }*/
+    }
 
-    /*public boolean verifyEnvVariable() {
+    public boolean verifyEnvVariable(ExecutionDto dto) {
         boolean valid = true;
         boolean checked = false;
         String type = "";
         String envName = "";
+        Float fromRange = null, toRange = null;
         for (Node node : envVariablesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
@@ -299,7 +377,15 @@ public class ExecutionComponentController {
                         }
                     } else if(innerNode instanceof Label) {
                         if(((Label) vBox.getChildren().get(ENVIRONMENT_VBOX_TYPE_INDEX)).getText().contains("Type")) {
-                            type = ((Label) vBox.getChildren().get(ENVIRONMENT_VBOX_TYPE_INDEX)).getText().substring(6);
+                            String typeAndRange = ((Label) vBox.getChildren().get(ENVIRONMENT_VBOX_TYPE_INDEX)).getText();
+                            type = typeAndRange.substring(6);
+                            if(typeAndRange.contains("Range")) {
+                                String range = typeAndRange.substring(typeAndRange.indexOf("Range") + 7);
+                                String[] parts = range.split("-");
+                                fromRange = Float.parseFloat(parts[0]);
+                                toRange = Float.parseFloat(parts[1]);
+
+                            }
                         }
                     }
                     else if (innerNode instanceof TextField) {
@@ -308,12 +394,13 @@ public class ExecutionComponentController {
                             if (checked) {
                                 if((type.contains("float") || type.contains("decimal"))) {
                                     //remove decimal
-                                    verifyEnvVariableIsNumber(envName, ((TextField) innerNode).getText());
+                                    verifyEnvVariableIsNumber(envName, ((TextField) innerNode).getText(), dto);
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                 }
                                 else if(type.contains("string")) {
-                                    mainController.getModel().getCurrSimulation().setEnvVariable(envName, ((TextField) innerNode).getText());
-                                    mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, ((TextField) innerNode).getText());
+                                    dto.addEnvVariable(envName, ((TextField) innerNode).getText());
+                                    //mainController.getModel().getCurrSimulation().setEnvVariable(envName, ((TextField) innerNode).getText());
+                                    //mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, ((TextField) innerNode).getText());
 
                                 }
                                 valid = true;
@@ -322,12 +409,13 @@ public class ExecutionComponentController {
                             else {
                                 if(((TextField) innerNode).getText().isEmpty()) {
                                     //checkbox is not checked, and there's no user input --> generate value
-                                    if(type.contains("float") || type.contains("decimal")){
-                                        generateFloat(envName);
+                                    /*if(type.contains("float") || type.contains("decimal")){
+                                        generateFloat(envName, dto);
                                     }
                                     else if(type.equalsIgnoreCase("string")) {
-                                        generateString(envName);
-                                    }
+                                        generateString(envName, dto);
+                                    }*/
+                                    generateRandom(envName, type, dto, fromRange, toRange);
                                     //delete error message, because value is not set anymore
                                     setErrorMessage(vBox, ENVIRONMENT_VBOX_TEXT_ERROR_MESSAGE_INDEX, "", true);
                                     valid = true;
@@ -348,16 +436,16 @@ public class ExecutionComponentController {
                         //if the checkbox is checked and value should be chosen in the radio button
                         if (checked && type.equalsIgnoreCase("boolean")) {
                             if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected()) {
-                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, TRUE_RADIO_BUTTON);
-                                mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, TRUE_RADIO_BUTTON);
-
+                                //mainController.getModel().getCurrSimulation().setEnvVariable(envName, TRUE_RADIO_BUTTON);
+                                //mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, TRUE_RADIO_BUTTON);
+                                dto.addEnvVariable(envName,TRUE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
 
                             } else if (((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected()) {
-                                mainController.getModel().getCurrSimulation().setEnvVariable(envName, FALSE_RADIO_BUTTON);
-                                mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, FALSE_RADIO_BUTTON);
-
+                                //mainController.getModel().getCurrSimulation().setEnvVariable(envName, FALSE_RADIO_BUTTON);
+                                //mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envName, FALSE_RADIO_BUTTON);
+                                dto.addEnvVariable(envName, FALSE_RADIO_BUTTON);
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
                                 valid = true;
                             } else {//in case user didn't select any button
@@ -370,7 +458,8 @@ public class ExecutionComponentController {
                             if(!(((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_FALSE_INDEX)).isSelected())
                                     && !(((RadioButton) vBox.getChildren().get(ENVIRONMENT_VBOX_RADIO_BUTTON_TRUE_INDEX)).isSelected())) {
                                 //checkbox is not checked, and there's no user input --> generate value
-                                generateBoolean(envName);
+                                //generateBoolean(envName, dto);
+                                generateRandom(envName, type, dto, null, null);
                                 //delete error message, because value is not set anymore
                                 valid = true;
                                 setErrorMessage(vBox, ENVIRONMENT_VBOX_BOOLEAN_ERROR_MESSAGE_INDEX, "", true);
@@ -388,17 +477,22 @@ public class ExecutionComponentController {
                 checked = false;
             }
         }
-        for(PropertyInstance propertyInstance :  mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
+        /*for(PropertyInstance propertyInstance :  mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getPropertyInstancesMap().values()) {
             System.out.println(mainController.getModel().getCurrSimulation().getWorld().getEnvironment().getEnvProperty(propertyInstance.getName()).getVal());
 
-        }
-        return valid;
-    }*/
+        }*/
 
-    /*public void verifyEnvVariableIsNumber(String envVarName, String value) throws NumberFormatException {
+        return valid;
+    }
+
+    public void verifyEnvVariableIsNumber(String envVarName, String value, ExecutionDto dto) throws NumberFormatException {
         try {
-            mainController.getModel().getCurrSimulation().setEnvVariable(envVarName, value);
-            mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envVarName, value);
+            //only to check if empty or not float
+            Object val = Float.parseFloat(value);
+            dto.addEnvVariable(envVarName, value);
+
+            //mainController.getModel().getCurrSimulation().setEnvVariable(envVarName, value);
+            //mainController.getModel().getCurrSimulation().setEnvOriginalVariable(envVarName, value);
 
             //mainController.getModel().getSimulation().getWorld().setEnvValueByName(envVarName, value);
         }
@@ -412,7 +506,7 @@ public class ExecutionComponentController {
             }
         }
 
-    }*/
+    }
 
     public void setErrorMessage(VBox vBox, int index, String message, boolean shouldRemove) {
         if (!shouldRemove) {
@@ -423,51 +517,101 @@ public class ExecutionComponentController {
     }
 
 
-   /* public void generateFloat(String envPropName) {
+    public void generateRandom(String envName, String type, ExecutionDto dto, Float fromRange, Float toRange) {
+        String finalUrl;
+        if(fromRange != null && toRange != null) {
+            finalUrl = HttpUrl
+                    .parse(ResourcesConstants.GENERATE_RANDOM)
+                    .newBuilder()
+                    .addQueryParameter("name", envName)
+                     .addQueryParameter("type", type)
+                    .addQueryParameter("from", fromRange.toString())
+                    .addQueryParameter("to", toRange.toString())
+                    .build()
+                    .toString();
+        }
+        else {
+            finalUrl = HttpUrl
+                    .parse(ResourcesConstants.GENERATE_RANDOM)
+                    .newBuilder()
+                    .addQueryParameter("name", envName)
+                    .addQueryParameter("type", type)
+                    .build()
+                    .toString();
+        }
+        Request request = new Request.Builder()
+                .url(finalUrl).build();
+        Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+
+                if (response.code() != 200) {
+                    System.out.println("dto retrieval failed");
+                } else {
+                    dto.addEnvVariable(envName, responseBody);
+                }
+            } else {
+                System.out.println("Response is NOT valid");
+            }
+            response.close();
+
+        } catch (IOException e) {
+            System.out.println("call to dtoResponse servlet failed");
+        }
+    }
+    /*public void generateFloat(String envPropName, ExecutionDto dto) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         if (currProp.getRange() != null) {
+            //create servlet to generate random
             Object random = ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
                     currProp.getRange().getTo()).generateValue();
 //            currProp.setVal(ValueGeneratorFactory.createRandomFloat(currProp.getRange().getFrom(),
 //                    currProp.getRange().getTo()).generateValue());
-
-            currProp.setVal(random);
-            currProp.setOriginalValueFromUser(random);
+        dto.addEnvVariable(envPropName, random.toString());
+            //currProp.setVal(random);
+            //currProp.setOriginalValueFromUser(random);
 
         }
         else {
             Object random = ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f);
-            currProp.setVal(random);
-            currProp.setOriginalValueFromUser(random);
+            dto.addEnvVariable(envPropName, random.toString());
+            //currProp.setVal(random);
+            //currProp.setOriginalValueFromUser(random);
         }
     }*/
 
-   /* public void generateBoolean(String envPropName) {
+    /*public void generateBoolean(String envPropName, ExecutionDto dto) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         Object random = ValueGeneratorFactory.createRandomBoolean().generateValue();
+        dto.addEnvVariable(envPropName, random.toString());
+
         //currProp.setVal(ValueGeneratorFactory.createRandomBoolean().generateValue());
-        currProp.setVal(random);
-        currProp.setOriginalValueFromUser(random);
+        //currProp.setVal(random);
+        //currProp.setOriginalValueFromUser(random);
 
     }*/
 
-  /*  public void generateString(String envPropName) {
+    /*public void generateString(String envPropName, ExecutionDto dto) {
         PropertyInstance currProp = mainController.getModel().getCurrSimulation().getEnvPropertyInstance(envPropName);
         //PropertyInstance currProp = mainController.getModel().getSimulation().getWorld().getEnvironment().getEnvProperty(envPropName);
         //currProp.setVal(ValueGeneratorFactory.createRandomString().generateValue());
         Object random = ValueGeneratorFactory.createRandomString().generateValue();
-        currProp.setVal(random);
-        currProp.setOriginalValueFromUser(random);
+        dto.addEnvVariable(envPropName, random.toString());
+
+        //currProp.setVal(random);
+        //currProp.setOriginalValueFromUser(random);
 
     }*/
 
-   /* public void populateTabFromRerunSimulation() {
-        setOriginalEntityPopulation();
-        setOriginalEnvVariable();
-    }*/
+    public void populateTabFromRerunSimulation() {
+        //setOriginalEntityPopulation();
+        //setOriginalEnvVariable();
+    }
 
-   /* public void setOriginalEntityPopulation() {
+    /*public void setOriginalEntityPopulation() {
         int population;
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
@@ -482,9 +626,9 @@ public class ExecutionComponentController {
                 }
             }
         }
-    }
+    }*/
 
-    public void setOriginalEnvVariable() {
+    /*public void setOriginalEnvVariable() {
         String envName = "";
         for (Node node : envVariablesVbox.getChildren()) {
             if (node instanceof VBox) {

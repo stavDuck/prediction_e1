@@ -122,6 +122,7 @@ public class RequestComponentController {
     public void handleExecuteButtonClick(DtoRequest dtoRequest) {
         System.out.println("Request ID: " + dtoRequest.getRequestId());
         // need to support chancing the number of left runs and everything
+        mainController.startExecutionTab(dtoRequest.getSimulationXmlName());
     }
 
     // Function helper to set end condition colum in request table

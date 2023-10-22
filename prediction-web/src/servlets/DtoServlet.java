@@ -25,14 +25,14 @@ public class DtoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //getParameter xml name+ simulation ID
         //getSevlerContex.getSimulation
-        //String fileName = getServletContext().getAttribute("name").toString();
-       // Integer id = Integer.parseInt(getServletContext().getAttribute("id").toString());
+        String fileName = request.getParameter("name");
+        Integer id = Integer.valueOf(request.getParameter("id"));
         //should be "createDto" func
-        String dtoJson = createDummy();
+        String dtoJson = createDto(fileName, id);
         response.getWriter().println(dtoJson);
-        Gson gson = new Gson();
-        Dto dto = gson.fromJson(dtoJson, Dto.class);
-        System.out.println("finished");
+        //Gson gson = new Gson();
+        //Dto dto = gson.fromJson(dtoJson, Dto.class);
+
     }
 
     public String createDummy() {
@@ -57,6 +57,4 @@ public class DtoServlet extends HttpServlet {
         Gson gson = new Gson();
         return gson.toJson(dto);
     }
-
-
 }

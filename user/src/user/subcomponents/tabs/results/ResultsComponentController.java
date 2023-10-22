@@ -121,7 +121,6 @@ public class ResultsComponentController {
         //entityNameCategory.setTickUnit(1); // Set the tick unit to 1 to display only integers
         entityNameCategory.setLowerBound(0);
         initPopulationTable();
-
     }
 
     public void setMainController(AppController mainController) {
@@ -130,11 +129,11 @@ public class ResultsComponentController {
 
     public void addSimulation(int simulationID, boolean isFinished) {
         String text = "Simulation no. " + simulationID;
-       // simulationDetails.getChildren().add(createSimulationHbox(text));
+       simulationDetails.getChildren().add(createSimulationHbox(text));
 
     }
 
-    /*public HBox createSimulationHbox(String text) {
+    public HBox createSimulationHbox(String text) {
         Image image;
         Label labelSimulationId = new Label(text);
         Label labelSimulationStatus = new Label(" Process");
@@ -157,43 +156,44 @@ public class ResultsComponentController {
                 // set curr simulation on the currect simulation
                // mainController.getModel().getCurrSimulation().setSimulationSelected(false);
                 mainController.getModel().setCurrSimulationId(index + 1);
-                setSelectedSimulationId(index+1);
+                setSelectedSimulationId(index + 1);
                 //mainController.getModel().getCurrSimulation().setSimulationSelected(true);
                 addEntityToTable();
 
                 // set view tree with entities
                 loadHistoeamEntityTreeView();
 
-               new Thread(() -> {
+               /*new Thread(() -> {
                     this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(), mainController.getModel().getSimulation(),
                             propertyCurrTick, runningTimeProperty, simulationDetails, populationTableView, propertyMap, propertyStopInformationLabel);
                     task.runTask();
 
                 }).start();*/
 
-               /* setPropertyLineChart();
+                //setPropertyLineChart();
                 System.out.println("Label clicked: " + ((Label) clicked.getChildren().get(0)).getText());
-          }
+          };
 
 
         dynamicVBox.setOnMouseClicked(HBoxClickHandler);
 
         return dynamicVBox;
-    }*/
+    }
 
 
-   /* public void runSimulation() {
+
+    public void runSimulation() {
         mainController.getModel().runSimulation();
-        mainController.getModel().getCurrSimulation().setSimulationSelected(true);
-        new Thread(()->{
+        //mainController.getModel().getCurrSimulation().setSimulationSelected(true);
+        /*new Thread(()->{
                 this.task = new TaskSimulationRunningDetails(mainController.getModel().getCurrSimulationId(),mainController.getModel().getSimulation(),
                         propertyCurrTick, runningTimeProperty,simulationDetails , populationTableView, propertyMap, propertyStopInformationLabel);
             Platform.runLater(() -> {
                 addEntityToTable(); // Update the UI component in the JavaFX Application Thread
             });
                 task.runTask();
-            }).start();
-    }*/
+            }).start();*/
+    }
 
     @FXML
     void pauseOnclick(ActionEvent event) {
@@ -348,7 +348,7 @@ public class ResultsComponentController {
         }*/
     }
 
-    public void clearAllHistogramTabs(){
+    public void clearAllHistogramTabs() {
         averageValueComponentController.clearTxt();
         consistencyComponentController.clearTxt();
         entitiesHistogramComponentController.clearTxt();

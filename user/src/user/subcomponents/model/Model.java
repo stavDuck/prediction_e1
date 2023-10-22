@@ -9,10 +9,7 @@ import engine.simulation.SimulationHistory;
 import engine.simulation.execution.SimulationExecution;
 import engine.simulation.execution.Status;
 import javafx.application.Platform;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import user.subcomponents.common.ResourcesConstants;
 import user.util.http.HttpUserUtil;
@@ -91,7 +88,8 @@ public class Model {
         return simulation;
     }*/
 
-    public Dto getDtoWorld(){
+
+    /*public Dto getDtoWorld(){
         String simulationName;
         final Dto[] dto = new Dto[1];
         String finalUrl = HttpUrl
@@ -121,27 +119,53 @@ public class Model {
                         dto[0] = gson.fromJson(responseBody, Dto.class);
                     });
                 }
-
-/*
-                if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
-                    );
-                } else {
-
-                    System.out.println(response.body().string());
-                    Platform.runLater(() -> {
-                        // chatAppMainController.updateUserName(userName);
-                        appController.switchToMainApplication();
-                    });
-                }*/
             }
         });
 
 
         return dto[0];
-       // return simulation.getWorld().createDto();
+        // return simulation.getWorld().createDto();
+
+    }*/
+
+
+
+    public Dto getDtoWorld(){
+        Dto dto = new Dto();
+
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.GET_DTO)
+                .newBuilder()
+                .addQueryParameter("name", currSimulationName)
+                .addQueryParameter("id", String.valueOf(currSimulationId))
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl).build();
+        Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+                Gson gson = ResourcesConstants.GSON_INSTANCE;
+                if (response.code() != 200) {
+                    System.out.println("dto retrieval failed");
+                } else {
+                    dto = gson.fromJson(responseBody, Dto.class);
+
+                }
+            } else {
+                System.out.println("Response is NOT valid");
+            }
+            response.close();
+
+        } catch (IOException e) {
+            System.out.println("call to dtoResponse servlet failed");
+        }
+
+        return dto;
+
     }
 
     /*public Simulation getSimulation() {
@@ -205,6 +229,14 @@ public class Model {
 
     public void setCurrSimulationId(int currSimulationId) {
         this.currSimulationId = currSimulationId;
+    }
+
+    public String getCurrSimulationName() {
+        return currSimulationName;
+    }
+
+    public int getCurrSimulationId() {
+        return currSimulationId;
     }
 }
 
