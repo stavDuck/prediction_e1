@@ -11,6 +11,7 @@ import engine.simulation.execution.Status;
 import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import request.DtoRequest;
 import user.subcomponents.common.ResourcesConstants;
 import user.util.http.HttpUserUtil;
 
@@ -27,6 +28,7 @@ public class Model {
     private int currSimulationId;
     private String currSimulationName;
     private DtoManager dtoXmlManager;
+    private DtoRequest currentDtoRequestExecuted;
 
     public Model() {
         dtoXmlManager = new DtoManager();
@@ -45,6 +47,17 @@ public class Model {
         return dtoXmlManager.getDtoXmlManager().get(xmlName);
     }
 
+    public DtoRequest getCurrentDtoRequestExecuted() {
+        return currentDtoRequestExecuted;
+    }
+
+    public void setCurrentDtoRequestExecuted(DtoRequest currentDtoRequestExecuted) {
+        this.currentDtoRequestExecuted = currentDtoRequestExecuted;
+    }
+
+    public void setCurrSimulationName(String currSimulationName) {
+        this.currSimulationName = currSimulationName;
+    }
     // function gets file name, try to load new simulation, if successful return "" else - return the error information
     /*public String loadXmlFile(String fileName){
         Simulation tempSimulation = null;
@@ -177,7 +190,7 @@ public class Model {
             LocalDate currentDate;
             LocalTime currentTime;
             // simulation already ran need to create a new one
-            /*if(simulation.getWorld().getTermination().isStop() == true){
+            /*if(simulation.geגגגtWorld().getTermination().isStop() == true){
                 simulation = loadFileXML(fileName);
                 simulation.setSimulationID(idGenerator);
                 idGenerator++;

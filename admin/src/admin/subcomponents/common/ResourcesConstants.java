@@ -44,6 +44,7 @@ public class ResourcesConstants {
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
     public final static String UPDATE_REQUEST_STATUS = FULL_SERVER_PATH + "/updateRequestStatus";
     public final static String GET_ALL_USERS_REQUESTS = FULL_SERVER_PATH + "/getAllUsersRequests";
+    public final static String SAVE_NEW_FILE_PATH = FULL_SERVER_PATH + "/saveNewFilePathServlet";
 
     // GSON instance
      public final static Gson GSON_INSTANCE = new Gson();

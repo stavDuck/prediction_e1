@@ -5,6 +5,7 @@ import engine.simulation.SimulationMultipleManager;
 import engine.users.UserManager;
 import jakarta.servlet.ServletContext;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class ServletUtils {
 
 	private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
 	private static final String SIMULATION_MULTIPLE_MANAGER_ATTRIBUTE_NAME = "simulationMultipleManagerLock";
-	private static final String XML_FILE_MAP = "xmlFileMap";
+	private static final String XML_INPUT_STREAM_FILE_MAP = "xmlInputStreamFileMap";
 
 	// this object will be for the details view for admin and user
 	private static final String DTO_XML_MANAGER = "dtoXmlManager";
@@ -48,13 +49,14 @@ public class ServletUtils {
 		return (SimulationMultipleManager) servletContext.getAttribute(SIMULATION_MULTIPLE_MANAGER_ATTRIBUTE_NAME);
 	}
 
-	public static Map<String,String> getXmlFileMap (ServletContext servletContext){
+	// this map will save key = name of xml, value = strint contect of inputStream
+	public static Map<String, String> getXmlInputStremFileMap (ServletContext servletContext){
 		synchronized (xmlFileMapLock) {
-			if (servletContext.getAttribute(XML_FILE_MAP) == null) {
-				servletContext.setAttribute(XML_FILE_MAP, new HashMap<String,String>());
+			if (servletContext.getAttribute(XML_INPUT_STREAM_FILE_MAP) == null) {
+				servletContext.setAttribute(XML_INPUT_STREAM_FILE_MAP, new HashMap<String,InputStream>());
 			}
 		}
-		return (Map<String,String>) servletContext.getAttribute(XML_FILE_MAP);
+		return (Map<String,String>) servletContext.getAttribute(XML_INPUT_STREAM_FILE_MAP);
 	}
 
 	public static DtoManager getDtoXmlManager(ServletContext servletContext){

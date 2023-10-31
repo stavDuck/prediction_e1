@@ -84,6 +84,17 @@
         <servlet-name>GenerateRandomServlet</servlet-name>
         <url-pattern>/generateRandom</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UpdateRequestAfterExecution</servlet-name>
+        <servlet-class>servlets.user.UpdateRequestAfterExecution</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateRequestAfterExecution</servlet-name>
+        <url-pattern>/updateRequestAfterExecution</url-pattern>
+    </servlet-mapping>
+
+
     <!-- ADMIN SERVLETS  /-->
     <servlet>
         <servlet-name>UploadXmlServlet</servlet-name>
@@ -148,4 +159,12 @@
         <url-pattern>/getAllUsersRequests</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>SaveNewFilePathServlet</servlet-name>
+        <servlet-class>servlets.admin.SaveNewFilePathServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SaveNewFilePathServlet</servlet-name>
+        <url-pattern>/saveNewFilePathServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

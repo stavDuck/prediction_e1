@@ -14,8 +14,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import utils.ServletUtils;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 // if response is successful response body will have the xml name
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
@@ -53,6 +56,8 @@ public class UploadXml extends HttpServlet {
                     // add NEW xml (simulation) to the list with uniq number
                     simulationMultipleManager.addSimulationToSimulationMultipleManager(simulationExecution.getXmlName(), new Simulation());
 
+                   // saveFileContentInXmlMap(fileContent, simulationExecution.getXmlName());
+
                     System.out.println("Added new xml named : " + simulationExecution.getUserName());
                     response.setStatus(HttpServletResponse.SC_OK);
 
@@ -69,5 +74,25 @@ public class UploadXml extends HttpServlet {
             response.getOutputStream().print(e.getMessage());
         }
     }
+
+
+    // Function get input stream and the name of the xml, convert the stream contect into string and save it for use later
+  /*  private void saveFileContentInXmlMap(InputStream fileContent, String name) throws IOException {
+        // save the input stream of the xml to create simulation execution later on !!!!!
+        Map<String, String> Map = ServletUtils.getXmlInputStremFileMap(getServletContext());
+
+        // Read the content into a byte array
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = fileContent.read(buffer)) != -1) {
+            byteArrayOutputStream.write(buffer, 0, bytesRead);
+        }
+        // Now you can use the content as a byte array
+        byte[] content = byteArrayOutputStream.toByteArray();
+        String contentAsString = new String(content, "UTF-8");
+
+        Map.put(name, contentAsString);
+    }*/
 
 }

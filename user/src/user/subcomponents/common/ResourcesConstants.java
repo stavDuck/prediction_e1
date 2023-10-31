@@ -51,15 +51,13 @@ public class ResourcesConstants {
     public final static String LOGOUT = FULL_SERVER_PATH + "/logoutUserResponse";
     public final static String GET_DTO = FULL_SERVER_PATH + "/dtoResponse";
     public final static String GET_DTO_XML_MAP = FULL_SERVER_PATH + "/getXmlsServlet";
-    public final static String NEW_EXECUTION_WINDOW = FULL_SERVER_PATH + "/executeNewSimulation";
-
+    public final static String NEW_EXECUTION_WINDOW = FULL_SERVER_PATH + "/executeNewSimulationServlet";
     public final static String UPLOAD_XML = FULL_SERVER_PATH + "/uploadXml";
     public final static String ADD_NEW_REQUEST_FROM_USER = FULL_SERVER_PATH + "/addNewRequestFromUser";
     public final static String GET_USER_REQUESTS = FULL_SERVER_PATH + "/getUserRequests";
-
     public final static String GENERATE_RANDOM = FULL_SERVER_PATH + "/generateRandom";
-
     public final static String RUN_SIMULATION = FULL_SERVER_PATH + "/runSimulation";
+    public final static String UPDATE_REQUEST_AFTER_EXECUTION = FULL_SERVER_PATH + "/updateRequestAfterExecution";
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

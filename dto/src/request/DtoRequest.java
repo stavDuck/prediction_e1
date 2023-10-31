@@ -8,23 +8,30 @@ public class DtoRequest {
     private Integer simulationRequestedRuns;
     private Integer simulationCurrentRunning;
     private Integer simulationLeftoverRuns;
+    private Integer simulationFinishedRuns;
     // if termination is null - condition is stop by user
     private DtoTermination terminationConditions;
     private String status;
     private String userName;
 
-    public DtoRequest(Integer requestId, String simulationXmlName, Integer simulationRequestedRuns, Integer simulationCurrentRunning, Integer simulationLeftoverRuns, DtoTermination terminationConditions, String status, String userName) {
+    public DtoRequest(Integer requestId, String simulationXmlName, Integer simulationRequestedRuns, Integer simulationCurrentRunning, Integer simulationLeftoverRuns,
+                      Integer simulationFinishedRuns, DtoTermination terminationConditions, String status, String userName) {
         this.requestId = requestId;
         this.simulationXmlName = simulationXmlName;
         this.simulationRequestedRuns = simulationRequestedRuns;
         this.simulationCurrentRunning = simulationCurrentRunning;
         this.simulationLeftoverRuns = simulationLeftoverRuns;
+        this.simulationFinishedRuns = simulationFinishedRuns;
         this.terminationConditions = terminationConditions;
         this.status = status;
         this.userName = userName;
     }
 
     // setters
+
+    public void setSimulationFinishedRuns(Integer simulationFinishedRuns) {
+        this.simulationFinishedRuns = simulationFinishedRuns;
+    }
     public void setRequestId(Integer requestId) {
         this.requestId = requestId;
     }
@@ -51,6 +58,10 @@ public class DtoRequest {
     }
 
     // getters
+
+    public Integer getSimulationFinishedRuns() {
+        return simulationFinishedRuns;
+    }
     public Integer getRequestId() {
         return requestId;
     }

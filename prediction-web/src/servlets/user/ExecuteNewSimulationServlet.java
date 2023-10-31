@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 // The servlet expected to get in request newEecutionDTO with -
 // xml fileName + map for population + map for env values
@@ -24,12 +26,16 @@ public class ExecuteNewSimulationServlet extends HttpServlet {
         ExecutionDto executionDto = readDtoFromReq(request);
         // need to add
         String xmlName = executionDto.getFileName();
-        String fileFullPath = ServletUtils.getXmlFileMap(getServletContext()).get(xmlName);
+        Map<String,String> xmlFileMap = ServletUtils.getXmlInputStremFileMap(getServletContext());
+        String xmlPath = xmlFileMap.get(xmlName);
+
+        InputStream fileContent = new FileInputStream(xmlPath);
+
+        //String fileFullPath = ServletUtils.getXmlFileMap(getServletContext()).get(xmlName);
 
         // If file name exist - the simulation in multipleManager have to be set correctly
-        if(fileFullPath != null) {
-            InputStream fileContent = new FileInputStream(new File(fileFullPath));
-
+        if(fileContent != null) {
+           // InputStream fileContent = new FileInputStream(new File(fileFullPath));
 
             // check if simulationMultipleManager exist in servletContext - if not create one
             SimulationMultipleManager simulationMultipleManager = ServletUtils.getSimulationMultipleManager(getServletContext());
@@ -55,7 +61,7 @@ public class ExecuteNewSimulationServlet extends HttpServlet {
 
             } catch (RuntimeException e) {
                 // return status 500 - with the exception during creating the simulation from xml
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getOutputStream().print(e.getMessage());
             }
         }

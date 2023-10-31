@@ -79,7 +79,7 @@ public class AddNewRequestFromUserServlet extends HttpServlet {
     private DtoRequest createDtoRequestFromRequest(Request request){
         DtoTermination dtoTermination = new DtoTermination(request.getTerminationConditions().getByTick(),request.getTerminationConditions().getBySec());
         DtoRequest dtoRequest = new DtoRequest(request.getRequestId(), request.getSimulationXmlName(), request.getSimulationRequestedRuns(),
-                request.getSimulationCurrentRunning(), request.getSimulationLeftoverRuns(), dtoTermination, request.getStatus(), request.getUserName());
+                request.getSimulationCurrentRunning(), request.getSimulationLeftoverRuns(),request.getSimulationFinishedRuns(), dtoTermination, request.getStatus(), request.getUserName());
 
         return dtoRequest;
     }

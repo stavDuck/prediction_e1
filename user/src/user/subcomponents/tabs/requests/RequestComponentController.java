@@ -91,7 +91,7 @@ public class RequestComponentController {
             return new SimpleStringProperty(running);
         });
         finishedTableColumn.setCellValueFactory(cellData -> {
-            Integer finishedInt = cellData.getValue().getSimulationRequestedRuns() - cellData.getValue().getSimulationLeftoverRuns();
+            Integer finishedInt = cellData.getValue().getSimulationFinishedRuns();
             String finished = finishedInt.toString();
             return new SimpleStringProperty(finished);
         });
@@ -120,9 +120,55 @@ public class RequestComponentController {
     }
 
     public void handleExecuteButtonClick(DtoRequest dtoRequest) {
-        System.out.println("Request ID: " + dtoRequest.getRequestId());
-        // need to support chancing the number of left runs and everything
+        System.out.println("Request ID: " + dtoRequest.getRequestId() + " is executed");
+        mainController.getModel().setCurrentDtoRequestExecuted(dtoRequest);
+        mainController.getModel().setCurrSimulationName(dtoRequest.getSimulationXmlName());
         mainController.startExecutionTab(dtoRequest.getSimulationXmlName());
+        mainController.moveToExecutionTab();
+        // need to support chancing the number of left runs and everything
+        //boolean result = updateRequestManagerAfterExecution(dtoRequest);
+        // update in local table if manager was updated
+       /* if(result) {
+            updateDtoRequestAfterExecution(dtoRequest);
+            mainController.startExecutionTab(dtoRequest.getSimulationXmlName());
+
+        }
+        else{
+            System.out.println("Error Request Manage was not updated xml : " + dtoRequest.getSimulationXmlName() + " was executed.");
+        }*/
+    }
+
+    // this function execute after clicking on start in execution
+    public void updateRequestManagerAfterExecution(DtoRequest dtoRequest) {
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.UPDATE_REQUEST_AFTER_EXECUTION)
+                .newBuilder()
+                .addQueryParameter("requestid", dtoRequest.getRequestId().toString())
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl).build();
+        Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
+        Response response = null;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        if(response.isSuccessful()){
+            updateDtoRequestAfterExecution(dtoRequest);
+        } else{
+            mainController.showPopup(response.message());
+            System.out.println("Error Request Manage was not updated xml : " + dtoRequest.getSimulationXmlName() + " was executed.");
+        }
+    }
+
+    public void updateDtoRequestAfterExecution(DtoRequest dtoRequest) {
+        dtoRequest.setSimulationCurrentRunning(dtoRequest.getSimulationCurrentRunning() + 1);
+        dtoRequest.setSimulationLeftoverRuns(dtoRequest.getSimulationLeftoverRuns() -1);
+        updateRequestTableInfo();
     }
 
     // Function helper to set end condition colum in request table
@@ -250,7 +296,7 @@ public class RequestComponentController {
         // create DtoRequest
         DtoTermination dtoTermination = new DtoTermination(byTickValue, byTimeValue);
         return new DtoRequest(null, xmlName, simulationRequestedRuns, null, null,
-                dtoTermination, "pending", mainController.getUserNameValue());
+               null, dtoTermination, "pending", mainController.getUserNameValue());
     }
     // send a new request information to save in the server, if response is successful return the copy of dto information
     public void sendNewRequestFromUser(DtoRequest dtoRequest) {

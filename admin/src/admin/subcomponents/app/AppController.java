@@ -137,6 +137,9 @@ public class AppController implements Closeable {
             Dto dto = gson.fromJson(responseBody, Dto.class);
             model.addNewDtoToManager(dto);
 
+            // update the file path + xml name in server map
+            updateXmlPathInServerMap(dto.getXmlName(), absolutePath);
+
             // clear !!
             resultTabController.clearAllHistogramTabs();
             resultTabController.clearStopInformationError();
@@ -156,6 +159,32 @@ public class AppController implements Closeable {
             // Handle unsuccessful response here
             System.out.println("Request was not successful. Response code: " + response.code());
             showPopup(response.body().string() + "\n please try to fix the issue and reload the xml again");
+        }
+    }
+
+    // function create a request to save the full path in the server
+    private void updateXmlPathInServerMap(String xmlName, String absolutePath) throws IOException {
+        //String finalUrl = ResourcesConstants.SAVE_NEW_FILE_PATH;
+        String finalUrl = HttpUrl
+                .parse(ResourcesConstants.SAVE_NEW_FILE_PATH)
+                .newBuilder()
+                .addQueryParameter("xmlname", xmlName)
+                .build()
+                .toString();
+
+        MediaType mediaType = MediaType.parse("text/plain; charset=utf-8");
+        RequestBody requestBody = RequestBody.create(absolutePath, mediaType);
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(requestBody)
+                .build();
+
+        Call call = HTTP_CLIENT.newCall(request);
+        okhttp3.Response response = call.execute();
+
+        if(response.isSuccessful()){
+            System.out.println("File path for :" + xmlName + " successfully saved in server");
         }
     }
 

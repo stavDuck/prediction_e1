@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import request.DtoRequest;
 import user.login.LoginController;
 import okhttp3.*;
 import user.subcomponents.app.task.TaskDetailsUpdater;
@@ -269,4 +270,9 @@ public class AppController implements Closeable {
     public String getUserNameValue(){
         return userNameLabel.getText();
     }
+
+    public void updateDtoRequestAfterExecution(DtoRequest dtoRequest){
+        requestTabController.updateRequestManagerAfterExecution(dtoRequest);
+    }
+
 }

@@ -13,6 +13,7 @@ public class Request {
     private int simulationRequestedRuns;
     private int simulationCurrentRunning;
     private int simulationLeftoverRuns;
+    private int simulationFinishedRuns;
     private Termination terminationConditions;
     private String status;
     private String userName;
@@ -24,6 +25,7 @@ public class Request {
         this.simulationXmlName = simulationXmlName;
         this.simulationRequestedRuns = simulationRequestedRuns;
         this.simulationCurrentRunning = 0; // default value
+        this.simulationFinishedRuns = 0; // default value
         this.simulationLeftoverRuns = simulationRequestedRuns; // default value
         this.terminationConditions = terminationConditions;
         this.status = PENDING_STATUS;
@@ -31,6 +33,10 @@ public class Request {
     }
 
     // setters
+
+    public void setSimulationFinishedRuns(int simulationFinishedRuns) {
+        this.simulationFinishedRuns = simulationFinishedRuns;
+    }
     public void setRequestId(int requestId) {
         this.requestId = requestId;
     }
@@ -57,6 +63,10 @@ public class Request {
     }
 
     // getters
+
+    public int getSimulationFinishedRuns() {
+        return simulationFinishedRuns;
+    }
     public int getRequestId() {
         return requestId;
     }
@@ -86,6 +96,6 @@ public class Request {
         DtoTermination dtoTermination = new DtoTermination(terminationConditions.getByTick(), terminationConditions.getBySec());
 
         return new DtoRequest(requestId, simulationXmlName, simulationRequestedRuns, simulationCurrentRunning, simulationLeftoverRuns,
-                dtoTermination, status, userName);
+                simulationFinishedRuns, dtoTermination, status, userName);
     }
 }

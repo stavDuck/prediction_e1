@@ -23,10 +23,10 @@ public class GenerateRandomServlet extends HttpServlet {
                 String from = req.getParameter(Constants.FROM_RANGE);
                 String to = req.getParameter(Constants.TO_RANGE);
                 if(from != null && to != null) {
-                    random = ValueGeneratorFactory.createRandomFloat(Float.parseFloat(from), Float.parseFloat(to));
+                    random = ValueGeneratorFactory.createRandomFloat(Float.parseFloat(from), Float.parseFloat(to)).generateValue();
                 }
                 else {
-                    random = ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f);
+                    random = ValueGeneratorFactory.createRandomFloat(1.0f, 100.0f).generateValue();
                 }
                 break;
             case Constants.TYPE_STRING:
@@ -38,6 +38,15 @@ public class GenerateRandomServlet extends HttpServlet {
             default:
                 random = null;
         }
-        resp.getWriter().println(random);
+
+        // return the value according to result
+        if(random != null) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().println(random);
+        }
+        else{
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getOutputStream().print("Invalid type in request GenerateRandomServlet");
+        }
     }
 }

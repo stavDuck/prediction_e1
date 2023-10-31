@@ -81,11 +81,10 @@ public class AllocationComponentController {
             return new SimpleStringProperty(running);
         });
         finishedAdminTableColumn.setCellValueFactory(cellData -> {
-            Integer finishedInt = cellData.getValue().getSimulationRequestedRuns() - cellData.getValue().getSimulationLeftoverRuns();
+            Integer finishedInt = cellData.getValue().getSimulationFinishedRuns();
             String finished = finishedInt.toString();
             return new SimpleStringProperty(finished);
         });
-
 
         // create a button to Approve user's request only if the status is pending
         approveAdminTableColumn.setCellValueFactory(param ->
@@ -126,7 +125,6 @@ public class AllocationComponentController {
                 return null;
             }
         });
-
         // run table view task
         runTaskRequestTableUpdater();
     }

@@ -12,7 +12,6 @@ import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import request.DtoRequest;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class TaskRequestTableAdminUpdater implements Runnable{
                 .build()
                 .toString();
 
-        System.out.println("New request is launched for: " + finalUrl);
+        //System.out.println("New request is launched for: " + finalUrl);
 
         Request request = new Request.Builder()
                 .url(finalUrl).build();
@@ -115,7 +114,8 @@ public class TaskRequestTableAdminUpdater implements Runnable{
             // else - need to check if any information is changed
             else{
                 if((curreDtoRequest.getSimulationCurrentRunning() != tableViewDtoRequest.getSimulationCurrentRunning()) ||
-                        curreDtoRequest.getSimulationLeftoverRuns() != tableViewDtoRequest.getSimulationLeftoverRuns() ){
+                        curreDtoRequest.getSimulationLeftoverRuns() != tableViewDtoRequest.getSimulationLeftoverRuns()  ||
+                    curreDtoRequest.getSimulationFinishedRuns() != tableViewDtoRequest.getSimulationFinishedRuns()){
                     // override the request
                     allocationComponentController.getAdminRequestsMap().put(curreDtoRequest.getRequestId(), curreDtoRequest);
                     isNeedToUpdate = true;

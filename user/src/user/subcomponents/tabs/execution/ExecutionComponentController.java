@@ -185,7 +185,9 @@ public class ExecutionComponentController {
 
     @FXML
     void startButtonAction(ActionEvent event) {
-        ExecutionDto dto = new ExecutionDto(mainController.getModel().getCurrSimulationName());
+        String currSimulationName = mainController.getModel().getCurrSimulationName();
+        ExecutionDto dtoExecution = new ExecutionDto(currSimulationName);
+        Dto currentXmlDto = mainController.getModel().getDtoByXmlName(currSimulationName);
         boolean entityVal, envVal;
         boolean isNewSimulationFailed = false;
         // if the first time starting simulation with new xml - start thread
@@ -211,14 +213,14 @@ public class ExecutionComponentController {
         }*/
 
         if(!isNewSimulationFailed) {
-            entityVal = validateEntityPopulation(dto);
-            envVal = verifyEnvVariable(dto);
+            entityVal = validateEntityPopulation(dtoExecution, currentXmlDto);
+            envVal = verifyEnvVariable(dtoExecution, currentXmlDto);
             if (entityVal && envVal) {
                 //showPopup("Variables Summary");
                 //mainController.moveToResultsTab();
 
                 Gson gson = ResourcesConstants.GSON_INSTANCE;
-                String jsonDto = gson.toJson(dto);
+                String jsonDto = gson.toJson(dtoExecution);
 
 
                 Request request = new Request.Builder()
@@ -227,14 +229,23 @@ public class ExecutionComponentController {
                         .post(RequestBody.create(jsonDto.getBytes()))
                         .build();
 
-
                 Call call = HttpUserUtil.HTTP_CLIENT.newCall(request);
                 try {
                     Response response = call.execute();
                     if (response.isSuccessful()) {
+                        // get from response body the pattern "simulationId,xmlName" and save locally
+
+                        // update the current xml we are working on
+                        // simulation id we currently working on
+
+                        showPopupSummaryExecution("Variables Summary", dtoExecution);
                         mainController.moveToResultsTab();
                         mainController.runSimulation();
+                        mainController.updateDtoRequestAfterExecution(mainController.getModel().getCurrentDtoRequestExecuted());
                         //runSimulation(response);
+                    }
+                    else{
+                        System.out.println(response.message());
                     }
 
                 } catch (IOException e) {
@@ -282,23 +293,26 @@ public class ExecutionComponentController {
 
     }*/
 
-    public void showPopup(String message) {
+    public void showPopupSummaryExecution(String message, ExecutionDto dto) {
         Popup popup = new Popup();
-
-        Label popupLabel = new Label(message);
-
+        // create vbox and fill al the properties and population
+        VBox summaryExecutionEntities = new VBox();
+        VBox summaryExecutionPopulation = new VBox();
+        updateAllSummaryInformation(summaryExecutionEntities, summaryExecutionPopulation, dto);
+        
         Button closeButton = new Button("Close");
         closeButton.setOnAction(event -> popup.hide());
-        Button startButton = new Button("Start");
+        /*Button startButton = new Button("Start");
         startButton.setOnAction(event -> {
             popup.hide();
             mainController.moveToResultsTab();
-        });
+        });*/
 
         VBox popupContent = new VBox(10); // Use VBox layout
         popupContent.setStyle("-fx-background-color: white" + ";-fx-border-color: #007bff" + "; -fx-padding: 10;");
-        popupContent.getChildren().addAll(popupLabel);
+        popupContent.getChildren().addAll(summaryExecutionEntities,summaryExecutionPopulation);
 
+      //  HBox buttonContainer = new HBox(startButton,closeButton); // Place the button in an HBox
         HBox buttonContainer = new HBox(closeButton); // Place the button in an HBox
         //need to place the popup
         buttonContainer.setAlignment(Pos.TOP_CENTER);
@@ -308,11 +322,42 @@ public class ExecutionComponentController {
         popup.show(mainController.getPrimaryStage());
     }
 
-    public boolean validateEntityPopulation(ExecutionDto dto) {
+    private void updateAllSummaryInformation(VBox summaryExecutionEntities, VBox summaryExecutionPopulation, ExecutionDto dto) {
+        // add information for env chosen data
+        if (dto.getEnvironmantMap().values().size() > 0) {
+            Label TitleEnvVars = new Label("Environment Values");
+            TitleEnvVars.setStyle("-fx-font-weight: bold;");
+            // add to Vbox
+            summaryExecutionEntities.getChildren().add(TitleEnvVars);
+
+            dto.getEnvironmantMap().forEach((key, value) -> {
+                Label currEnv = new Label(key + ": " + value);
+                summaryExecutionEntities.getChildren().add(currEnv);
+            });
+        }
+
+        // add information for population chosen data
+        if(dto.getPopulationMap().values().size() > 0){
+            Label TitleEnvVars = new Label("Population Values");
+            TitleEnvVars.setStyle("-fx-font-weight: bold;");
+            // add to Vbox
+            summaryExecutionPopulation.getChildren().add(TitleEnvVars);
+
+            dto.getPopulationMap().forEach((key, value) -> {
+                Label currEnv = new Label(key + ": " + value);
+                summaryExecutionPopulation.getChildren().add(currEnv);
+            });
+        }
+    }
+
+    public boolean validateEntityPopulation(ExecutionDto dto, Dto currentXmlDto) {
         boolean res = true;
         int sum = 0;
         int population;
-        int limit = mainController.getModel().getDtoWorld().getGrid().getCols() * mainController.getModel().getDtoWorld().getGrid().getRows();
+
+        int limit = currentXmlDto.getGrid().getCols() * currentXmlDto.getGrid().getRows();
+        //int limit = mainController.getModel().getDtoWorld().getGrid().getCols() * mainController.getModel().getDtoWorld().getGrid().getRows();
+
         for (Node node : entitiesVbox.getChildren()) {
             if (node instanceof VBox) {
                 VBox vBox = (VBox) node;
@@ -360,7 +405,7 @@ public class ExecutionComponentController {
         }
     }
 
-    public boolean verifyEnvVariable(ExecutionDto dto) {
+    public boolean verifyEnvVariable(ExecutionDto dto,Dto currentXmlDto) {
         boolean valid = true;
         boolean checked = false;
         String type = "";
@@ -380,10 +425,13 @@ public class ExecutionComponentController {
                             String typeAndRange = ((Label) vBox.getChildren().get(ENVIRONMENT_VBOX_TYPE_INDEX)).getText();
                             type = typeAndRange.substring(6);
                             if(typeAndRange.contains("Range")) {
-                                String range = typeAndRange.substring(typeAndRange.indexOf("Range") + 7);
+                                int indexOfRange = typeAndRange.indexOf("Range");
+                                String range = typeAndRange.substring(indexOfRange + 7);
                                 String[] parts = range.split("-");
                                 fromRange = Float.parseFloat(parts[0]);
                                 toRange = Float.parseFloat(parts[1]);
+
+                                type = type.substring(0,indexOfRange-8);
 
                             }
                         }
@@ -545,7 +593,7 @@ public class ExecutionComponentController {
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
-                String responseBody = response.body().string();
+                String responseBody = response.body().string().trim();
 
                 if (response.code() != 200) {
                     System.out.println("dto retrieval failed");

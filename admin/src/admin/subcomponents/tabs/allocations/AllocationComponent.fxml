@@ -8,16 +8,16 @@
    <content>
       <TableView fx:id="requsetAdminTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="table-title">
         <columns>
-            <TableColumn fx:id="reqIdAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="50.0" text="Req ID" />
-          <TableColumn fx:id="simulationNameAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="90.0" text="Simulation Name" />
-          <TableColumn fx:id="userNameAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="70.0" text="User Name" />
-            <TableColumn fx:id="requestedRunsAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="90.0" text="Requested Runs" />
+            <TableColumn fx:id="reqIdAdminTableColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Req ID" />
+          <TableColumn fx:id="simulationNameAdminTableColumn" maxWidth="120.0" minWidth="90.0" prefWidth="90.0" text="Simulation Name" />
+          <TableColumn fx:id="userNameAdminTableColumn" maxWidth="100.0" minWidth="70.0" prefWidth="70.0" text="User Name" />
+            <TableColumn fx:id="requestedRunsAdminTableColumn" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Requested Runs" />
             <TableColumn fx:id="endConditionAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="80.0" text="End Condition" />
-            <TableColumn fx:id="requestStatusAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="70.0" text="Reqest Status" />
-            <TableColumn fx:id="runningAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="70.0" text="Running" />
-            <TableColumn fx:id="finishedAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="70.0" text="Finished" />
-            <TableColumn fx:id="approveAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="50.0" text="Approve" />
-            <TableColumn fx:id="denyAdminTableColumn" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="50.0" text="Deny" />
+            <TableColumn fx:id="requestStatusAdminTableColumn" maxWidth="120.0" minWidth="70.0" prefWidth="70.0" text="Reqest Status" />
+            <TableColumn fx:id="runningAdminTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Running" />
+            <TableColumn fx:id="finishedAdminTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Finished" />
+            <TableColumn fx:id="approveAdminTableColumn" maxWidth="100.0" minWidth="70.0" prefWidth="70.0" text="Approve" />
+            <TableColumn fx:id="denyAdminTableColumn" maxWidth="100.0" minWidth="70.0" prefWidth="70.0" text="Deny" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
